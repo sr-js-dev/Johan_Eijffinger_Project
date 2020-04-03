@@ -5,29 +5,26 @@ import history from '../history';
 export const fetchLoginData = (params) => {
     return (dispatch) => {
         dispatch(fetchPageLoading(true));
+        dispatch(fetchLoginDataFail(''));
         var settings = {
             "url": API.GetToken,
             "method": "POST",
             "headers": {
-              "Content-Type": "application/x-www-form-urlencoded",
+              "Content-Type": "application/json",
             },
-            "data": {
-              "grant_type": "password",
-              "userName": params.username,
-              "password": params.password
-            }
+            "data": JSON.stringify({"userName":params.username,"password":params.password}),
           }
           $.ajax(settings).done(function (response) {
           })
           .then(response => {
-            window.localStorage.setItem('eijf_token', response.access_token);
-            window.localStorage.setItem('eijf_userName', response.cuserName);
-            window.localStorage.setItem('eijf_roles', response.roles);
+            window.localStorage.setItem('eijf_token', response.token);
+            window.localStorage.setItem('eijf_userName', response.claims.UserName);
+            window.localStorage.setItem('eijf_roles', response.claims.UserName);
             dispatch(fetchLoginDataSuccess(response));
             history.push('/dashboard')
         })
         .catch(err => {
-            dispatch(fetchLoginDataFail(err.responseJSON.error_description));
+            dispatch(fetchLoginDataFail(err.responseJSON.Error[0]));
         });
     };
 }

@@ -94,6 +94,7 @@ class Orderdetail extends Component {
                                 <th>{trls("Quantity")}</th>
                                 <th>{trls("Shipped_Quantity")}</th>
                                 <th>{trls("Price")}</th>
+                                <th>{trls("Action")}</th>
                             </tr>
                         </thead>
                         {/* {productData && !this.state.loading&&(<tbody>
@@ -127,7 +128,7 @@ class Orderdetail extends Component {
                                 </td>
                                 <td>
                                     <div className="open-order__item">
-                                        <img src={require("../../assets/images/item-image1.jpg")} alt={'img1'}/>
+                                        <img src="https://eijffinger-585084.c.cdn77.org/content/images/thumbs/000/0009596_pip-studio-5_480.png" style={{width: 25}} alt={'img1'}/>
                                         <span>Lorem ipsum dolor sit amet</span>
                                     </div>
                                 </td>
@@ -139,6 +140,9 @@ class Orderdetail extends Component {
                                 <td>
                                     €1,025.00
                                 </td>
+                                <td style={{textAlign: 'center'}}>
+                                    <i className="fas fa-trash-alt action-icon" style={{color: '#DF3535'}}></i>
+                                </td>
                             </tr>
                             <tr>
                                 <td>
@@ -146,7 +150,7 @@ class Orderdetail extends Component {
                                 </td>
                                 <td>
                                     <div className="open-order__item">
-                                        <img src={require("../../assets/images/item-image2.jpg")} alt={'img2'}/>
+                                        <img src="https://eijffinger-585084.c.cdn77.org/content/images/thumbs/000/0009596_pip-studio-5_480.png" style={{width: 25}} alt={'img2'}/>
                                         <span>Lorem ipsum dolor sit amet</span>
                                     </div>
                                 </td>
@@ -157,6 +161,9 @@ class Orderdetail extends Component {
                                 <td>10</td>
                                 <td>
                                     €1,025.00
+                                </td>
+                                <td style={{textAlign: 'center'}}>
+                                    <i className="fas fa-trash-alt action-icon" style={{color: '#DF3535'}}></i>
                                 </td>
                             </tr>
                         </tbody>

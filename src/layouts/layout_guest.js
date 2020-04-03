@@ -4,6 +4,7 @@ import { Col } from 'react-bootstrap';
 import Sidebar from '../components/sidebar';
 import Header from '../components/header';
 import Dashboard from '../pages/Dashboard/dashboard_manage';
+import User from '../pages/User/user_register';
 import Order from '../pages/Order/order_manage';
 import Orderdetail from '../pages/Order/order_detail';
 import Placemanage from '../pages/Placeorder/place_manage';
@@ -19,11 +20,12 @@ class Layout extends Component {
       return (
           <Row style={{height:"100%"}}>
             <Sidebar/>
-            <Col style={{paddingLeft:0, paddingRight:0}}>
+            <Col style={{paddingLeft:0, paddingRight:0, width: "75%"}}>
             <Header/>
                 <Router history={history}>
                   <Switch>
                     <Route path="/dashboard" component={Dashboard}/>
+                    <Route path="/user" component={User}/>
                     <Route path="/orders" component={Order}/>
                     <Route path="/order-detail" component={Orderdetail}/>
                     <Route path="/place-order" component={Placemanage}/>
@@ -32,6 +34,7 @@ class Layout extends Component {
                   </Switch>
                 </Router>
             </Col>
+            <div className="fade-display"></div>
           </Row>
       )
     };

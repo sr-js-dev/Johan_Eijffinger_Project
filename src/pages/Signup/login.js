@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 import * as authAction  from '../../actions/authAction';
 import { connect } from 'react-redux';
-import { Row, Col, Form } from 'react-bootstrap';
+import { Row, Col, Form, Button } from 'react-bootstrap';
 import ListErrors from '../../components/listerrors';
 import { trls } from '../../components/translate';
 import Pageloadspiiner from '../../components/page_load_spinner';
@@ -51,12 +51,11 @@ class Login extends React.Component {
             <div className="col-md-5 offset-md-1 col-xs-12  vertical-center">
                 <Row style={{height:"100%",width:"100%"}}>
                   <div className="login-side-div">
-                    {/* <img src={require('../../assets/images/img_admin_side.png')} alt="appzmakerz" className="login-side-grad"></img> */}
+                    <img src='https://www.eijffinger.com/Themes/Eijffinger/Content/images/logo.svg' alt="appzmakerz" className="login-logo-img"></img>
                   </div>
                   <Col  className="login-form-div">
-                    <img src='https://www.eijffinger.com/Themes/Eijffinger/Content/images/logo.svg' alt="appzmakerz" style={{marginTop:"80px"}}></img>
                     <Form className="container login-form" onSubmit = { this.handleSubmit }>
-                        <ListErrors errors={this.props.error} />
+                        <p className="login-title">Log In</p>
                         <Form.Group as={Row} controlId="form" style={{textAlign:'left'}}>
                             <Select
                                 name="lan"
@@ -67,17 +66,25 @@ class Login extends React.Component {
                             />
                         </Form.Group>
                         <Form.Group as={Row} controlId="form">
-                            <Form.Control type="text" name="username" className="login-input-email" placeholder={trls("Username")}/>
+                            <Col className="login-form__control">
+                              <Form.Control type="text" name="username" className="login-input-email" placeholder={trls("Email")}/>
+                              <label className="placeholder-label__login">{trls('Email')}</label>
+                            </Col>
                         </Form.Group>
                         <Form.Group as={Row} controlId="form">
-                            <Form.Control type="password" name="password" className="login-input-password" placeholder={trls("Password")}/>
+                            <Col className="login-form__control">
+                              <Form.Control type="password" name="password" className="login-input-password" placeholder={trls("Password")}/>
+                              <label className="placeholder-label__login">{trls('Password')}</label>
+                            </Col>
                         </Form.Group>
-                        <p className="text-xs-center">
-                            <Link to="/forgot-password" style={{color:"white"}}>
-                              {trls("Forgot_password")}
-                            </Link>
-                        </p>
-                        <button type="submit" className="btn-small place-and-orders__add-row-btn add-row sign-in">{trls("Sign_in")}</button>
+                        <Form.Group as={Row} controlId="form">
+                            <Form.Check type="checkbox" label="Check me out" style={{color: '#B9C0CE'}}/>
+                        </Form.Group>
+                        <Button variant="primary" type="submit" style={{width: "100%", height: 42}} onClick={()=>this.setState({modalResumeShow: true})}>{trls('Sign_in')}</Button>
+                        <div className="login-have__account">
+                            <p>Don't have account?</p><span style={{marginLeft: 10}}><Link to="/forgot-password" style={{color:"#666666"}}>{trls("Sign_up")}</Link></span>
+                        </div>
+                        <ListErrors errors={this.props.error} />
                     </Form>
                   </Col>
                 </Row>

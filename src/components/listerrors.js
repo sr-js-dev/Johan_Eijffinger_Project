@@ -1,5 +1,5 @@
 import React from 'react';
-// import FlashMassage from 'react-flash-message'
+import FlashMassage from 'react-flash-message';
 
 class ListErrors extends React.Component {
   
@@ -7,11 +7,11 @@ class ListErrors extends React.Component {
     const errors = this.props.errors;
     if (errors) {
       return (
-          // <FlashMassage duration={3000}>
+          <FlashMassage duration={3000}>
             <div className="alert alert-danger" style={{marginTop:10}}>
               <strong><i className="fas fa-exclamation-triangle"></i>{errors}</strong>
             </div>
-          // </FlashMassage>
+          </FlashMassage>
       );
     } else {
       return null;

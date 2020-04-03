@@ -154,7 +154,7 @@ class Ordermanage extends Component {
                                 <td>EUR</td>
                                 <td>James Cornfield</td>
                                 <td>
-                                    <div class="table-status">
+                                    <div className="table-status">
                                         <img src={require("../../assets/images/icon-verified.svg")} alt="verified"/>
                                         <span>Applied</span>
                                     </div>
@@ -176,7 +176,7 @@ class Ordermanage extends Component {
                                 <td>EUR</td>
                                 <td>---</td>
                                 <td>
-                                    <div class="table-status">
+                                    <div className="table-status">
                                         <img src={require("../../assets/images/icon-exclamation-red.svg")} alt="exclamation"/>
                                         <span>Not Applied</span>
                                     </div>
@@ -198,7 +198,7 @@ class Ordermanage extends Component {
                                 <td>EUR</td>
                                 <td>---</td>
                                 <td>
-                                    <div class="table-status">
+                                    <div className="table-status">
                                         <img src={require("../../assets/images/icon-warning.svg")} alt="warning"/>
                                         <span>Part Applied</span>
                                     </div>

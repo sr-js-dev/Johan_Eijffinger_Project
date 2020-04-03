@@ -17,6 +17,8 @@ import { BallBeat } from 'react-pure-loaders';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'datatables.net';
+import Productsearchform from './product_searchform';
+import Resumeform from './resume_form';
 // import history from '../../history';
 
 const mapStateToProps = state => ({ 
@@ -39,8 +41,7 @@ class Placemanage extends Component {
             productDesription: '',
             itemPrice: '',
             quantity: '',
-            unit: ''
-        
+            unit: '',
         };
     }
 
@@ -73,7 +74,11 @@ class Placemanage extends Component {
     //         state: { id: orderId, newSubmit:true }
     //       })
     // }
-    
+
+    changeProductList = (evt) => {
+        this.setState({productDesription: evt.target.value, itemPrice: 120, unit: 'unit'})
+    }
+
     render(){   
         return (
             <div className="order_div">
@@ -87,14 +92,6 @@ class Placemanage extends Component {
                             <Form className="container product-form" onSubmit = { this.handleSubmit }>
                                 <Form.Group as={Row} controlId="formPlaintextPassword">
                                     <Form.Label column sm="4">
-                                        {trls("Requested_Delivery_Date")}  
-                                    </Form.Label>
-                                    <Col sm="8" className="product-text">
-                                    <DatePicker name="startdate" className="myDatePicker" dateFormat="dd-MM-yyyy" selected={new Date()} onChange={date =>this.setState({startdate:date})} />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group as={Row} controlId="formPlaintextPassword">
-                                    <Form.Label column sm="4">
                                         {trls("PO_Reference")}  
                                     </Form.Label>
                                     <Col sm="8" className="product-text">
@@ -103,7 +100,7 @@ class Placemanage extends Component {
                                 </Form.Group>
                                 <Form.Group as={Row} controlId="formPlaintextPassword">
                                     <Form.Label column sm="4">
-                                        {trls("Business_partner")}  
+                                        {trls("Place_an_order")}  
                                     </Form.Label>
                                     <Col sm="8" className="product-text">
                                         <Select
@@ -157,14 +154,6 @@ class Placemanage extends Component {
                                         />
                                     </Col>
                                 </Form.Group>
-                                <Form.Group as={Row} controlId="formPlaintextPassword">
-                                    <Form.Label column sm="4">
-                                        {trls("Order_Comments")}  
-                                    </Form.Label>
-                                    <Col sm="8" className="product-text">
-                                        <Form.Control as="textarea" rows="3" placeholder={trls('Order_Comments')} />
-                                    </Col>
-                                </Form.Group>
                             </Form>
                         </Col>
                         <Col sm={2}>
@@ -210,9 +199,11 @@ class Placemanage extends Component {
                                         {/* <Form.Control type="text" name="product" required placeholder={trls('Search')} /> */}
                                         <Select
                                             name="search"
-                                            placeholder={trls('Search')}
+                                            arrowRenderer={"<i class='fas fa-search'></i>"}
+                                            placeholder={<i className='fas fa-search'>Search</i>}
                                             options={this.state.productSearch}
-                                            onChange={val => this.setState({productDesription:val.value, itemPrice: 120, unit: 'unit'})}
+                                            // className="select-search-class"
+                                            onChange={val => this.setState({productDesription:val.value, itemPrice: 120, unit: 'unit', modaladdShow: true})}
                                             // defaultValue = {this.getSupplierData()}
                                         />
                                     </td>
@@ -258,9 +249,17 @@ class Placemanage extends Component {
                         <span className="txt-bold">Order Total</span>
                         <span>€428.00</span>
                     </div>
-                    <Button variant="secondary" style={{height: 50, borderRadius: 5, float: 'right'}} onClick={()=>this.handleAddRow()}>{trls('Submit_Order')}</Button>
+                    <Button variant="secondary" style={{height: 50, borderRadius: 5, float: 'right'}} onClick={()=>this.setState({modalResumeShow: true})}>{trls('Submit_Order')}</Button>
                 </Col>
             </Container>
+            <Productsearchform
+                show={this.state.modaladdShow}
+                onHide={() => this.setState({modaladdShow: false})}
+            />
+            <Resumeform
+                show={this.state.modalResumeShow}
+                onHide={() => this.setState({modalResumeShow: false})}
+            />
         </div>
         );
     }

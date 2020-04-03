@@ -39,38 +39,27 @@ class Ordermanage extends Component {
     }
 
     componentDidMount() {
-        $('#example thead tr').clone(true).appendTo( '#example thead' );
-        $('#example thead tr:eq(1) th').each( function (i) {
-            $(this).html( '<input type="text" class="search-table-input" style="width: 100%" placeholder="Search" />' );
-            $(this).addClass("sort-style");
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( table.column(i).search() !== this.value ) {
-                    table
-                        .column(i)
-                        .search( this.value )
-                        .draw();
-                }
-            } );
-        } );
-        $('#example').dataTable().fnDestroy();
-        var table = $('#example').DataTable(
-            {
-              "language": {
-                  "lengthMenu": trls("Show")+" _MENU_ "+trls("Entries"),
-                  "zeroRecords": "Nothing found - sorry",
-                  "info": trls("Show_page")+" _PAGE_ of _PAGES_",
-                  "infoEmpty": "No records available",
-                  "infoFiltered": "(filtered from _MAX_ total records)",
-                  "search": trls('Search'),
-                  "paginate": {
-                    "previous": trls('Previous'),
-                    "next": trls('Next')
-                  }
-              },
-                orderCellsTop: true,
-                fixedHeader: true
-            }
-          );
+        // $('#example').dataTable().fnDestroy();
+        // var table = $('#example').DataTable(
+        //     {
+        //       "language": {
+        //           "lengthMenu": trls("Show")+" _MENU_ "+trls("Entries"),
+        //           "zeroRecords": "Nothing found - sorry",
+        //           "info": trls("Show_page")+" _PAGE_ of _PAGES_",
+        //           "infoEmpty": "No records available",
+        //           "infoFiltered": "(filtered from _MAX_ total records)",
+        //           "search": trls('Search'),
+        //           "paginate": {
+        //             "previous": trls('Previous'),
+        //             "next": trls('Next')
+        //           }
+        //       },
+        //         orderCellsTop: true,
+        //         fixedHeader: true,
+        //         "searching": false,
+        //         "dom": 't<"bottom-datatable" lip>'
+        //     }
+        //   );
     }
 
     showOrderDetail = (orderId) => {
@@ -88,33 +77,8 @@ class Ordermanage extends Component {
                     <h2 className="title">{trls("Orders")}</h2>
                 </div>
                 <div className="orders">
-                    <Row className="order_filter">
-                        <Col md={2} style={{paddingLeft: 0}}>
-                            <Select
-                                name="filter"
-                                //options={}
-                                className="select-order_view-filter"
-                                onChange={val => this.setState({showMode: val.value})}
-                                //defaultValue={}
-                            />
-                        </Col>
-                        <Col lg={4} xl={3} style={{display: "flex", marginRight: 30, paddingLeft: 0}}>
-                            <span style={{marginTop:6}}>{trls('Order_Date')}</span>
-                            <div style={{display: "flex", paddingLeft: 12}}>
-                                <DatePicker name="startdate" className="myDatePicker order-filter_date" dateFormat="dd-MM-yyyy" selected={new Date()} onChange={date =>this.setState({startdate:date})} />
-                                <DatePicker name="startdate" className="myDatePicker order-filter_date" dateFormat="dd-MM-yyyy" selected={new Date()} onChange={date =>this.setState({startdate:date})} />
-                            </div>
-                        </Col>
-                        <Col lg={4} xl={3} style={{display: "flex", paddingLeft: 0}}>
-                            <span style={{marginTop:6}}>{trls('Shipping_Date')}</span>
-                            <div style={{display: "flex"}}>
-                                <DatePicker name="startdate" className="myDatePicker order-filter_date" dateFormat="dd-MM-yyyy" selected={new Date()} onChange={date =>this.setState({startdate:date})} />
-                                <DatePicker name="startdate" className="myDatePicker order-filter_date" dateFormat="dd-MM-yyyy" selected={new Date()} onChange={date =>this.setState({startdate:date})} />
-                            </div>
-                        </Col>
-                    </Row>
                     <div className="table-responsive">
-                            <table id="example" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
+                        <table id="example" className=" table table--striped prurprice-dataTable" width="100%">
                             <thead>
                                 <tr>
                                     <th>{trls("Product")}</th>

@@ -587,7 +587,6 @@ table {
 }
 
 .content__header--with-line {
-	border-bottom: 1px solid #555555;
 	padding-left: 20px
 }
 
@@ -708,7 +707,7 @@ table {
 
 .menu {
 	width: 100%;
-	padding: 0 30px
+	padding: 0 30px;
 }
 
 .menu__item {
@@ -723,15 +722,17 @@ table {
 	-ms-flex-align: center;
 	align-items: center;
 	text-decoration: none;
-	color: #212121;
+	color: #CCCCCC;
 	font-size: 14px
 }
 
 .menu__link--active {
+	color: #FFFFFF;
 	font-weight: 700
 }
 
 .menu__link:hover {
+	color: #FFFFFF;
 	font-weight: 700
 }
 
@@ -741,6 +742,16 @@ table {
 	margin-right: 16px;
 	text-align: center;
 	color: white
+}
+
+.menu__link--active .menu-link__icon--active{
+	fill: #FFFFFF
+}
+.menu__link:hover .menu-link__icon--active{
+	fill: #FFFFFF
+}
+.menu-link__icon{
+	fill: #CCCCCC;
 }
 
 .menu__separator {
@@ -2284,3 +2295,4 @@ table.dataTable, table.dataTable th, table.dataTable td {
     height: 30px;
     vertical-align: middle;
 }
+

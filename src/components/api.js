@@ -1,6 +1,8 @@
-// const BASEURL = 'http://brandnewkey.sohosted-vps.nl:6543/';
+const BASEURL = 'https://eijffinger-api-dev.azurewebsites.net';
 export default {
-    GetToken: "http://brandnewkey.sohosted-vps.nl:6543/token",
+    GetToken   : `${BASEURL}/api/Token`,  
+    GetUserData: `${BASEURL}/api/users/SearchUser?excludeInactiveUser=true`,
+    PostUserData: `${BASEURL}/api/users/Create`,
   };
   
   
