@@ -3,7 +3,7 @@ import * as authAction  from '../actions/authAction';
 import { Dropdown } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import history from '../history';
-import { removeAuth } from '../components/auth';
+import { removeAuth } from '../factories/auth';
 import $ from 'jquery';
 
 const mapStateToProps = state => ({ 

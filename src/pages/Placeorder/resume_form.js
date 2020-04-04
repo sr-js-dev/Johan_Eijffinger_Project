@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
 import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { trls } from '../../components/translate';
+import { trls } from '../../factories/translate';
 import * as authAction  from '../../actions/authAction';
-import SessionManager from '../../components/session_manage';
-import API from '../../components/api'
+import SessionManager from '../../factories/session_manage';
+import API from '../../factories/api'
 import Axios from 'axios';
 // import Select from 'react-select';
 

@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux';
-import { trls } from '../../components/translate';
+import { trls } from '../../factories/translate';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 // import SessionManager from '../../components/session_manage';
 import Select from 'react-select';
 // import API from '../../components/api'
-import * as Common from '../../components/common';
+import * as Common from '../../factories/common';
 // import Axios from 'axios';
 // import * as Auth from '../../components/auth'
 // import  { Link } from 'react-router-dom';

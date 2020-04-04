@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux';
-import { trls } from '../../components/translate';
+import { trls } from '../../factories/translate';
 import { Container, Row, Col } from 'react-bootstrap';
 // import SessionManager from '../../components/session_manage';
 // import Select from 'react-select';

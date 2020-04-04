@@ -3,11 +3,11 @@ import { Form, Button, Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
 import { connect } from 'react-redux';
 import * as authAction  from '../../actions/authAction';
-import SessionManager from '../../components/session_manage';
-import API from '../../components/api'
+import SessionManager from '../../factories/session_manage';
+import API from '../../factories/api'
 import Axios from 'axios';
-import { trls } from '../../components/translate';
-import * as Common from '../../components/common';
+import { trls } from '../../factories/translate';
+import * as Common from '../../factories/common';
 
 const mapStateToProps = state => ({ 
     ...state.auth,

@@ -1,4 +1,4 @@
-const BASEURL = 'https://eijffinger-api-dev.azurewebsites.net';
+const BASEURL = 'http://eijffinger-api-dev.azurewebsites.net';
 export default {
     GetToken   : `${BASEURL}/api/Token`,  
     GetUserData: `${BASEURL}/api/users/SearchUser?excludeInactiveUser=true`,

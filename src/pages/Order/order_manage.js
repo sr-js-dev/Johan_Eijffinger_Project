@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux';
-import { trls } from '../../components/translate';
-import { Row, Col } from 'react-bootstrap';
+import { trls } from '../../factories/translate';
+// import { Row, Col } from 'react-bootstrap';
 // import SessionManager from '../../components/session_manage';
-import Select from 'react-select';
+// import Select from 'react-select';
 // import API from '../../components/api'
 // import Axios from 'axios';
 // import * as Auth from '../../components/auth'
@@ -11,9 +11,9 @@ import Select from 'react-select';
 // import * as authAction  from '../../actions/authAction';
 // import Slider from 'react-bootstrap-slider';
 // import "bootstrap-slider/dist/css/bootstrap-slider.css"
-import $ from 'jquery';
+// import $ from 'jquery';
 import { BallBeat } from 'react-pure-loaders';
-import DatePicker from "react-datepicker";
+// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'datatables.net';
 import history from '../../history';

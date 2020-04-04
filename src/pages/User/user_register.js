@@ -4,16 +4,16 @@ import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Adduserform from './adduserform';
 import $ from 'jquery';
-import SessionManager from '../../components/session_manage';
-import API from '../../components/api'
+import SessionManager from '../../factories/session_manage';
+import API from '../../factories/api'
 import Axios from 'axios';
 import { BallBeat } from 'react-pure-loaders';
-import { getUserToken } from '../../components/auth';
-import { trls } from '../../components/translate';
+import { getUserToken } from '../../factories/auth';
+import { trls } from '../../factories/translate';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import 'datatables.net';
-import * as Common from '../../components/common';
+import * as Common from '../../factories/common';
 
 const mapStateToProps = state => ({ ...state.auth });
 

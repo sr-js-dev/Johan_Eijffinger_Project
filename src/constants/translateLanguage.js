@@ -119,7 +119,9 @@ export const TRANSLATIONS = {
       UserCode: 'UserCode',
       CustomerCode: 'CustomerCode',
       FirstName: 'FirstName',
-      LastName: 'LastName'
+      LastName: 'LastName',
+      keep_logged_in: 'Keep me logged in',
+      have_account: "Don't have account"
     },
 
     nl_BE: {
@@ -127,7 +129,7 @@ export const TRANSLATIONS = {
       Password: 'Wachtwoord',
       ConfirmPassword: 'Bevestig wachtwoord',
       Forgot_password: 'Wachtwoord vergeten?',
-      Sign_in: 'Log in',
+      Sign_in: 'Aanmelden',
       Orders: 'Vestellen',
       Dashboard: 'Dashboard',
       Sales_No: 'Verkoop No',
@@ -242,7 +244,9 @@ export const TRANSLATIONS = {
       UserCode: 'GebruikerCode',
       CustomerCode: 'klantCode',
       FirstName: 'EersteNaam',
-      LastName: 'LaatsteName'
+      LastName: 'LaatsteName',
+      keep_logged_in: 'Ik wil ingelogd blijven',
+      have_account: "Heb geen account"
     },
     
     de_DE: {

@@ -3,10 +3,10 @@ import React from 'react';
 import * as authAction  from '../../actions/authAction';
 import { connect } from 'react-redux';
 import { Row, Col, Form } from 'react-bootstrap';
-import ListErrors from '../../components/listerrors';
-import { trls } from '../../components/translate';
-import SessionManager from '../../components/session_manage';
-import API from '../../components/api'
+import Message from '../../components/message';
+import { trls } from '../../factories/translate';
+import SessionManager from '../../factories/session_manage';
+import API from '../../factories/api'
 import Axios from 'axios';
 import queryString from 'query-string'
 import history from '../../history';
@@ -85,7 +85,7 @@ class Resetpassword extends React.Component {
                                 </fieldset>
                             </form> */}
                             <Form className="container login-form" onSubmit = { this.handleSubmit }>
-                                <ListErrors errors={this.props.error} />
+                                <Message message={this.props.error} type={"error"} />
                                 <Form.Group as={Row} controlId="form">
                                     <Form.Control type="password" name="password" className="login-input-email" placeholder={trls("New_Password")}/>
                                 </Form.Group>
