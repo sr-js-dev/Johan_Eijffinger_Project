@@ -28,21 +28,21 @@ const mapDispatchToProps = (dispatch) => ({
 
 });
 
-class Ordermanage extends Component {
+class Salesinvoicesmanage extends Component {
     _isMounted = false;
     constructor(props) {
         super(props);
         this.state = {  
             loading: false,
-            ordersData: [],
+            deliveriesData: [],
             originFilterData: [],
             filterColunm: [
                 {"label": trls('ItemCode'), "value": "ItemCode", "type": 'text', "show": true},
                 {"label": trls('ItemDescription'), "value": "ItemDescription", "type": 'text', "show": true},
-                {"label": trls('DocNum'), "value": "docNum", "type": 'text', "show": true},
-                {"label": trls('DocDate'), "value": "docDate", "type": 'date', "show": true},
-                {"label": trls('cardName'), "value": "cardName", "type": 'text', "show": true},
-                {"label": trls('dbsCollection'), "value": "dbsCollection", "type": 'text', "show": true},
+                {"label": trls('Quantity'), "value": "Quantity", "type": 'text', "show": true},
+                {"label": trls('DocDate'), "value": "DocDate", "type": 'date', "show": true},
+                {"label": trls('Price'), "value": "Price", "type": 'text', "show": true},
+                {"label": trls('Amount'), "value": "Amount", "type": 'text', "show": true},
             ]
         };
     }
@@ -52,19 +52,21 @@ class Ordermanage extends Component {
     }
 
     componentDidMount() {
-        this.getOrdersData();
+        this.getDeliveriesData();
     }
 
-    getOrdersData = (data) => {
+    getDeliveriesData = (data) => {
         this._isMounted = true;
         this.setState({loading:true})
+        let params = {};
         var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.get(API.GetOrdersData, headers)
+        Axios.post(API.GetDeliveriesData, params, headers)
         .then(result => {
             if(this._isMounted){
-                if(result.data.length){
+                if(result.data.value.length){
+                    let deliveriesDataList = this.setDeliveriesData(result.data.value);
                     if(!data){
-                        this.setState({ordersData: result.data, originFilterData: result.data});
+                        this.setState({deliveriesData: deliveriesDataList, originFilterData: deliveriesDataList});
                     }else{
                         this.setState({ordersData: data});
                     }
@@ -72,8 +74,8 @@ class Ordermanage extends Component {
                     $('.fitler').on( 'keyup', function () {
                         table.search( this.value ).draw();
                     } );
-                    $('#order-table').dataTable().fnDestroy();
-                    var table = $('#order-table').DataTable(
+                    $('#deliver-table').dataTable().fnDestroy();
+                    var table = $('#deliver-table').DataTable(
                         {
                             "language": {
                                 "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
@@ -93,6 +95,23 @@ class Ordermanage extends Component {
                 }
             }
         });
+    }
+
+    setDeliveriesData = (deliveriesData) => {
+        let returnDeliveriesData = [];
+        let documentLineData = [];
+        deliveriesData.map((data, index)=>{
+            data.DocumentLines.map((documentLine, key)=>{
+                documentLineData = documentLine;
+                documentLineData.DocDate = data.DocDate;
+                documentLineData.CardName = data.CardName;
+                documentLineData.DocNum = data.DocNum;
+                returnDeliveriesData.push(documentLineData);
+                return documentLine;
+            })
+            return data;
+        });
+        return returnDeliveriesData;
     }
 
     showOrderDetail = (orderId) => {
@@ -123,7 +142,6 @@ class Ordermanage extends Component {
     filterOptionData = (filterOption) =>{
         let dataA = []
         dataA = Common.filterData(filterOption, this.state.originFilterData);
-        console.log('222', dataA)
         if(!filterOption.length){
             dataA=null;
         }
@@ -140,17 +158,17 @@ class Ordermanage extends Component {
     // filter module
     
     render(){   
-        const {filterColunm, ordersData} = this.state;
+        const {filterColunm, deliveriesData} = this.state;
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
                     <div id="google_translate_element"></div>
-                    <h2 className="title">{trls("Orders")}</h2>
+                    <h2 className="title">{trls("Deliveries")}</h2>
                 </div>
                 <div className="orders">
                     <Row>
                         <Col sm={6}>
-                            <Button variant="primary" onClick={()=>this.addUser()}><i className="fas fa-plus add-icon"></i>{trls('Add_order')}</Button> 
+                            {/* <Button variant="primary" onClick={()=>this.addUser()}><i className="fas fa-plus add-icon"></i>{trls('Add_order')}</Button>  */}
                         </Col>
                         <Col sm={6} className="has-search">
                             <div style={{display: 'flex', float: 'right'}}>
@@ -171,7 +189,7 @@ class Ordermanage extends Component {
                         )}
                     </Row>
                     <div className="table-responsive credit-history">
-                        <table id="order-table" className="place-and-orders__table table" width="100%">
+                        <table id="deliver-table" className="place-and-orders__table table" width="100%">
                         <thead>
                             <tr>
                                 {filterColunm.map((item, key)=>(
@@ -187,16 +205,16 @@ class Ordermanage extends Component {
                                 )}
                             </tr>
                         </thead>
-                        {ordersData && !this.state.loading &&(<tbody >
+                        {deliveriesData && !this.state.loading &&(<tbody >
                             {
-                                ordersData.map((data,i) =>(
+                                deliveriesData.map((data,i) =>(
                                     <tr id={i} key={i}>
                                         <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}>{data.ItemCode}</td>
                                         <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{data.ItemDescription}</td>
-                                        <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}>{data.docNum}</td>
-                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.docDate)}</td>
-                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.cardName}</td>
-                                        <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.dbsCollection}</td>
+                                        <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
+                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
+                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.Price}</td>
+                                        <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Amount}</td>
                                     </tr>
                                 ))
                             }
@@ -226,4 +244,4 @@ class Ordermanage extends Component {
         );
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Ordermanage);
+export default connect(mapStateToProps, mapDispatchToProps)(Salesinvoicesmanage);

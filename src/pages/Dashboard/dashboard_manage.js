@@ -2,12 +2,13 @@ import React, {Component} from 'react'
 import { connect } from 'react-redux';
 import { trls } from '../../factories/translate';
 import { Container, Row, Col } from 'react-bootstrap';
-// import SessionManager from '../../components/session_manage';
+import SessionManager from '../../factories/session_manage';
 // import Select from 'react-select';
-// import API from '../../components/api'
-// import Axios from 'axios';
+import API from '../../factories/api'
+import Axios from 'axios';
 // import * as Auth from '../../components/auth'
 import  { Link } from 'react-router-dom';
+import * as Common from '../../factories/common';
 // import * as authAction  from '../../actions/authAction';
 // import Slider from 'react-bootstrap-slider';
 // import "bootstrap-slider/dist/css/bootstrap-slider.css"
@@ -26,6 +27,12 @@ class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {  
+            pastDueData: '',
+            dueSoon: '',
+            totalOutstanding: '',
+            lastOrdersData: [],
+            lastDeliveriesData: [],
+            lastOutstandingData: []
         };
     }
 
@@ -34,10 +41,92 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
+        this.getPastDueData();
+        this.getLastOrdersData();
+        this.getLastDeliveriesData();
+        this.getLastOutstandingData();
+    }
 
+    getPastDueData = () => {
+        this._isMounted = true;
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        let params = {};
+        let pastDay = new Date();
+        let soonDay = new Date(pastDay.getTime() + 7 * 24 * 60 * 60 * 1000);
+        params = {
+            p_DocDueDate: Common.formatDate1(pastDay)
+        }
+        Axios.post(API.GetInvoiceByDate, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                this.setState({pastDueData: result.data.value[0]})
+            }
+        })
+        params = {
+            p_DocDueDate: Common.formatDate1(soonDay)
+        }
+        Axios.post(API.GetInvoiceByDate, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                this.setState({dueSoon: result.data.value[0]})
+            }
+        })
+        params = {
+            p_DocDueDate: ''
+        }
+        Axios.post(API.GetInvoiceByDate, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                this.setState({totalOutstanding: result.data.value[0]})
+            }
+        })
     }
     
+    getLastOrdersData = () => {
+        this._isMounted = true;
+        let params = {};
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetLastOrdersData, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                if(result.data.value.length){
+                    this.setState({lastOrdersData: result.data.value})
+                }
+               
+            }
+        })
+    }
+
+    getLastDeliveriesData = () => {
+        this._isMounted = true;
+        let params = {};
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetLastDelivriesData, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                if(result.data.value.length){
+                    this.setState({lastDeliveriesData: result.data.value})
+                }
+            }
+        })
+    }
+
+    getLastOutstandingData = () => {
+        this._isMounted = true;
+        let params = {};
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetLastOutstandingData, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                if(result.data.value.length){
+                    this.setState({lastOutstandingData: result.data.value})
+                }
+            }
+        })
+    }
+
     render(){   
+        const { pastDueData, dueSoon, totalOutstanding, lastOrdersData, lastDeliveriesData, lastOutstandingData } = this.state;
         return (
             <Container>
                 <div className="dashboard-header content__header content__header--with-line">
@@ -75,7 +164,7 @@ class Dashboard extends Component {
                                 <span>{trls('Past_Due')}</span>
                             </div>
                             <div className="dashboard__top-small-value">
-                                € 369.22
+                                {Common.formatMoney(pastDueData)}
                             </div>
                         </div>
                     </Col>
@@ -86,7 +175,7 @@ class Dashboard extends Component {
                                 <span>{trls('Due_Soon')}</span>
                             </div>
                             <div className="dashboard__top-small-value">
-                                € 369.22
+                                {Common.formatMoney(dueSoon)}
                             </div>
                         </div>
                     </Col>
@@ -97,7 +186,7 @@ class Dashboard extends Component {
                                 <span>{trls('Total_Outstanding')}</span>
                             </div>
                             <div className="dashboard__top-small-value">
-                                € 369.22
+                                {Common.formatMoney(totalOutstanding)}
                             </div>
                         </div>
                     </Col>
@@ -114,80 +203,22 @@ class Dashboard extends Component {
                             <table className="dashboard__bottom-item-table">
                                 <thead>
                                     <tr>
-                                        <th>{trls('Sales_Number')}</th>
-                                        <th>{trls('Order_Date')}</th>
-                                        <th>{trls('Status')}</th>
-                                        <th></th>
+                                        <th>{trls('DocNum')}</th>
+                                        <th>{trls('DocDate')}</th>
+                                        <th>{trls('DocTotal')}</th>
                                     </tr>
                                 </thead>
-                                    {/* {topCustmer &&(<tbody >
+                                    {lastOrdersData &&(<tbody >
                                         {
-                                            topCustmer.map((data,i) =>(
+                                            lastOrdersData.map((data,i) =>(
                                             <tr id={i} key={i}>
-                                                <td>{i+1}</td>
-                                                <td>{data.Klantnaam}</td>
-                                                <td>{this.formatNumber(data.Revenue)}</td>
+                                                <td>{data.DocNum}</td>
+                                                <td>{Common.formatDate(data.DocDate)}</td>
+                                                <td>{Common.formatMoney(data.DocTotal)}</td>
                                             </tr>
                                         ))
                                         }
-                                    </tbody>)} */}
-                                <tbody>
-                                    <tr>
-                                        <td><a href="/#">08272718</a></td>
-                                        <td>20/04/19</td>
-                                        <td>
-                                            <div className="table-status">
-                                                <img src={require("../../assets/images/icon-shipped.svg")} alt="shipped"/>
-                                                <span>Shipped</span>
-                                            </div>
-                                        </td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">72817283</a></td>
-                                        <td>19/04/19</td>
-                                        <td>
-                                            <div className="table-status">
-                                                <img src={require("../../assets/images/icon-open-box.svg")} alt="open"/>
-                                                <span>Open</span>
-                                            </div>
-                                        </td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">92047147</a></td>
-                                        <td>19/04/19</td>
-                                        <td>
-                                            <div className="table-status">
-                                                <img src={require("../../assets/images/icon-shipped.svg")} alt="shipped"/>
-                                                <span>Shipped</span>
-                                            </div>
-                                        </td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">72819374</a></td>
-                                        <td>18/04/19</td>
-                                        <td>
-                                            <div className="table-status">
-                                                <img src={require("../../assets/images/icon-open-box.svg")} alt="open"/>
-                                                <span>Open</span>
-                                            </div>
-                                        </td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">46381922</a></td>
-                                        <td>17/04/19</td>
-                                        <td>
-                                            <div className="table-status">
-                                                <img src={require("../../assets/images/icon-open-box.svg")} alt="open"/>
-                                                <span>Open</span>
-                                            </div>
-                                        </td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                </tbody>
+                                    </tbody>)}
                             </table>
                         </div>
                     </Col>
@@ -202,80 +233,22 @@ class Dashboard extends Component {
                             <table className="dashboard__bottom-item-table">
                                 <thead>
                                     <tr>
-                                        <th>{trls('Delivery_Number')}</th>
-                                        <th>{trls('Due_Date')}</th>
-                                        <th>{trls('Status')}</th>
-                                        <th></th>
+                                        <th>{trls('DocNum')}</th>
+                                        <th>{trls('DocDate')}</th>
+                                        <th>{trls('DocTotal')}</th>
                                     </tr>
                                 </thead>
-                                    {/* {topItem &&(<tbody >
-                                        {
-                                            topItem.map((data,i) =>(
-                                            <tr id={i} key={i}>
-                                                <td>{i+1}</td>
-                                                <td>{data.itemnr}</td>
-                                                <td>{this.formatNumber(data.revenue)}</td>
-                                            </tr>
-                                        ))
-                                        }
-                                    </tbody>)} */}
-                                <tbody>
-                                    <tr>
-                                        <td><a href="/#">08272718</a></td>
-                                        <td>20/04/19</td>
-                                        <td>
-                                            <div className="table-status">
-                                                <img src={require("../../assets/images/icon-shipped.svg")} alt="shipped"/>
-                                                <span>Shipped</span>
-                                            </div>
-                                        </td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">72817283</a></td>
-                                        <td>19/04/19</td>
-                                        <td>
-                                            <div className="table-status">
-                                                <img src={require("../../assets/images/icon-open-box.svg")} alt="open"/>
-                                                <span>Open</span>
-                                            </div>
-                                        </td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">92047147</a></td>
-                                        <td>19/04/19</td>
-                                        <td>
-                                            <div className="table-status">
-                                                <img src={require("../../assets/images/icon-shipped.svg")} alt="shipped"/>
-                                                <span>Shipped</span>
-                                            </div>
-                                        </td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">72819374</a></td>
-                                        <td>18/04/19</td>
-                                        <td>
-                                            <div className="table-status">
-                                                <img src={require("../../assets/images/icon-open-box.svg")} alt="open"/>
-                                                <span>Open</span>
-                                            </div>
-                                        </td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">46381922</a></td>
-                                        <td>17/04/19</td>
-                                        <td>
-                                            <div className="table-status">
-                                                <img src={require("../../assets/images/icon-open-box.svg")} alt="open"/>
-                                                <span>Open</span>
-                                            </div>
-                                        </td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                </tbody>
+                                {lastDeliveriesData &&(<tbody >
+                                    {
+                                        lastDeliveriesData.map((data,i) =>(
+                                        <tr id={i} key={i}>
+                                            <td>{data.DocNum}</td>
+                                            <td>{Common.formatDate(data.DocDate)}</td>
+                                            <td>{Common.formatMoney(data.DocTotal)}</td>
+                                        </tr>
+                                    ))
+                                    }
+                                </tbody>)}
                             </table>
                         </div>
                     </Col>
@@ -290,55 +263,22 @@ class Dashboard extends Component {
                             <table className="dashboard__bottom-item-table">
                                 <thead>
                                     <tr>
-                                        <th>{trls('Invoice_Number')}</th>
-                                        <th>{trls('Due_Date')}</th>
-                                        <th>{trls('Amount')}</th>
-                                        <th></th>
+                                        <th>{trls('DocNum')}</th>
+                                        <th>{trls('DocDate')}</th>
+                                        <th>{trls('DocTotal')}</th>
                                     </tr>
                                 </thead>
-                                    {/* {topModel &&(<tbody >
-                                        {
-                                            topModel.map((data,i) =>(
-                                            <tr id={i} key={i}>
-                                                <td>{i+1}</td>
-                                                <td>{data.Model}</td>
-                                                <td>{this.formatNumber(data.Revenue)}</td>
-                                            </tr>
-                                        ))
-                                        }
-                                    </tbody>)} */}
-                                <tbody>
-                                    <tr>
-                                        <td><a href="/#">08272718</a></td>
-                                        <td>20/04/19</td>
-                                        <td>€289.25</td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">72817283</a></td>
-                                        <td>19/04/19</td>
-                                        <td>€738.98</td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">92047147</a></td>
-                                        <td>19/04/19</td>
-                                        <td>€378.38</td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">72819374</a></td>
-                                        <td>18/04/19</td>
-                                        <td>€137.98</td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="/#">46381922</a></td>
-                                        <td>17/04/19</td>
-                                        <td>€649.22</td>
-                                        <td><img src={require("../../assets/images/icon-vertical-dots.svg")} alt="dots"/></td>
-                                    </tr>
-                                </tbody>
+                                {lastOutstandingData &&(<tbody >
+                                    {
+                                        lastOutstandingData.map((data,i) =>(
+                                        <tr id={i} key={i}>
+                                            <td>{data.DocNum}</td>
+                                            <td>{Common.formatDate(data.DocDate)}</td>
+                                            <td>{Common.formatMoney(data.DocTotal)}</td>
+                                        </tr>
+                                    ))
+                                    }
+                                </tbody>)}
                             </table>
                         </div>
                     </Col>

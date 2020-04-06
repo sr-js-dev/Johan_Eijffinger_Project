@@ -248,6 +248,35 @@ dl, ol, ul {
     box-shadow: 0 0 0 0 #ffff;
     background-color: #ffff !important;
 }
+.btn-light{
+  height: 30px;
+  border-radius: 4px;
+  color:#585858;
+  background-color:#ffffff;
+  border-color:#E1E1E1;
+  height: auto;
+}
+.btn-light:hover{
+  color:#585858;
+  background-color:#e2e6ea;
+  border-color:#E1E1E1
+}
+.btn-light.focus,.btn-light:focus{
+  box-shadow:0 0 0 .2rem rgba(216,217,219,.5)
+}
+.btn-light.disabled,.btn-light:disabled{
+  color:#585858;
+  background-color:#f8f9fa;
+  border-color:#f8f9fa
+}
+.btn-light:not(:disabled):not(.disabled).active,.btn-light:not(:disabled):not(.disabled):active,.show>.btn-light.dropdown-toggle{
+  color:#585858;
+  background-color:#dae0e5;
+  border-color:#d3d9df
+}
+.btn-light:not(:disabled):not(.disabled).active:focus,.btn-light:not(:disabled):not(.disabled):active:focus,.show>.btn-light.dropdown-toggle:focus{
+  box-shadow:0 0 0 .2rem rgba(216,217,219,.5)
+}
 .select-lang-class{
     padding-top:5px;
     padding-right: 5px;
@@ -518,6 +547,7 @@ table.dataTable, table.dataTable th, table.dataTable td {
 }
 .add-icon{
   margin-right: 10px;
+  cursor: pointer;
 }
 
 .table.dataTable thead .sorting{
@@ -704,4 +734,66 @@ table.dataTable.no-footer {
     display: none;
   }
 }
-
+.filter-show__hide{
+  display: none;
+}
+.has-search{
+  padding: 0px;
+  margin-left: auto;
+}
+.has-search .form-control-feedback {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2rem;
+  text-align: center;
+  pointer-events: none;
+  color: #000;
+  margin-top: 2px;
+}
+.has-search .form-control {
+  height: 30px;
+  padding-left: 2.375rem;
+}
+.multi-filter__div{
+  /* width: auto!important; */
+  margin-Left: auto;
+  padding-right: 20px;
+  min-height: 100px;
+  border: solid 1px #EAF0F2;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 10;
+  right: 48px;
+  margin-top: 40px;
+  /* width: 40%; */
+  background-color: #fff
+}
+.filter-header__option {
+  padding: 10;
+  width: 20%;
+  height: 30px !important;
+}
+.filter-header__option .css-1wy0on6{
+  min-height: 27px;
+  height: 10px;
+}
+.filter-header__option .css-bg1rzq-control{
+  min-height: 27px !important;
+}
+.filter-header__option .css-1szy77t-control{
+  min-height: 27px !important;
+}
+.filter-date__picker{
+  width: 99%;
+  height: 30px;
+}
+.filter-show__hide{
+  display: none;
+}
+.back-to_signin{
+  color: #585858;
+  text-decoration: underline;
+}

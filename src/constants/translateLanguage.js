@@ -121,7 +121,22 @@ export const TRANSLATIONS = {
       FirstName: 'FirstName',
       LastName: 'LastName',
       keep_logged_in: 'Keep me logged in',
-      have_account: "Don't have account"
+      have_account: "Don't have account",
+      Add_order: 'Add Order',
+      ItemCode: 'ItemCode',
+      ItemDescription: 'ItemDescription',
+      DocNum: 'DocNum',
+      DocDate: 'DocDate',
+      cardName: 'cardName',
+      dbsCollection: 'dbsCollection',
+      Filter: 'Filter',
+      Quick_search: 'Quick_search',
+      Add_filter: 'Add filter',
+      Deliveries: 'Deliveries',
+      Salesinvoices: 'Salesinvoices',
+      DocTotal: 'DocTotal',
+      Deactivate: 'Deactivate',
+      Returns: 'Returns'
     },
 
     nl_BE: {
@@ -246,7 +261,22 @@ export const TRANSLATIONS = {
       FirstName: 'EersteNaam',
       LastName: 'LaatsteName',
       keep_logged_in: 'Ik wil ingelogd blijven',
-      have_account: "Heb geen account"
+      have_account: "Heb geen account",
+      Add_order: 'Toevoegen Bestellen',
+      ItemCode: 'Artikelcode',
+      ItemDescription: 'ItemBeschrijving',
+      DocNum: 'DocNum',
+      DocDate: 'DocDatum',
+      cardName: 'kaartNaam',
+      dbsCollection: 'dbsCollectie',
+      Filter: 'Filter',
+      Quick_search: 'Snel zoeken',
+      Add_filter: 'Toevoegen filter',
+      Deliveries: 'Leveringen',
+      Salesinvoices: 'Verkoopfacturen',
+      DocTotal: 'DocTotaal',
+      Deactive: 'deactiveren',
+      Returns: 'Geeftterug'
     },
     
     de_DE: {

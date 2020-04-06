@@ -36,6 +36,7 @@ class Adduserform extends Component {
     }
 
     handleSubmit = (event) => {
+        this._isMounted = true;
         var headers = SessionManager.shared().getAuthorizationHeader();
         event.preventDefault();
         const clientFormData = new FormData(event.target);
@@ -43,12 +44,23 @@ class Adduserform extends Component {
         for (let key of clientFormData.keys()) {
             data[key] = clientFormData.get(key);
         }
+        let params = {
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            userCode: data.userCode,
+            customerCode: data.customerCode,
+            roles:[data.roles]
+        }        
+        console.log('232', params);
         if(this.props.mode==="add"){
-            Axios.post(API.PostUserData, data, headers)
+            Axios.post(API.PostUserData, params, headers)
             .then(result => {
-                this.props.onGetUser()
-                this.onHide();
-                this.props.removeState();
+                if(this._isMounted){
+                    this.props.onGetUser()
+                    this.onHide();
+                    this.props.removeState();
+                }
             })
             .catch(err => {
             });

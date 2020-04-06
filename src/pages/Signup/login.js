@@ -43,7 +43,6 @@ class Login extends React.Component {
   }
 
   render() {
-    
     return (
       <div className="container">
           <div className="col-xl-5 col-lg-7 col-md-12  vertical-center">

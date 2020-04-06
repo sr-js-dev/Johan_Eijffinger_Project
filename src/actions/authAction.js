@@ -4,8 +4,8 @@ import API from '../factories/api'
 import history from '../history';
 export const fetchLoginData = (params) => {
     return (dispatch) => {
-        dispatch(fetchPageLoading(true));
         dispatch(fetchLoginDataFail(''));
+        dispatch(fetchPageLoading(true));
         var settings = {
             "url": API.GetToken,
             "method": "POST",
@@ -19,7 +19,7 @@ export const fetchLoginData = (params) => {
           .then(response => {
             window.localStorage.setItem('eijf_token', response.token);
             window.localStorage.setItem('eijf_userName', response.claims.UserName);
-            window.localStorage.setItem('eijf_roles', response.claims.UserName);
+            window.localStorage.setItem('eijf_role', response.claims.Role);
             dispatch(fetchLoginDataSuccess(response));
             history.push('/dashboard')
         })

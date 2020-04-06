@@ -16,7 +16,7 @@ class App extends Component {
           <Route path="/login" component={Login} />
           <Route path="/forgot-password" component={Forgotpass}/>
           <Route path="/reset-password" component={Resetpass} />
-          <Route path="/" component={GuestLayout} />
+          <PrivateRoute path="/" component={GuestLayout} />
         </Switch>
       </Router>
      

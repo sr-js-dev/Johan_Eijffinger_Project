@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Form } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Adduserform from './adduserform';
@@ -14,6 +14,8 @@ import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import 'datatables.net';
 import * as Common from '../../factories/common';
+import * as Auth from '../../factories/auth';
+import Filtercomponent from '../../components/filtercomponent';
 
 const mapStateToProps = state => ({ ...state.auth });
 
@@ -45,7 +47,6 @@ class Userregister extends Component {
     componentDidMount() {
         this._isMounted=true
         this.getUserData();
-        this.setFilterData();
     }
     componentWillUnmount() {
         this._isMounted = false
@@ -56,7 +57,6 @@ class Userregister extends Component {
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.get(API.GetUserData, headers)
         .then(result => {
-            console.log('11111', result);
             if(this._isMounted){
                 if(!data){
                     this.setState({userData: result.data.data, originFilterData: result.data.data});
@@ -88,14 +88,6 @@ class Userregister extends Component {
     }
 
     // filter module
-    setFilterData = () => {
-        let filterData = [
-            {"label": trls('UserName'), "value": "UserName", "type": 'text'},
-            {"label": trls('Email'), "value": "Email", "type": 'text'},
-        ]
-        this.setState({filterData: filterData});
-    }
-
     filterOptionData = (filterOption) =>{
         let dataA = []
         dataA = Common.filterData(filterOption, this.state.originFilterData);
@@ -196,6 +188,38 @@ class Userregister extends Component {
         return filterColum[0].show;
     }
 
+    activeUser = (id) => {
+        var settings = {
+            "url": API.PostActivateUser+id,
+            "method": "post",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+getUserToken(),
+        }
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            this.getUserData();    
+        });
+    }
+
+    deActiveUser = (id) => {
+        var settings = {
+            "url": API.PostDeaActivateUser+id,
+            "method": "post",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+getUserToken(),
+        }
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            this.getUserData();    
+        });
+    }
+
     render () {
         const {filterColunm, userData} = this.state;
         return (
@@ -206,9 +230,12 @@ class Userregister extends Component {
                 <div className="orders">
                     <Row>
                         <Col sm={6}>
-                            <Button variant="primary" onClick={()=>this.addUser()}><i className="fas fa-plus add-icon"></i>{trls('Add_User')}</Button> 
+                            {Auth.getRole()==="Administrator" || Auth.getRole()==="Customer" ?(
+                                <Button variant="primary" onClick={()=>this.addUser()}><i className="fas fa-plus add-icon"></i>{trls('Add_User')}</Button> 
+                            ): <Button variant="primary" disabled onClick={()=>this.addUser()}><i className="fas fa-plus add-icon"></i>{trls('Add_User')}</Button> }
+                            
                         </Col>
-                        {/* <Col sm={6} className="has-search">
+                        <Col sm={6} className="has-search">
                             <div style={{display: 'flex', float: 'right'}}>
                                 <Button variant="light" onClick={()=>this.changeFilter()}><i className="fas fa-filter add-icon"></i>{trls('Filter')}</Button>
                                 <div style={{marginLeft: 20}}>
@@ -217,17 +244,17 @@ class Userregister extends Component {
                                 </div>
                             </div>
                         </Col>
-                        {this.state.filterData.length&&(
+                        {filterColunm.length&&(
                             <Filtercomponent
                                 onHide={()=>this.setState({filterFlag: false})}
-                                filterData={this.state.filterData}
+                                filterData={filterColunm}
                                 onFilterData={(filterOption)=>this.filterOptionData(filterOption)}
                                 showFlag={this.state.filterFlag}
                             />
-                        )} */}
+                        )}
                     </Row>
                     <div className="table-responsive credit-history">
-                        <table id="example" className="place-and-orders__table table" width="100%">
+                        <table id="example" className="place-and-orders__table table" width="99%">
                         <thead>
                             <tr>
                                 {filterColunm.map((item, key)=>(
@@ -258,9 +285,15 @@ class Userregister extends Component {
                                             }
                                         </td>
                                         <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 200}}>
-                                            <Row style={{justifyContent:"space-around"}}>
-												<i className="fas fa-trash-alt add-icon" onClick={()=>this.userDeleteConfirm(data.Id)}><span className="action-title">{trls('Delete')}</span></i>
-												<i className="fas fa-pen add-icon" onClick={()=>this.userUpdate(data.Id)}><span className="action-title">{trls('Edit')}</span></i>
+                                            <Row>
+												<i className="fas fa-trash-alt add-icon" onClick={()=>this.userDeleteConfirm(data.id)}><span className="action-title">{trls('Delete')}</span></i>
+												<i className="fas fa-pen add-icon" onClick={()=>this.userUpdate(data.id)}><span className="action-title">{trls('Edit')}</span></i>
+                                                {!data.isActive ? (
+                                                    <i className="fas fa-check-circle add-icon" onClick={()=>this.activeUser(data.id)}><span className="action-title">{trls('Active')}</span></i>
+                                                ):
+                                                    <i className="fas fa-check-circle add-icon" onClick={()=>this.deActiveUser(data.id)}><span className="action-title">{trls('Deactivate')}</span></i>
+                                                }
+                                                
 											</Row>
                                         </td>
                                     </tr>
