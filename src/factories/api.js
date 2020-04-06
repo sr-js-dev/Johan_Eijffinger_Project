@@ -1,4 +1,4 @@
-const BASEURL = 'http://eijffinger-api-dev.azurewebsites.net';
+const BASEURL = 'https://eijffinger-api-dev.azurewebsites.net';
 export default {
     GetToken: `${BASEURL}/api/Token`,  
     PostResetPassword: `${BASEURL}/api/Account/ResetPassword`,  
