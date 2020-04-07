@@ -52,7 +52,6 @@ class Adduserform extends Component {
             customerCode: data.customerCode,
             roles:[data.roles]
         }        
-        console.log('232', params);
         if(this.props.mode==="add"){
             Axios.post(API.PostUserData, params, headers)
             .then(result => {
@@ -65,21 +64,22 @@ class Adduserform extends Component {
             .catch(err => {
             });
         }else{
-            // params = {
-            //     "Id": this.props.userID,
-            //     "PhoneNumber": data.PhoneNumber,
-            //     "RoleName": data.roles,
-            // }
-            // headers = SessionManager.shared().getAuthorizationHeader();
-            // Axios.put( "https://cors-anywhere.herokuapp.com/"+API.PostUserUpdate, params, headers)
-            // .then(result => {
-            //     this.props.onGetUser()
-            //     this.onHide();
-            //     this.setState({selectflag:true})
-            //     this.props.removeState();
-            // })
-            // .catch(err => {
-            // });
+            params = {
+                "firstName": data.firstName,
+                "lastName": data.lastName,
+                "userCode": data.userCode,
+                "customerCode": data.customerCode,
+                "roles": [data.roles]
+              }
+            headers = SessionManager.shared().getAuthorizationHeader();
+            Axios.put(API.PostUserUpdate+this.props.userUpdateData.id, params, headers)
+            .then(result => {
+                this.props.onGetUser()
+                this.onHide();
+                this.props.removeState();
+            })
+            .catch(err => {
+            });
         }
     }
 
@@ -93,50 +93,41 @@ class Adduserform extends Component {
     }
 
     render(){   
-        let updateData = [];
-        let roles = [];
-        // let roledata=''
-        if(this.props.userUpdateData){
-            updateData=this.props.userUpdateData;
-            roles = updateData.roles;
-            if(roles){
-                // roledata=roles[0].name;
-            }
-        }
+        const { userUpdateData, mode } = this.props;
         return (
             <div className = "slide-form__controls open" style={{height: "100%"}}>
                 <div style={{marginBottom:30}}>
                     <i className="fas fa-times slide-close" style={{ fontSize: 20, cursor: 'pointer'}} onClick={()=>this.onHide()}></i>
                 </div>
                 <Form className="container" onSubmit = { this.handleSubmit }>
-                    <Col className="title add-product">{trls('Add_User')}</Col>
+                    <Col className="title add-product">{mode!=="update" ? trls('Add_User') : trls('Edit_User')}</Col>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="email" name="email" defaultValue={this.props.mode==="update" ? updateData.Email : ''} required placeholder={trls('Email')}/>
+                            <Form.Control type="email" name="email" defaultValue={mode==="update" ? userUpdateData.email : ''} required placeholder={trls('Email')}/>
                             <label className="placeholder-label">{trls('Email')}</label>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="firstName" required placeholder={trls('FirstName')}/>
+                            <Form.Control type="text" name="firstName" defaultValue={mode==="update" ? userUpdateData.firstName : ''} required placeholder={trls('FirstName')}/>
                             <label className="placeholder-label">{trls('FirstName')}</label>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="lastName" required placeholder={trls('LastName')}/>
+                            <Form.Control type="text" name="lastName" defaultValue={mode==="update" ? userUpdateData.lastName : ''} required placeholder={trls('LastName')}/>
                             <label className="placeholder-label">{trls('LastName')}</label>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="userCode" required placeholder={trls('UserCode')}/>
+                            <Form.Control type="number" name="userCode" required placeholder={trls('UserCode')}/>
                             <label className="placeholder-label">{trls('UserCode')}</label>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="customerCode" required placeholder={trls('CustomerCode')}/>
+                            <Form.Control type="number" name="customerCode" required placeholder={trls('CustomerCode')}/>
                             <label className="placeholder-label">{trls('CustomerCode')}</label>
                         </Col>
                     </Form.Group>
@@ -147,6 +138,7 @@ class Adduserform extends Component {
                                 placeholder={trls('Roles')}
                                 options={this.state.roles}
                                 onChange={val => this.setState({val1: val})}
+                                defaultValue = {[{'label': userUpdateData.roles[0].name, 'value': userUpdateData.roles[0].name}]}
                             />
                             <label className="placeholder-label">{trls('Roles')}</label>
                             {!this.props.disabled&&this.props.mode==="add" && (

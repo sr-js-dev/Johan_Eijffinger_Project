@@ -8,7 +8,6 @@ import SessionManager from '../../factories/session_manage';
 import API from '../../factories/api'
 import Axios from 'axios';
 import { BallBeat } from 'react-pure-loaders';
-import { getUserToken } from '../../factories/auth';
 import { trls } from '../../factories/translate';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
@@ -28,7 +27,6 @@ class Userregister extends Component {
         super(props);
         this.state = {  
             userData:[],
-            flag:'',
             userUpdateData:[],
             loading:true,
             slideFormFlag: false,
@@ -41,7 +39,8 @@ class Userregister extends Component {
                 {"label": trls('PhoneNumber'), "value": "PhoneNumber", "type": 'text', "show": true},
                 {"label": trls('Active'), "value": "active", "type": 'text', "show": true},
                 {"label": trls('Action'), "value": "action", "type": 'text', "show": true},
-            ]
+            ],
+            userInfo: Auth.getUserInfo()
         };
       }
     componentDidMount() {
@@ -107,19 +106,18 @@ class Userregister extends Component {
     }
     // filter module
     userUpdate = (id) => {
-        let userID=id;
         var settings = {
             "url": API.GetUserDataById+id,
             "method": "GET",
             "headers": {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer "+getUserToken(),
+                "Authorization": "Bearer "+Auth.getUserToken(),
         }
         }
         $.ajax(settings).done(function (response) {
         })
         .then(response => {
-            this.setState({userUpdateData: response, mode:"update",userID:userID, flag:true, slideFormFlag: true});
+            this.setState({userUpdateData: response, mode:"update", slideFormFlag: true});
             Common.showSlideForm();
         });
     }
@@ -216,7 +214,7 @@ class Userregister extends Component {
             "method": "post",
             "headers": {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer "+getUserToken(),
+                "Authorization": "Bearer "+Auth.getUserToken(),
         }
         }
         $.ajax(settings).done(function (response) {
@@ -232,7 +230,7 @@ class Userregister extends Component {
             "method": "post",
             "headers": {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer "+getUserToken(),
+                "Authorization": "Bearer "+Auth.getUserToken(),
         }
         }
         $.ajax(settings).done(function (response) {
@@ -243,7 +241,7 @@ class Userregister extends Component {
     }
 
     render () {
-        const {filterColunm, userData} = this.state;
+        const {filterColunm, userData, userInfo} = this.state;
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -309,7 +307,12 @@ class Userregister extends Component {
                                         <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 250}}>
                                             <Row>
 												<i className="fas fa-trash-alt add-icon" onClick={()=>this.userDeleteConfirm(data.id)}><span className="action-title">{trls('Delete')}</span></i>
-												<i className="fas fa-pen add-icon" onClick={()=>this.userUpdate(data.id)}><span className="action-title">{trls('Edit')}</span></i>
+												{userInfo.role==="Administrator" ? (
+                                                    <i className="fas fa-pen add-icon" onClick={()=>this.userUpdate(data.id)}><span className="action-title">{trls('Edit')}</span></i>
+                                                ):
+                                                    <i className="fas fa-pen add-icon__deactive"><span className="action-title">{trls('Edit')}</span></i>
+                                                }
+                                                
                                                 {!data.isActive ? (
                                                     <i className="fas fa-check-circle add-icon" onClick={()=>this.userActiveConfirm(data.id, 'active')}><span className="action-title">{trls('Active')}</span></i>
                                                 ):
@@ -339,7 +342,6 @@ class Userregister extends Component {
                         onHide={() => this.setState({slideFormFlag: false})}
                         onGetUser={() => this.getUserData()}
                         userUpdateData={this.state.userUpdateData}
-                        userID={this.state.userID}
                     /> 
                 ): null}
                 

@@ -56,6 +56,8 @@ class Salesinvoicesmanage extends Component {
     }
 
     getDeliveriesData = (data) => {
+        let invoiceData = [];
+        let creditData = [];
         this._isMounted = true;
         this.setState({loading:true})
         let params = {};
@@ -63,8 +65,11 @@ class Salesinvoicesmanage extends Component {
         Axios.post(API.GetSalesInvoicesData, params, headers)
         .then(result => {
             if(this._isMounted){
-                if(result.data.value.length){
-                    let deliveriesDataList = this.setDeliveriesData(result.data.value);
+                invoiceData = result.data.value;
+                Axios.post(API.GetCreditNotesData, params, headers)
+                .then(result => {
+                    creditData = result.data.value;
+                    let deliveriesDataList = this.setDeliveriesData(invoiceData, creditData);
                     if(!data){
                         this.setState({deliveriesData: deliveriesDataList, originFilterData: deliveriesDataList});
                     }else{
@@ -76,31 +81,44 @@ class Salesinvoicesmanage extends Component {
                     } );
                     $('#deliver-table').dataTable().fnDestroy();
                     var table = $('#deliver-table').DataTable(
-                        {
-                            "language": {
-                                "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
-                                "zeroRecords": "Nothing found - sorry",
-                                "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
-                                "infoEmpty": "No records available",
-                                "infoFiltered": "(filtered from _MAX_ total records)",
-                                "search": trls('Search'),
-                                "paginate": {
-                                  "previous": trls('Previous'),
-                                  "next": trls('Next')
-                                }
-                            },
-                              "dom": 't<"bottom-datatable" lip>'
-                          }
-                      );
-                }
+                    {
+                        "language": {
+                            "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
+                            "zeroRecords": "Nothing found - sorry",
+                            "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
+                            "infoEmpty": "No records available",
+                            "infoFiltered": "(filtered from _MAX_ total records)",
+                            "search": trls('Search'),
+                            "paginate": {
+                                "previous": trls('Previous'),
+                                "next": trls('Next')
+                            }
+                        },
+                            "dom": 't<"bottom-datatable" lip>'
+                        }
+                    );
+                })
+                
+                
             }
         });
     }
 
-    setDeliveriesData = (deliveriesData) => {
+    setDeliveriesData = (invoiceData, creditData) => {
         let returnDeliveriesData = [];
         let documentLineData = [];
-        deliveriesData.map((data, index)=>{
+        invoiceData.map((data, index)=>{
+            data.DocumentLines.map((documentLine, key)=>{
+                documentLineData = documentLine;
+                documentLineData.DocDate = data.DocDate;
+                documentLineData.CardName = data.CardName;
+                documentLineData.DocNum = data.DocNum;
+                returnDeliveriesData.push(documentLineData);
+                return documentLine;
+            })
+            return data;
+        });
+        creditData.map((data, index)=>{
             data.DocumentLines.map((documentLine, key)=>{
                 documentLineData = documentLine;
                 documentLineData.DocDate = data.DocDate;

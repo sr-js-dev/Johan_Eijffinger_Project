@@ -567,7 +567,10 @@ table.dataTable, table.dataTable th, table.dataTable td {
   margin-right: 10px;
   cursor: pointer;
 }
-
+.add-icon__deactive{
+  color: #EAEAEA;
+  margin-right: 10px;
+}
 .table.dataTable thead .sorting{
   background-image: none;
 }

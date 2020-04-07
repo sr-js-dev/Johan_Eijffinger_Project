@@ -3,7 +3,7 @@ import * as authAction  from '../actions/authAction';
 import { Dropdown } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import history from '../history';
-import { removeAuth } from '../factories/auth';
+import * as Auth from '../factories/auth';
 import $ from 'jquery';
 
 const mapStateToProps = state => ({ 
@@ -20,6 +20,7 @@ class Header extends Component {
             roles:[{"value":"en_US","label":"English"},{"value":"nl_BE","label":"Dutch"},{"value":"de_DE","label":"German"},{"value":"fr_FR","label":"French"}],
             selectrolvalue:window.localStorage.getItem('eijf_lang'),
             selectrollabel:window.localStorage.getItem('eijf_label'),
+            userInfo: Auth.getUserInfo()
         };
     }
     componentDidMount () {
@@ -32,10 +33,14 @@ class Header extends Component {
         })
     }
     logOut = () => {
-        var removeFlag = removeAuth();
+        var removeFlag = Auth.removeAuth();
         if(removeFlag){
             history.push('/login')
         }
+    }
+    resetPassword = () => {
+        // const { userInfo } = this.state;
+        history.push('/forgot-password?loginUser=true')
     }
     changeLangauge = (val) => {
         this.setState({selectrolvalue:val.value, selectrollabel: val.label});
@@ -67,6 +72,7 @@ class Header extends Component {
                             </Dropdown.Toggle>
                             <Dropdown.Menu style={{marginLeft:15}}>
                                 <Dropdown.Item onClick={this.logOut}>Logout</Dropdown.Item>
+                                <Dropdown.Item onClick={()=>this.resetPassword()}>Reset Password</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
                 </div>

@@ -24,20 +24,20 @@ class Layout extends Component {
           <Row style={{height:"100%"}}>
             <Sidebar/>
             <Col style={{paddingLeft:0, paddingRight:0, width: "75%"}}>
-            <Header/>
-                <Router history={history}>
-                  <Switch>
-                    <Route path="/dashboard" component={Dashboard}/>
-                    <Route path="/user" component={User}/>
-                    <Route path="/orders" component={Order}/>
-                    <Route path="/deliveries" component={Deliveries}/>
-                    <Route path="/salesinvoices" component={Salesinvoices}/>
-                    <Route path="/returns" component={Returns}/>
-                  </Switch>
-                </Router>
+              <Header/>
+              <Router history={history}>
+                <Switch>
+                  <Route path="/dashboard" component={Dashboard}/>
+                  <Route path="/user" component={User}/>
+                  <Route path="/orders" component={Order}/>
+                  <Route path="/deliveries" component={Deliveries}/>
+                  <Route path="/salesinvoices" component={Salesinvoices}/>
+                  <Route path="/returns" component={Returns}/>
+                </Switch>
+              </Router>
             </Col>
             <div className="fade-display"></div>
-          </Row>
+        </Row>
       )
     };
   }

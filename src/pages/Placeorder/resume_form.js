@@ -49,7 +49,6 @@ class Resumeform extends Component {
     }
 
     onHide = () => {
-        console.log('123132');
         this.props.onHide() 
         this.props.blankdispatch();
     }

@@ -7,7 +7,7 @@ import Message from '../../components/message';
 import { trls } from '../../factories/translate';
 import API from '../../factories/api'
 import $ from 'jquery';
-import { getUserToken } from '../../factories/auth';
+import * as Auth from '../../factories/auth';
 
 const mapStateToProps = state => ({ ...state.auth });
 
@@ -22,10 +22,24 @@ class Forgotpassword extends React.Component {
     super();
     this.state = {  
       sendEamilFlag: false,
+      userInfo: Auth.getUserInfo(),
+      loginUser: false
     };
   }
 
+  componentDidMount() {
+    let loginUser = this.getUrlParameter('loginUser', window.location.href);
+    this.setState({loginUser: loginUser})
+}
+getUrlParameter = (name, url) => {
+    name = name.replace(/\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&]*)');
+    var results = regex.exec(url);
+    return results === null ? '' : results[1];
+}
+
   handleSubmit = (event) => {
+    const { loginUser, userInfo } = this.state
     this.setState({sendEamilFlag: false});
     event.preventDefault();
     const clientFormData = new FormData(event.target);
@@ -34,11 +48,11 @@ class Forgotpassword extends React.Component {
         data[key] = clientFormData.get(key);
     }
     var settings = {
-      "url": API.PostForgotPassEmail+data.email,
+      "url": !loginUser ? API.PostForgotPassEmail+data.email : API.PostForgotPassEmail+userInfo.userName ,
       "method": "post",
       "headers": {
           "Content-Type": "application/json",
-          "Authorization": "Bearer "+getUserToken(),
+          "Authorization": "Bearer "+Auth.getUserToken(),
     }
     }
     $.ajax(settings).done(function (response) {
@@ -48,7 +62,7 @@ class Forgotpassword extends React.Component {
     });
   }
   render() {
-    const { sendEamilFlag } = this.state;
+    const { sendEamilFlag, userInfo,  loginUser} = this.state;
     return (
       <div className="container">
           <div className="col-xl-5 col-lg-7 col-md-12  vertical-center">
@@ -61,7 +75,11 @@ class Forgotpassword extends React.Component {
                           <p className="login-title">Enter Email</p>
                           <Form.Group controlId="form">
                               <Col className="login-form__control">
+                                {loginUser ? (
+                                  <Form.Control type="email" name="email" className="login-input-email" disabled defaultValue={loginUser ? userInfo.userName : ''} required placeholder={trls("Enter_email")}/>
+                                ):
                                   <Form.Control type="email" name="email" className="login-input-email" required placeholder={trls("Enter_email")}/>
+                                }
                                   <label className="placeholder-label__login">{trls('Enter_email')}</label>
                               </Col>
                           </Form.Group>
