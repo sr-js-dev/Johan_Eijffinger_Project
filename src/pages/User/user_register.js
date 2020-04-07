@@ -106,7 +106,6 @@ class Userregister extends Component {
         }
     }
     // filter module
-
     userUpdate = (id) => {
         let userID=id;
         var settings = {
@@ -156,6 +155,29 @@ class Userregister extends Component {
                 label: 'Delete',
                 onClick: () => {
                    this.userDelete()
+                }
+              },
+              {
+                label: 'Cancel',
+                onClick: () => {}
+              }
+            ]
+          });
+    }
+
+    userActiveConfirm = (id, mode) => {
+        confirmAlert({
+            title: 'Confirm',
+            message: 'Are you sure to do this.',
+            buttons: [
+              {
+                label: mode==="active" ? 'Active': 'Deactive',
+                onClick: () => {
+                    if(mode==="active"){
+                        this.activeUser(id);
+                    }else{
+                        this.deActiveUser(id);
+                    }
                 }
               },
               {
@@ -284,16 +306,15 @@ class Userregister extends Component {
                                                 <i className ="fas fa-check-circle inactive-icon"></i>
                                             }
                                         </td>
-                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 200}}>
+                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 250}}>
                                             <Row>
 												<i className="fas fa-trash-alt add-icon" onClick={()=>this.userDeleteConfirm(data.id)}><span className="action-title">{trls('Delete')}</span></i>
 												<i className="fas fa-pen add-icon" onClick={()=>this.userUpdate(data.id)}><span className="action-title">{trls('Edit')}</span></i>
                                                 {!data.isActive ? (
-                                                    <i className="fas fa-check-circle add-icon" onClick={()=>this.activeUser(data.id)}><span className="action-title">{trls('Active')}</span></i>
+                                                    <i className="fas fa-check-circle add-icon" onClick={()=>this.userActiveConfirm(data.id, 'active')}><span className="action-title">{trls('Active')}</span></i>
                                                 ):
-                                                    <i className="fas fa-check-circle add-icon" onClick={()=>this.deActiveUser(data.id)}><span className="action-title">{trls('Deactivate')}</span></i>
+                                                    <i className="fas fa-check-circle add-icon" onClick={()=>this.userActiveConfirm(data.id, 'deative')}><span className="action-title">{trls('Deactivate')}</span></i>
                                                 }
-                                                
 											</Row>
                                         </td>
                                     </tr>

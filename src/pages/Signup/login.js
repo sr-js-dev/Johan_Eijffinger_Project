@@ -74,13 +74,15 @@ class Login extends React.Component {
                             <label className="placeholder-label__login">{trls('Password')}</label>
                           </Col>
                       </Form.Group>
-                      <Form.Group controlId="form">
+                      {/* <Form.Group controlId="form">
                           <Form.Check type="checkbox" label={trls('keep_logged_in')} style={{color: '#B9C0CE'}}/>
-                      </Form.Group>
+                      </Form.Group> */}
                       <Button variant="primary" type="submit" style={{width: "100%", height: 42}} onClick={()=>this.setState({modalResumeShow: true})}>{trls('Sign_in')}</Button>
-                      <div className="login-have__account">
-                          <p>Don't have account?</p><span style={{marginLeft: 10}}><Link to="/forgot-password" style={{color:"#666666"}}>{trls("Sign_up")}</Link></span>
-                      </div>
+                      <p className="text-xs-center" style={{marginTop: 10}}>
+                          <Link to="/forgot-password" className="back-to_signin">
+                              {trls("Forgot_password")}
+                          </Link>
+                      </p>
                       <Message message={this.props.error} type={"error"}/>
                   </Form>
                 </Col>

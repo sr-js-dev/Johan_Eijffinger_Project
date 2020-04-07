@@ -587,7 +587,7 @@ table {
 }
 
 .content__header--with-line {
-	padding-left: 20px
+	padding-left: 10px
 }
 
 .content__header-breadcrumbs {
@@ -1304,7 +1304,7 @@ table {
 }
 
 .orders {
-	padding: 0 30px
+	padding: -1px 30px
 }
 
 .orders__filters {

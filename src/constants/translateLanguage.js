@@ -136,7 +136,7 @@ export const TRANSLATIONS = {
       Salesinvoices: 'Salesinvoices',
       DocTotal: 'DocTotal',
       Deactivate: 'Deactivate',
-      Returns: 'Returns'
+      Returns: 'Returns',
     },
 
     nl_BE: {
@@ -276,7 +276,7 @@ export const TRANSLATIONS = {
       Salesinvoices: 'Verkoopfacturen',
       DocTotal: 'DocTotaal',
       Deactive: 'deactiveren',
-      Returns: 'Geeftterug'
+      Returns: 'Geeftterug',
     },
     
     de_DE: {

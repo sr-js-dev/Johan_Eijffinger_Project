@@ -6,6 +6,10 @@ html, body {
     font-size: 13px;
     line-height: 16px;
 }
+.row{
+  margin-left: 0px;
+  margin-right: 0px;
+}
 @media (min-width: 576px){
 .col-sm-3 {
     flex: 0 0 25%;
@@ -46,6 +50,12 @@ html, body {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
+@media (max-width: 1170px){
+  .Logo--desktop {
+    display: none;
+  }
+}
+
 .pagination{
     margin-left: auto;
 }
@@ -209,6 +219,7 @@ dl, ol, ul {
     width: 100px;
 }
 .vertical-center {
+    padding: 0px;
     margin: 0;
     position: absolute;
     top: 50%;
@@ -403,7 +414,8 @@ table.dataTable, table.dataTable th, table.dataTable td {
     width: 200px;
 }
 .dashboard-container{
-    padding-top: 35px
+    padding-top: 35px;
+    justify-content: space-around;
 }
 .top_long-payment{
     margin-top: 25px
@@ -427,6 +439,12 @@ table.dataTable, table.dataTable th, table.dataTable td {
 .logo{
   padding: 40px 30px;
   padding-top: 69px;
+}
+@media (max-width: 1170px){
+  .logo {
+    padding: 0px 10px;
+    padding-top: 10px;
+  }
 }
 .menu_item-span{
   font-style: normal;

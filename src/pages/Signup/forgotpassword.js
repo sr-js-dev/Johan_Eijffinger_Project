@@ -2,12 +2,13 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 // import * as authAction  from '../../actions/authAction';
 import { connect } from 'react-redux';
-import { Row, Col, Form } from 'react-bootstrap';
+import { Row, Col, Form, Button } from 'react-bootstrap';
 import Message from '../../components/message';
 import { trls } from '../../factories/translate';
-import SessionManager from '../../factories/session_manage';
 import API from '../../factories/api'
-import Axios from 'axios';
+import $ from 'jquery';
+import { getUserToken } from '../../factories/auth';
+
 const mapStateToProps = state => ({ ...state.auth });
 
 const mapDispatchToProps = dispatch => ({
@@ -16,68 +17,65 @@ const mapDispatchToProps = dispatch => ({
 });
 
 class Forgotpassword extends React.Component {
-//   constructor() {   
-//     super();
-//     };
+
+  constructor() {   
+    super();
+    this.state = {  
+      sendEamilFlag: false,
+    };
+  }
+
   handleSubmit = (event) => {
+    this.setState({sendEamilFlag: false});
     event.preventDefault();
     const clientFormData = new FormData(event.target);
     const data = {};
     for (let key of clientFormData.keys()) {
         data[key] = clientFormData.get(key);
     }
-    
-    var params = {
-        "email": data.email,
-        "resetPasswordBaseUrl": "https://portal.tekwoods.nl/reset-password"
-      }
-    var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.post(API.PostForgotPassEmail, params, headers)
-        .then(result => {
-        });
+    var settings = {
+      "url": API.PostForgotPassEmail+data.email,
+      "method": "post",
+      "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer "+getUserToken(),
+    }
+    }
+    $.ajax(settings).done(function (response) {
+    })
+    .then(response => {
+      this.setState({sendEamilFlag: true})
+    });
   }
   render() {
+    const { sendEamilFlag } = this.state;
     return (
-      <div className="auth-page" style={{height:"100%"}}>
-        <div className="container login-page">
-          <div className="row addQuestion">
-            <div className="col-md-5 offset-md-1 col-xs-12  vertical-center">
-                <Row style={{height:"100%",width:"100%"}}>
+      <div className="container">
+          <div className="col-xl-5 col-lg-7 col-md-12  vertical-center">
+              <Row>
                   <div className="login-side-div">
+                      <img src='https://www.eijffinger.com/Themes/Eijffinger/Content/images/logo.svg' alt="appzmakerz" className="login-logo-img"></img>
                   </div>
-                  <Col  className="login-form-div">
-                      <img src='https://www.eijffinger.com/Themes/Eijffinger/Content/images/logo.svg' alt="appzmakerz" style={{marginTop:"70px"}}></img>
-                      {/* <form className="login-form" onSubmit = { this.handleSubmit }>
-                      <ListErrors errors={this.props.error} />
-                          <fieldset>  
-                              <fieldset className="form-group">
-                                  <input type="text" name="email" className="orders__filters-search input-email" placeholder={trls("Enter_email")}/>
-                              </fieldset>
-                              <p className="text-xs-center">
-                                  <Link to="/login" style={{color:"rgb(84, 79, 79)"}}>
-                                      {trls("Back_to_Sign_in")}
-                                  </Link>
-                              </p>
-                              <button type="submit" className="btn-small place-and-orders__add-row-btn add-row sign-in">{trls("Next_Step")}</button>
-                          </fieldset>
-                      </form> */}
+                  <Col>
                       <Form className="container login-form" onSubmit = { this.handleSubmit }>
-                        <Message message={this.props.error} type={"error"} />
-                        <Form.Group as={Row} controlId="form">
-                            <Form.Control type="text" name="email" className="login-input-email" placeholder={trls("Enter_email")}/>
-                        </Form.Group>
-                        <p className="text-xs-center">
-                            <Link to="/login" style={{color:"white"}}>
-                              {trls("Back_to_Sign_in")}
-                            </Link>
-                        </p>
-                        <button type="submit" className="btn-small place-and-orders__add-row-btn add-row sign-in">{trls("Next_Step")}</button>
-                    </Form>
+                          <p className="login-title">Enter Email</p>
+                          <Form.Group controlId="form">
+                              <Col className="login-form__control">
+                                  <Form.Control type="email" name="email" className="login-input-email" required placeholder={trls("Enter_email")}/>
+                                  <label className="placeholder-label__login">{trls('Enter_email')}</label>
+                              </Col>
+                          </Form.Group>
+                          <p className="text-xs-center" style={{textAlign: "center"}}>
+                              <Link to="/login" className="back-to_signin">
+                                  {trls("Back_to_Sign_in")}
+                              </Link>
+                          </p>
+                          <Button variant="primary" type="submit" style={{width: "100%", height: 42}} onClick={()=>this.setState({modalResumeShow: true})}>{trls('Next_Step')}</Button>
+                          <Message message={sendEamilFlag ? "Done! Please check your email": ''} type={"success"}/>
+                      </Form>
                   </Col>
-                </Row>
-            </div>
+              </Row>
           </div>
-        </div>
       </div>
     );
   }

@@ -19,6 +19,7 @@ import 'datatables.net';
 import history from '../../history';
 import * as Common from '../../factories/common';
 import Filtercomponent from '../../components/filtercomponent';
+import Pageloadspiiner from '../../components/page_load_spinner';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -43,7 +44,9 @@ class Ordermanage extends Component {
                 {"label": trls('DocDate'), "value": "docDate", "type": 'date', "show": true},
                 {"label": trls('cardName'), "value": "cardName", "type": 'text', "show": true},
                 {"label": trls('dbsCollection'), "value": "dbsCollection", "type": 'text', "show": true},
-            ]
+                {"label": trls('Download'), "value": "download", "type": 'text', "show": true},
+            ],
+            pageLodingFlag: false
         };
     }
 
@@ -123,7 +126,6 @@ class Ordermanage extends Component {
     filterOptionData = (filterOption) =>{
         let dataA = []
         dataA = Common.filterData(filterOption, this.state.originFilterData);
-        console.log('222', dataA)
         if(!filterOption.length){
             dataA=null;
         }
@@ -138,9 +140,32 @@ class Ordermanage extends Component {
         }
     }
     // filter module
+    getFileDownLoad = (data) => {
+        this.setState({pageLodingFlag: true})
+        this._isMounted = true;
+        let params = {
+            objectId: "Orders",
+            keyValue: data.DocEntry
+        }
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetDownloadFile, params, headers)
+        .then(result => {
+            if(result.data.pdf){
+                this.setState({pageLodingFlag: false})
+                this.downloadWithName("data:application/octet-stream;charset=utf-16le;base64,"+result.data.pdf, data.ItemCode+'.pdf');
+            }
+        })
+    }
+
+    downloadWithName = (uri, name) => {
+        var link = document.createElement("a");
+        link.download = name;
+        link.href = uri;
+        link.click();
+    }
     
     render(){   
-        const {filterColunm, ordersData} = this.state;
+        const {filterColunm, ordersData, pageLodingFlag} = this.state;
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -197,6 +222,11 @@ class Ordermanage extends Component {
                                         <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.docDate)}</td>
                                         <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.cardName}</td>
                                         <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.dbsCollection}</td>
+                                        <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>
+                                            <Row style={{justifyContent: "space-around"}}>
+												<i className="fas fa-file-download add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title">{trls('Download')}</span></i>
+											</Row>
+                                        </td>
                                     </tr>
                                 ))
                             }
@@ -222,6 +252,7 @@ class Ordermanage extends Component {
                         /> 
                     ): null} */}
                 </div>
+                <Pageloadspiiner loading = {pageLodingFlag}/>
             </div>
         );
     }

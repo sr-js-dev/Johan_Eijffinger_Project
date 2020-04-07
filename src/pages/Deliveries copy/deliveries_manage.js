@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 });
 
-class Salesinvoicesmanage extends Component {
+class Deliveriesmanage extends Component {
     _isMounted = false;
     constructor(props) {
         super(props);
@@ -60,7 +60,7 @@ class Salesinvoicesmanage extends Component {
         this.setState({loading:true})
         let params = {};
         var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.post(API.GetSalesInvoicesData, params, headers)
+        Axios.post(API.GetDeliveriesData, params, headers)
         .then(result => {
             if(this._isMounted){
                 if(result.data.value.length){
@@ -163,7 +163,7 @@ class Salesinvoicesmanage extends Component {
             <div className="order_div">
                 <div className="content__header content__header--with-line">
                     <div id="google_translate_element"></div>
-                    <h2 className="title">{trls("Salesinvoices")}</h2>
+                    <h2 className="title">{trls("Deliveries")}</h2>
                 </div>
                 <div className="orders">
                     <Row>
@@ -244,4 +244,4 @@ class Salesinvoicesmanage extends Component {
         );
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Salesinvoicesmanage);
+export default connect(mapStateToProps, mapDispatchToProps)(Deliveriesmanage);

@@ -5,6 +5,8 @@ export default {
     GetOrdersData: `${BASEURL}/api/Orders`,
     GetUserData: `${BASEURL}/api/users/SearchUser?excludeInactiveUser=false`,
     PostUserData: `${BASEURL}/api/users/Create`,
+    PostActivateUser: `${BASEURL}/api/users/ActivateUser/`,
+    PostDeaActivateUser: `${BASEURL}/api/users/DeactivateUser/`,
     GetDeliveriesData: `${BASEURL}/api/SapFactory/execute/get/GetDeliveries`,
     GetReturnsData: `${BASEURL}/api/SapFactory/execute/get/GetReturns`,
     GetSalesInvoicesData: `${BASEURL}/api/SapFactory/execute/get/SalesInvoices`,
@@ -13,8 +15,8 @@ export default {
     GetLastOrdersData: `${BASEURL}/api/SapFactory/execute/get/Latest5Orders`,
     GetLastDelivriesData: `${BASEURL}/api/SapFactory/execute/get/Latest5Deliverables`,
     GetLastOutstandingData: `${BASEURL}/api/SapFactory/execute/get/Latest5OutstandingInvoices`,
-    PostActivateUser: `${BASEURL}/api/users/ActivateUser/`,
-    PostDeaActivateUser: `${BASEURL}/api/users/DeactivateUser/`,
+    GetDownloadFile: `${BASEURL}/api/SapProxy/pdf`,
+    PostForgotPassEmail: `${BASEURL}/api/Account/ForgotPassword/`,
   };
   
   
