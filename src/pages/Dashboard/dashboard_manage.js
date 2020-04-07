@@ -9,6 +9,7 @@ import Axios from 'axios';
 // import * as Auth from '../../components/auth'
 import  { Link } from 'react-router-dom';
 import * as Common from '../../factories/common';
+import * as authAction  from '../../actions/authAction';
 // import * as authAction  from '../../actions/authAction';
 // import Slider from 'react-bootstrap-slider';
 // import "bootstrap-slider/dist/css/bootstrap-slider.css"
@@ -19,7 +20,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-
+    blankdispatch: () =>
+                dispatch(authAction.blankdispatch()),
 });
 
 class Dashboard extends Component {
@@ -125,6 +127,14 @@ class Dashboard extends Component {
         })
     }
 
+    visitPlaceOrder = () => {
+        this.props.blankdispatch()
+    }
+
+    visitOrder = () => {
+        this.props.blankdispatch()
+    }
+
     render(){   
         const { pastDueData, dueSoon, totalOutstanding, lastOrdersData, lastDeliveriesData, lastOutstandingData } = this.state;
         return (
@@ -137,22 +147,22 @@ class Dashboard extends Component {
                         <div className="dashboard__top-long">
                             <div>
                                 <div className="dashboard__top-long-title">{trls('Place_an_order')}</div>
-                                <div style={{fontSize: 12}}>{trls('Search_Lines')}</div>
                             </div>
                             <div className="dashboard__top-long-img">
                                 <Link to={'/place-order'}>
-                                    <img src={require("../../assets/images/icon-cart-white.svg")} style={{cursor: "pointer"}} alt="cart" onClick={this.customer}/>
+                                    <img src={require("../../assets/images/icon-cart-white.svg")} style={{cursor: "pointer"}} alt="cart" onClick={this.visitPlaceOrder}/>
                                 </Link>
                             </div>
                         </div>
                         <div className="dashboard__top-long top_long-payment">
                             <div>
-                                <div className="dashboard__top-long-title">{trls('Make_a_Payment')}</div>
-                                <div style={{fontSize: 12}}>{trls('Credit_card')}</div>
+                                <div className="dashboard__top-long-title">{trls('Orders')}</div>
                             </div>
                             <div className="dashboard__top-long-img">
-                                <Link to={'/make-payment'}>
-                                    <img src={require("../../assets/images/icon-payment-white.svg")} style={{cursor: "pointer"}} alt="payment" onClick={this.createVisitReport}/>
+                                <Link to={'/orders'}>
+                                    <svg width="30" height="30" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={this.visitOrder}>
+                                        <path className="dashboard-order__icon" d="M13 5H11V4C11 1.8 9.2 0 7 0C4.8 0 3 1.8 3 4V5H1C0.4 5 0 5.4 0 6V15C0 15.6 0.4 16 1 16H13C13.6 16 14 15.6 14 15V6C14 5.4 13.6 5 13 5ZM5 4C5 2.9 5.9 2 7 2C8.1 2 9 2.9 9 4V5H5V4Z"/>
+                                    </svg>
                                 </Link>
                             </div>
                         </div>

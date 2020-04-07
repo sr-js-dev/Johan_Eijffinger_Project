@@ -815,3 +815,7 @@ table.dataTable.no-footer {
   color: #585858;
   text-decoration: underline;
 }
+.dashboard-order__icon{
+	fill: #fff;
+}
+

@@ -33,10 +33,6 @@ class Layout extends Component {
                     <Route path="/deliveries" component={Deliveries}/>
                     <Route path="/salesinvoices" component={Salesinvoices}/>
                     <Route path="/returns" component={Returns}/>
-                    {/* <Route path="/order-detail" component={Orderdetail}/>
-                    <Route path="/place-order" component={Placemanage}/>
-                    <Route path="/make-payment" component={Paymentmanage}/>
-                    <Route path="/invoices" component={Invoices}/> */}
                   </Switch>
                 </Router>
             </Col>
