@@ -137,7 +137,8 @@ export const TRANSLATIONS = {
       DocTotal: 'DocTotal',
       Deactivate: 'Deactivate',
       Returns: 'Returns',
-      Edit_User: 'Edit User'
+      Edit_User: 'Edit User',
+      LoginAsUser: 'LoginAsUser'
     },
 
     nl_BE: {
@@ -278,7 +279,8 @@ export const TRANSLATIONS = {
       DocTotal: 'DocTotaal',
       Deactive: 'deactiveren',
       Returns: 'Geeftterug',
-      Edit_User: 'Bewerk Gebruiker'
+      Edit_User: 'Bewerk Gebruiker',
+      LoginAsUser: 'LoginAsUser'
     },
     
     de_DE: {

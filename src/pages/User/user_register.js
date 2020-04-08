@@ -39,6 +39,7 @@ class Userregister extends Component {
                 {"label": trls('PhoneNumber'), "value": "PhoneNumber", "type": 'text', "show": true},
                 {"label": trls('Active'), "value": "active", "type": 'text', "show": true},
                 {"label": trls('Action'), "value": "action", "type": 'text', "show": true},
+                {"label": trls('LoginAsUser'), "value": "loginAsUser", "type": 'text', "show": true},
             ],
             userInfo: Auth.getUserInfo()
         };
@@ -240,6 +241,22 @@ class Userregister extends Component {
         });
     }
 
+    loginAsUser = (userName) => {
+        var settings = {
+            "url": API.PostLoginAsUser+userName,
+            "method": "post",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+        }
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            console.log('123', response)
+        });
+    }
+
     render () {
         const {filterColunm, userData, userInfo} = this.state;
         return (
@@ -317,6 +334,15 @@ class Userregister extends Component {
                                                     <i className="fas fa-check-circle add-icon" onClick={()=>this.userActiveConfirm(data.id, 'active')}><span className="action-title">{trls('Active')}</span></i>
                                                 ):
                                                     <i className="fas fa-check-circle add-icon" onClick={()=>this.userActiveConfirm(data.id, 'deative')}><span className="action-title">{trls('Deactivate')}</span></i>
+                                                }
+											</Row>
+                                        </td>
+                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 100}}>
+                                            <Row>
+                                                {userInfo.role==="Administrator" ? (
+                                                    <i className="fas fa-pen add-icon" onClick={()=>this.loginAsUser(data.userName)}><span className="action-title">{trls('LoginAsUser')}</span></i>
+                                                ):
+                                                    <i className="fas fa-pen add-icon__deactive"><span className="action-title">{trls('Edit')}</span></i>
                                                 }
 											</Row>
                                         </td>
