@@ -351,5 +351,4 @@ class Userregister extends Component {
         )
         };
   }
-    
   export default connect(mapStateToProps, mapDispatchToProps)(Userregister);
