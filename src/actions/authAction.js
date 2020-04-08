@@ -36,7 +36,6 @@ export const fetchPageLoading = (data) => {
         loading:data
     }
 }
-
 //login fail
 export const fetchLoginDataFail = (param) => {
     return {

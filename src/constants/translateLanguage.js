@@ -138,11 +138,8 @@ export const TRANSLATIONS = {
       Deactivate: 'Deactivate',
       Returns: 'Returns',
       Edit_User: 'Edit User',
-<<<<<<< HEAD
-      Test: 'Test'
-=======
+      Test: 'Test',
       LoginAsUser: 'LoginAsUser'
->>>>>>> b0631c004b7edbc73989711093cf0819d683eda1
     },
 
     nl_BE: {
@@ -284,11 +281,8 @@ export const TRANSLATIONS = {
       Deactive: 'deactiveren',
       Returns: 'Geeftterug',
       Edit_User: 'Bewerk Gebruiker',
-<<<<<<< HEAD
-      Test: 'Test1111'
-=======
+      Test: 'Test1111',
       LoginAsUser: 'LoginAsUser'
->>>>>>> b0631c004b7edbc73989711093cf0819d683eda1
     },
     
     de_DE: {
