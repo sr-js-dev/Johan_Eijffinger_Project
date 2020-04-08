@@ -13,7 +13,6 @@ import { Container, Row, Col } from 'react-bootstrap';
 // import "bootstrap-slider/dist/css/bootstrap-slider.css"
 // import $ from 'jquery';
 import { BallBeat } from 'react-pure-loaders';
-// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'datatables.net';
 // import history from '../../history';
