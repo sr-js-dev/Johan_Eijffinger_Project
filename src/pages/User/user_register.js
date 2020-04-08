@@ -42,17 +42,20 @@ class Userregister extends Component {
             ],
             userInfo: Auth.getUserInfo()
         };
-      }
+    }
+
     componentDidMount() {
-        this._isMounted=true
+        this._isMounted=true;
         this.getUserData();
     }
+
     componentWillUnmount() {
-        this._isMounted = false
+        this._isMounted = false;
     }
-    getUserData (data) {
+    
+    getUserData (data) {    
         this._isMounted = true;
-        this.setState({loading:true})
+        this.setState({loading: true})
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.get(API.GetUserData, headers)
         .then(result => {
@@ -85,7 +88,6 @@ class Userregister extends Component {
             }
         });
     }
-
     // filter module
     filterOptionData = (filterOption) =>{
         let dataA = []
