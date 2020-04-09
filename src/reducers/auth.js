@@ -16,6 +16,8 @@ export default function (state = initialState, action) {
             return { ...state, lang: action.lang }
     case types.FETCH_PAGE_LOADING:
         return { ...state, loading: action.loading }
+    case types.ADMIN_FLAG:
+            return {...state, userType: action.flag}
     default:
         return state
     }

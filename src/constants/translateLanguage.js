@@ -139,7 +139,8 @@ export const TRANSLATIONS = {
       Returns: 'Returns',
       Edit_User: 'Edit User',
       Test: 'Test',
-      LoginAsUser: 'LoginAsUser'
+      LoginAsUser: 'LoginAsUser',
+      Go_Back_Admin: 'GoBackAdmin',
     },
 
     nl_BE: {
@@ -282,7 +283,8 @@ export const TRANSLATIONS = {
       Returns: 'Geeftterug',
       Edit_User: 'Bewerk Gebruiker',
       Test: 'Test1111',
-      LoginAsUser: 'LoginAsUser'
+      LoginAsUser: 'LoginAsUser',
+      Go_Back_Admin: 'GoBackAdmin',
     },
     
     de_DE: {

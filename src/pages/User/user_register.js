@@ -15,17 +15,21 @@ import 'datatables.net';
 import * as Common from '../../factories/common';
 import * as Auth from '../../factories/auth';
 import Filtercomponent from '../../components/filtercomponent';
+// import history from '../../history';
+import * as authAction  from '../../actions/authAction';
 
 const mapStateToProps = state => ({ ...state.auth });
 
 const mapDispatchToProps = dispatch => ({
-    
+    setUserType: (param) =>
+            dispatch(authAction.userType(param)),
 });
+
 class Userregister extends Component {
     _isMounted = false
     constructor(props) {
         super(props);
-        this.state = {  
+        this.state = {
             userData:[],
             userUpdateData:[],
             loading:true,
@@ -41,7 +45,8 @@ class Userregister extends Component {
                 {"label": trls('Action'), "value": "action", "type": 'text', "show": true},
                 {"label": trls('LoginAsUser'), "value": "loginAsUser", "type": 'text', "show": true},
             ],
-            userInfo: Auth.getUserInfo()
+            userInfo: Auth.getUserInfo(), 
+            userType: '',
         };
     }
 
@@ -53,6 +58,13 @@ class Userregister extends Component {
     componentWillUnmount() {
         this._isMounted = false;
     }
+
+    componentWillReceiveProps = nextProps => {
+        console.log("nextprops: ", nextProps.userType);
+        this.setState({
+            userType: nextProps.userType
+        });
+    };
     
     getUserData (data) {    
         this._isMounted = true;
@@ -244,23 +256,35 @@ class Userregister extends Component {
     }
 
     loginAsUser = (userName) => {
+        var adminInfo = Auth.getUserInfo();
+        this.props.setUserType("user");
+        window.localStorage.setItem('admin_token', adminInfo.userToken);
+        window.localStorage.setItem('admin_userName', adminInfo.userName);
+        window.localStorage.setItem('admin_role', adminInfo.role);
+        console.log("auth", this.props);
         var settings = {
             "url": API.PostLoginAsUser+userName,
             "method": "post",
             "headers": {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer "+Auth.getUserToken(),
-        }
+            }
         }
         $.ajax(settings).done(function (response) {
         })
         .then(response => {
-            console.log('123', response)
+            window.localStorage.setItem('eijf_token', response.token);
+            window.localStorage.setItem('eijf_userName', response.claims.UserName);
+            window.localStorage.setItem('eijf_role', response.claims.Role);
+            this.setState({userInfo : Auth.getUserInfo()});
+            // history.push('/dashboard')
         });
     }
 
     render () {
-        const {filterColunm, userData, userInfo} = this.state;
+        // const {filterColunm, userData, userInfo} = this.state;
+        const {filterColunm, userData } = this.state;
+        
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -326,7 +350,7 @@ class Userregister extends Component {
                                         <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 250}}>
                                             <Row>
 												<i className="fas fa-trash-alt add-icon" onClick={()=>this.userDeleteConfirm(data.id)}><span className="action-title">{trls('Delete')}</span></i>
-												{userInfo.role==="Administrator" ? (
+												{/*userInfo.role==="Administrator"*/ this.state.userType === "admin" ? (
                                                     <i className="fas fa-pen add-icon" onClick={()=>this.userUpdate(data.id)}><span className="action-title">{trls('Edit')}</span></i>
                                                 ):
                                                     <i className="fas fa-pen add-icon__deactive"><span className="action-title">{trls('Edit')}</span></i>
@@ -341,10 +365,10 @@ class Userregister extends Component {
                                         </td>
                                         <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 100}}>
                                             <Row>
-                                                {userInfo.role==="Administrator" ? (
+                                                {/*userInfo.role==="Administrator"*/ this.state.userType !== "user" ? (
                                                     <i className="fas fa-pen add-icon" onClick={()=>this.loginAsUser(data.userName)}><span className="action-title">{trls('LoginAsUser')}</span></i>
                                                 ):
-                                                    <i className="fas fa-pen add-icon__deactive"><span className="action-title">{trls('Edit')}</span></i>
+                                                    <i className="fas fa-pen add-icon__deactive"><span className="action-title">{trls('LoginAsUser')}</span></i>
                                                 }
 											</Row>
                                         </td>

@@ -24,3 +24,11 @@ export const getUserInfo = () => {
     userInfo.userToken = window.localStorage.getItem('eijf_token');
     return userInfo;
 };
+
+export const getAdminInfo = () => {
+    let adminInfo = [];
+    adminInfo.role = window.localStorage.getItem('admin_role');
+    adminInfo.userName = window.localStorage.getItem('admin_userName');
+    adminInfo.userToken = window.localStorage.getItem('admin_token');
+    return adminInfo;
+}

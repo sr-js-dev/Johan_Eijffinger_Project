@@ -95,3 +95,11 @@ export const fetchDataServerFail = (params) => {
     }
 }
 
+export const userType = (param) => {
+    return{
+        type: types.ADMIN_FLAG,
+        flag: param
+    }
+}
+
+
