@@ -10,7 +10,7 @@ import Deliveries from '../pages/Deliveries/deliveries_manage';
 import Salesinvoices from '../pages/Salesinvoices/salesinvoices_manage';
 import Returns from '../pages/Returns/returns_manage';
 // import Orderdetail from '../pages/Order/order_detail';
-// import Placemanage from '../pages/Placeorder/place_manage';
+import Placemanage from '../pages/Placeorder/place_manage';
 // import Paymentmanage from '../pages/Makepayment/payment_manage';
 // import Invoices from '../pages/Invoice/invoice_manage';
 import { Switch,Router, Route } from 'react-router-dom';
@@ -32,7 +32,8 @@ class Layout extends Component {
                   <Route path="/orders" component={Order}/>
                   <Route path="/deliveries" component={Deliveries}/>
                   <Route path="/salesinvoices" component={Salesinvoices}/>
-                  <Route path="/returns" component={Returns}/>
+                  <Route path="/returns" component={Returns}/> 
+                  <Route path="/placemanage" component={Placemanage}/>
                 </Switch>
               </Router>
             </Col>

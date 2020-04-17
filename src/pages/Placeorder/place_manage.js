@@ -87,108 +87,115 @@ class Placemanage extends Component {
                     <h2 className="title">{trls("Place_an_order")}</h2>
                 </div>
                 <Container>
-                    <Row className="order__info-bill">
-                        <Col sm={6} style={{paddingLeft: 0, paddingTop: 10}}>
-                            <Form className="container product-form" onSubmit = { this.handleSubmit }>
-                                <Form.Group as={Row} controlId="formPlaintextPassword">
-                                    <Form.Label column sm="4">
-                                        {trls("PO_Reference")}  
-                                    </Form.Label>
-                                    <Col sm="8" className="product-text">
-                                        <Form.Control type="text" name="reference" required placeholder={trls('PO_Reference')} />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group as={Row} controlId="formPlaintextPassword">
-                                    <Form.Label column sm="4">
-                                        {trls("Place_an_order")}  
-                                    </Form.Label>
-                                    <Col sm="8" className="product-text">
-                                        <Select
-                                            name="usinesspartner"
-                                            placeholder={trls('Business_partner')}
-                                            // options={this.state.supplier}
-                                            onChange={val => this.setState({val1:val})}
-                                            // defaultValue = {this.getSupplierData()}
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group as={Row} controlId="formPlaintextPassword">
-                                    <Form.Label column sm="4">
-                                        {trls("Contact")}  
-                                    </Form.Label>
-                                    <Col sm="8" className="product-text">
-                                        <Select
-                                            name="usinesspartner"
-                                            placeholder={trls('Contact')}
-                                            // options={this.state.supplier}
-                                            onChange={val => this.setState({val1:val})}
-                                            // defaultValue = {this.getSupplierData()}
-                                        />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group as={Row} controlId="formPlaintextPassword">
-                                    <Form.Label column sm="4">
-                                        {trls("Ordertype")}  
-                                    </Form.Label>
-                                    <Col sm="8" className="product-text">
-                                        <Select
-                                            name="usinesspartner"
-                                            placeholder={trls('Ordertype')}
-                                            options={this.state.orderType}
-                                            onChange={val => this.setState({val1:val})}
-                                            defaultValue = {{"value": 'default', "label": 'default'}}
-                                        />
-                                    </Col>
-                                </Form.Group>
+                    <Form className="container product-form" onSubmit = { this.handleSubmit }>
+                        <Row className="order__info-bill">
+                            <Col sm={6} style={{paddingLeft: 0, paddingTop: 10}}>
+                                    <Form.Group as={Row} controlId="formPlaintextPassword">
+                                        <Form.Label column sm="4">
+                                            {trls("Customer_reference")}  
+                                        </Form.Label>
+                                        <Col sm="8" className="product-text">
+                                            <Form.Control type="text" name="reference" required placeholder={trls('Customer_reference')} />
+                                        </Col>
+                                    </Form.Group>
+                                    <Form.Group as={Row} controlId="formPlaintextPassword">
+                                        <Form.Label column sm="4">
+                                            {trls("Business_partner")}  
+                                        </Form.Label>
+                                        <Col sm="8" className="product-text">
+                                            <Select
+                                                name="usinesspartner"
+                                                placeholder={trls('Business_partner')}
+                                                // options={this.state.supplier}
+                                                onChange={val => this.setState({val1:val})}
+                                                // defaultValue = {this.getSupplierData()}
+                                            />
+                                        </Col>
+                                    </Form.Group>
+                                    <Form.Group as={Row} controlId="formPlaintextPassword">
+                                        <Form.Label column sm="4">
+                                            {trls("Contact")}  
+                                        </Form.Label>
+                                        <Col sm="8" className="product-text">
+                                            <Select
+                                                name="usinesspartner"
+                                                placeholder={trls('Contact')}
+                                                // options={this.state.supplier}
+                                                onChange={val => this.setState({val1:val})}
+                                                // defaultValue = {this.getSupplierData()}
+                                            />
+                                        </Col>
+                                    </Form.Group>
+                            </Col>
+                            <Col sm={6} style={{paddingLeft: 0, paddingTop: 10}}>
                                 <Form.Group as={Row} controlId="formPlaintextPassword">
                                     <Form.Label column sm="4">
                                         {trls("Shipping_Address")}  
                                     </Form.Label>
                                     <Col sm="8" className="product-text">
                                         <Select
-                                            name="shippingaddress"
+                                            name="usinesspartner"
                                             placeholder={trls('Shipping_Address')}
-                                            options={this.state.shippingAddrssData}
-                                            onChange={val => this.setState({shipaddressData:val.value})}
+                                            // options={this.state.supplier}
+                                            onChange={val => this.setState({val1:val})}
                                             // defaultValue = {this.getSupplierData()}
                                         />
                                     </Col>
                                 </Form.Group>
-                            </Form>
-                        </Col>
-                        <Col sm={2}>
-                        </Col>
-                        <Col sm={4} style={{paddingLeft: 0}}>
-                            <div style={{textAlign: 'right'}}>
-                                <i className="far fa-edit" style={{cursor: 'pointer', fontSize: 30, fontWeight: 'bold', paddingBottom: 20}}></i>
-                            </div>
-                            <div className="place-and-orders__addresses">
-                                <div className="place-and-orders__addresses-item">
-                                    
-                                    <div className="txt-bold">Shipping Address</div>
-                                        <div>{this.state.shipaddressData}</div>
-                                    {/* <div className="place-and-orders__addresses-item-row">Ul. Rymarska 16/5</div>
-                                    <div className="place-and-orders__addresses-item-row">
-                                        Wroclaw doloslaskie
-                                    </div>
-                                    <div className="place-and-orders__addresses-item-row">
-                                        Poland
-                                    </div> */}
+                                <Form.Group as={Row} controlId="formPlaintextPassword">
+                                    <Form.Label column sm="4">
+                                        {trls("")}  
+                                    </Form.Label>
+                                    <Col sm="8" className="product-text">
+                                        <Form.Control type="text" name="reference" required placeholder={trls('City_Country')} />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} controlId="formPlaintextPassword">
+                                    <Form.Label column sm="4">
+                                        {trls("")}  
+                                    </Form.Label>
+                                    <Col sm="8" className="product-text">
+                                        <Form.Control type="text" name="reference" required placeholder={trls('Street')} />
+                                    </Col>
+                                </Form.Group>
+                            </Col> 
+                            
+                            {/* <Col sm={2}>
+                            </Col>
+                            <Col sm={4} style={{paddingLeft: 0}}>
+                                <div style={{textAlign: 'right'}}>
+                                    <i className="far fa-edit" style={{cursor: 'pointer', fontSize: 30, fontWeight: 'bold', paddingBottom: 20}}></i>
                                 </div>
-                            </div>
-                        </Col>
-                    </Row>
+                                <div className="place-and-orders__addresses">
+                                    <div className="place-and-orders__addresses-item">
+                                        
+                                        <div className="txt-bold">Shipping Address</div>
+                                            <div>{this.state.shipaddressData}</div> */}
+                                        {/* <div className="place-and-orders__addresses-item-row">Ul. Rymarska 16/5</div>
+                                        <div className="place-and-orders__addresses-item-row">
+                                            Wroclaw doloslaskie
+                                        </div>
+                                        <div className="place-and-orders__addresses-item-row">
+                                            Poland
+                                        </div> */}
+                                    {/* </div>
+                                </div>
+                            </Col> */}
+                        </Row>                   
+                    </Form>
                     {/* <div className="table-responsive"> */}
                         <table id="example" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
                         <thead>
                             <tr>
-                                <th>{trls("Product")}</th>
-                                <th>{trls("Description")}</th>
+                                <th>{trls("Product_code")}</th>
+                                <th>{trls("Product_description")}</th>
                                 <th>{trls("Unit")}</th>
                                 <th>{trls("Quantity")}</th>
-                                <th>{trls("Item_Price")}</th>
                                 <th>{trls("Price")}</th>
-                                <th>{trls("DeliveryDate")}</th>
+                                <th>{trls("Amount")}</th>
+                                <th>{trls("Image")}</th>
+                                <th>{trls("Customer_reference")}</th>
+                                <th>{trls("Expected_deliver_week")}</th>
                             </tr>
                         </thead>
                         {this.state.rows &&(<tbody>
@@ -221,6 +228,12 @@ class Placemanage extends Component {
                                     </td>
                                     <td>
                                         {Common.formatMoney(this.state.itemPrice*this.state.quantity)}
+                                    </td>   
+                                    <td>
+                                        
+                                    </td>
+                                    <td>
+                                        <Form.Control type="text" name="quantity" required placeholder={trls('Customer_reference')} onChange={(evt)=>this.setState({quantity: evt.target.value})} />
                                     </td>
                                     <td>
                                         {this.state.productDesription&&(

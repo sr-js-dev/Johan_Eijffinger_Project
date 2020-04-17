@@ -141,6 +141,19 @@ export const TRANSLATIONS = {
       Test: 'Test',
       LoginAsUser: 'LoginAsUser',
       Go_Back_Admin: 'GoBackAdmin',
+      Customer_reference: 'Customer Reference',
+      City_Country: 'City,Country',
+      Street: 'Street',
+      Product_description: 'Product description',
+      Image: "Image",
+      Expected_deliver_week: "Expected deliver week",
+      CardCode: 'CardCode',
+      Colletie: 'Colletie',
+      DocDueDate: 'DocDueDate',
+      LineStatus: 'LineStatus',
+      LineTotal: 'LineTotal',
+      OpenQty: 'OpenQty',
+      Picture: 'Picture'
     },
 
     nl_BE: {
@@ -285,7 +298,20 @@ export const TRANSLATIONS = {
       Test: 'Test1111',
       LoginAsUser: 'LoginAsUser',
       Go_Back_Admin: 'GoBackAdmin',
-    },
+      Customer_reference: 'Klantr referentie',
+      City_Country: 'Stad,Land',
+      Street: 'straat',
+      Product_description: 'Product beschrijving',
+      Image: 'beeld',
+      Expected_deliver_week : 'Verwacht lever week',
+      CardCode: 'Kaartcode',
+      Colletie: 'Colletie',
+      DocDueDate: 'DocDueDatum',
+      LineStatus: 'LijnToestand',
+      LineTotal: 'LijnTotaal',
+      OpenQty: 'OpenQty',
+      Picture: 'Afbeelding'
+    }, 
     
     de_DE: {
       Username: 'Nutzername',
@@ -390,7 +416,7 @@ export const TRANSLATIONS = {
       UserCode: 'BenutzerCode',
       CustomerCode: 'KundeCode',
       FirstName: 'ZuerstName',
-      LastName: 'ZuletztName'
+      LastName: 'ZuletztName',
     },
 
     fr_FR: {
