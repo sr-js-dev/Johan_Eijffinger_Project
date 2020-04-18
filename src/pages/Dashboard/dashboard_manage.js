@@ -29,9 +29,7 @@ class Dashboard extends Component {
     constructor(props) {
         super(props);
         this.state = {  
-            pastDueData: '',
-            dueSoon: '',
-            totalOutstanding: '',
+            dashBoardData: [],
             lastOrdersData: [],
             lastDeliveriesData: [],
             lastOutstandingData: []
@@ -43,45 +41,42 @@ class Dashboard extends Component {
     }
 
     componentDidMount() {
-        this.getPastDueData();
+        this.getDashBoardData();
         this.getLastOrdersData();
         this.getLastDeliveriesData();
         this.getLastOutstandingData();
     }
 
-    getPastDueData = () => {
+    getDashBoardData = () => {
         this._isMounted = true;
         var headers = SessionManager.shared().getAuthorizationHeader();
-        let params = {};
-        let pastDay = new Date();
-        let soonDay = new Date(pastDay.getTime() + 7 * 24 * 60 * 60 * 1000);
-        params = {
-            p_DocDueDate: Common.formatDate1(pastDay)
-        }
-        Axios.post(API.GetInvoiceByDate, params, headers)
+        Axios.get(API.GetDashboardData, headers)
         .then(result => {
             if(this._isMounted){
-                this.setState({pastDueData: result.data.value[0]})
+                if(result.data){
+                    this.setState({dashBoardData: result.data})
+                }
+                
             }
         })
-        params = {
-            p_DocDueDate: Common.formatDate1(soonDay)
-        }
-        Axios.post(API.GetInvoiceByDate, params, headers)
-        .then(result => {
-            if(this._isMounted){
-                this.setState({dueSoon: result.data.value[0]})
-            }
-        })
-        params = {
-            p_DocDueDate: ''
-        }
-        Axios.post(API.GetInvoiceByDate, params, headers)
-        .then(result => {
-            if(this._isMounted){
-                this.setState({totalOutstanding: result.data.value[0]})
-            }
-        })
+        // params = {
+        //     p_DocDueDate: Common.formatDate1(soonDay)
+        // }
+        // Axios.post(API.GetInvoiceByDate, params, headers)
+        // .then(result => {
+        //     if(this._isMounted){
+        //         this.setState({dueSoon: result.data.value[0]})
+        //     }
+        // })
+        // params = {
+        //     p_DocDueDate: ''
+        // }
+        // Axios.post(API.GetInvoiceByDate, params, headers)
+        // .then(result => {
+        //     if(this._isMounted){
+        //         this.setState({totalOutstanding: result.data.value[0]})
+        //     }
+        // })
     }
     
     getLastOrdersData = () => {
@@ -136,7 +131,7 @@ class Dashboard extends Component {
     }
 
     render(){   
-        const { pastDueData, dueSoon, totalOutstanding, lastOrdersData, lastDeliveriesData, lastOutstandingData } = this.state;
+        const { dashBoardData, lastOrdersData, lastDeliveriesData, lastOutstandingData } = this.state;
         return (
             <Container>
                 <div className="dashboard-header content__header content__header--with-line">
@@ -174,7 +169,7 @@ class Dashboard extends Component {
                                 <span>{trls('Past_Due')}</span>
                             </div>
                             <div className="dashboard__top-small-value">
-                                {Common.formatMoney(pastDueData)}
+                                {Common.formatMoney(dashBoardData.pastDue)}
                             </div>
                         </div>
                     </Col>
@@ -185,7 +180,7 @@ class Dashboard extends Component {
                                 <span>{trls('Due_Soon')}</span>
                             </div>
                             <div className="dashboard__top-small-value">
-                                {Common.formatMoney(dueSoon)}
+                                {Common.formatMoney(dashBoardData.dueSoon)}
                             </div>
                         </div>
                     </Col>
@@ -196,7 +191,7 @@ class Dashboard extends Component {
                                 <span>{trls('Total_Outstanding')}</span>
                             </div>
                             <div className="dashboard__top-small-value">
-                                {Common.formatMoney(totalOutstanding)}
+                                {Common.formatMoney(dashBoardData.total)}
                             </div>
                         </div>
                     </Col>

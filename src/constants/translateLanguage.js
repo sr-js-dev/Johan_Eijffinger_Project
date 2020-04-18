@@ -147,13 +147,7 @@ export const TRANSLATIONS = {
       Product_description: 'Product description',
       Image: "Image",
       Expected_deliver_week: "Expected deliver week",
-      CardCode: 'CardCode',
-      Colletie: 'Colletie',
-      DocDueDate: 'DocDueDate',
-      LineStatus: 'LineStatus',
-      LineTotal: 'LineTotal',
-      OpenQty: 'OpenQty',
-      Picture: 'Picture'
+      Order: 'Order#'
     },
 
     nl_BE: {
@@ -304,13 +298,7 @@ export const TRANSLATIONS = {
       Product_description: 'Product beschrijving',
       Image: 'beeld',
       Expected_deliver_week : 'Verwacht lever week',
-      CardCode: 'Kaartcode',
-      Colletie: 'Colletie',
-      DocDueDate: 'DocDueDatum',
-      LineStatus: 'LijnToestand',
-      LineTotal: 'LijnTotaal',
-      OpenQty: 'OpenQty',
-      Picture: 'Afbeelding'
+      Order: 'Bestellen#'
     }, 
     
     de_DE: {

@@ -821,4 +821,23 @@ table.dataTable.no-footer {
 .dashboard-order__icon{
 	fill: #fff;
 }
-
+.order-open__state{
+  background: #99F5A8;
+  border-radius: 4px;
+  width: 52px;
+  padding: 5px 10px;
+  color: #138D27;
+}
+.order-Send__state{
+  background: #EBEBEB;
+  border-radius: 4px;
+  width: 52px;
+  padding: 5px 10px;
+  color: #393939;
+}
+.css-kj6f9i-menu{
+  z-index: 10;
+}
+.table-responsive{
+  overflow-y: hidden;
+}

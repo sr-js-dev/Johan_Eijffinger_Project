@@ -277,12 +277,10 @@ class Userregister extends Component {
             window.localStorage.setItem('eijf_userName', response.claims.UserName);
             window.localStorage.setItem('eijf_role', response.claims.Role);
             this.setState({userInfo : Auth.getUserInfo()});
-            // history.push('/dashboard')
         });
     }
 
     render () {
-        // const {filterColunm, userData, userInfo} = this.state;
         const {filterColunm, userData } = this.state;
         
         return (

@@ -38,19 +38,14 @@ class Ordermanage extends Component {
             ordersData: [],
             originFilterData: [],
             filterColunm: [
-                {"label": trls('CardCode'), "value": "CardCode", "type": 'text', "show": true},
-                {"label": trls('Colletie'), "value": "Colletie", "type": 'text', "show": true},
-                {"label": trls('DocDate'), "value": "docDate", "type": 'date', "show": true},
-                {"label": trls('DocDueDate'), "value": "DocDueDate", "type": 'date', "show": true},
-                {"label": trls('DocNum'), "value": "docNum", "type": 'text', "show": true},
-                {"label": trls('ItemCode'), "value": "ItemCode", "type": 'text', "show": true},
-                {"label": trls('LineStatus'), "value": "LineStatus: ", "type": 'text', "show": true},
-                {"label": trls('LineTotal'), "value": "LineTotal", "type": 'text', "show": true},
-                {"label": trls('OpenQty'), "value": "OpenQty", "type": 'text', "show": true},
-                {"label": trls('Price'), "value": "Price", "type": 'text', "show": true},
+                {"label": trls('Order'), "value": "DocNum", "type": 'text', "show": true},
+                {"label": trls('Order_Date'), "value": "DocDate", "type": 'date', "show": true},
+                {"label": trls('Status'), "value": "Status", "type": 'text', "show": true},
+                {"label": trls('Product'), "value": "Product", "type": 'text', "show": true},
+                {"label": trls('Collection'), "value": "Collectie", "type": 'text', "show": true},
                 {"label": trls('Quantity'), "value": "Quantity", "type": 'text', "show": true},
-                {"label": trls('dbsCollection'), "value": "dbsCollection", "type": 'text', "show": true},
-                {"label": trls('Picture'), "value": "picture", "type": 'text', "show": true},
+                {"label": trls('Batch'), "value": "BatchNumbers", "type": 'text', "show": true},
+                {"label": trls('Download'), "value": "Download", "type": 'text', "show": true},
             ],
             pageLodingFlag: false
         };
@@ -151,7 +146,7 @@ class Ordermanage extends Component {
         this._isMounted = true;
         let params = {
             objectId: "Orders",
-            keyValue: data.DocEntry
+            keyValue: data.DocNum
         }
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.post(API.GetDownloadFile, params, headers)
@@ -222,19 +217,14 @@ class Ordermanage extends Component {
                             {
                                 ordersData.map((data,i) =>(
                                     <tr id={i} key={i}>
-                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}>{data.CardCode}</td>
-                                        <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{data.Collectie}</td>
-                                        <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
-                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDueDate)}</td>
-                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.DocNum}</td>
-                                        <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.ItemCode}</td>
-                                        <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.LineStatus}</td>
-                                        <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>{data.LineTotal}</td>
-                                        <td className={!this.showColumn(filterColunm[8].label) ? "filter-show__hide" : ''}>{data.OpenQty}</td>
-                                        <td className={!this.showColumn(filterColunm[9].label) ? "filter-show__hide" : ''}>{data.Price}</td>
-                                        <td className={!this.showColumn(filterColunm[10].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
-                                        <td className={!this.showColumn(filterColunm[11].label) ? "filter-show__hide" : ''}>{data.dbsCollection}</td>
-                                        <td className={!this.showColumn(filterColunm[12].label) ? "filter-show__hide" : ''}>
+                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}>{data.DocNum}</td>
+                                        <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
+                                        <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenQty > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenQty > 0 ? "Open" : 'Send'}</div></td>
+                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}>{data.ItemCode} <img src={"data:image/png;base64,"+data.picture} alt={data.picture} style={{width: 20, height: 20}}></img></td>
+                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.Collectie}</td>
+                                        <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
+                                        <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
+                                        <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>
                                             <Row style={{justifyContent: "space-around"}}>
 												<i className="fas fa-file-download add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title">{trls('Download')}</span></i>
 											</Row>

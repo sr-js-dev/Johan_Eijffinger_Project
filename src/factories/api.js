@@ -19,6 +19,10 @@ export default {
     GetLastOutstandingData: `${BASEURL}/api/SapFactory/execute/get/Latest5OutstandingInvoices`,
     GetDownloadFile: `${BASEURL}/api/SapProxy/pdf`,
     PostLoginAsUser: `${BASEURL}/api/Token/LoginAs/`,
+    GetCustomerData: `${BASEURL}/api/SapFactory/execute/get/GetCustomer`,
+    GetItemData: `${BASEURL}/api/Items/`,
+    GetDiscountPrice: `${BASEURL}/api/SapProxy/discountprice`,
+    GetDashboardData: `${BASEURL}/api/Dashboard`,
   };
   
   
