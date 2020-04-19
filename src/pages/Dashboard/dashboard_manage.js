@@ -14,6 +14,7 @@ import * as authAction  from '../../actions/authAction';
 // import Slider from 'react-bootstrap-slider';
 // import "bootstrap-slider/dist/css/bootstrap-slider.css"
 // import Map from './map.js'
+import Pageloadspiiner from '../../components/page_load_spinner';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -32,7 +33,12 @@ class Dashboard extends Component {
             dashBoardData: [],
             lastOrdersData: [],
             lastDeliveriesData: [],
-            lastOutstandingData: []
+            lastOutstandingData: [],
+            pageLodingFlag: true,
+            dashBoardFlag: false,
+            lastOrdersFlag: false,
+            lastDeleiversFlag: false,
+            lastOutstanding: false
         };
     }
 
@@ -54,29 +60,10 @@ class Dashboard extends Component {
         .then(result => {
             if(this._isMounted){
                 if(result.data){
-                    this.setState({dashBoardData: result.data})
+                    this.setState({dashBoardData: result.data, dashBoardFlag: true});
                 }
-                
             }
         })
-        // params = {
-        //     p_DocDueDate: Common.formatDate1(soonDay)
-        // }
-        // Axios.post(API.GetInvoiceByDate, params, headers)
-        // .then(result => {
-        //     if(this._isMounted){
-        //         this.setState({dueSoon: result.data.value[0]})
-        //     }
-        // })
-        // params = {
-        //     p_DocDueDate: ''
-        // }
-        // Axios.post(API.GetInvoiceByDate, params, headers)
-        // .then(result => {
-        //     if(this._isMounted){
-        //         this.setState({totalOutstanding: result.data.value[0]})
-        //     }
-        // })
     }
     
     getLastOrdersData = () => {
@@ -86,8 +73,8 @@ class Dashboard extends Component {
         Axios.post(API.GetLastOrdersData, params, headers)
         .then(result => {
             if(this._isMounted){
-                if(result.data.value.length){
-                    this.setState({lastOrdersData: result.data.value})
+                if(result.data.value){
+                    this.setState({lastOrdersData: result.data.value, lastOrdersFlag: true})
                 }
                
             }
@@ -101,8 +88,8 @@ class Dashboard extends Component {
         Axios.post(API.GetLastDelivriesData, params, headers)
         .then(result => {
             if(this._isMounted){
-                if(result.data.value.length){
-                    this.setState({lastDeliveriesData: result.data.value})
+                if(result.data.value){
+                    this.setState({lastDeliveriesData: result.data.value, lastDeleiversFlag: true})
                 }
             }
         })
@@ -115,8 +102,8 @@ class Dashboard extends Component {
         Axios.post(API.GetLastOutstandingData, params, headers)
         .then(result => {
             if(this._isMounted){
-                if(result.data.value.length){
-                    this.setState({lastOutstandingData: result.data.value})
+                if(result.data.value){
+                    this.setState({lastOutstandingData: result.data.value, lastOutstanding: true})
                 }
             }
         })
@@ -131,7 +118,20 @@ class Dashboard extends Component {
     }
 
     render(){   
-        const { dashBoardData, lastOrdersData, lastDeliveriesData, lastOutstandingData } = this.state;
+        const { 
+            dashBoardData,
+            lastOrdersData, 
+            lastDeliveriesData, 
+            lastOutstandingData, 
+            pageLodingFlag, 
+            dashBoardFlag,
+            lastOrdersFlag,
+            lastDeleiversFlag,
+            lastOutstanding } = this.state;
+        let lodingFlag = pageLodingFlag;
+        if(dashBoardFlag && lastOrdersFlag && lastDeleiversFlag && lastOutstanding){
+            lodingFlag = false;
+        }
         return (
             <Container>
                 <div className="dashboard-header content__header content__header--with-line">
@@ -288,6 +288,7 @@ class Dashboard extends Component {
                         </div>
                     </Col>
                 </Row>
+                <Pageloadspiiner loading = {lodingFlag}/>
             </Container>
         );
     }

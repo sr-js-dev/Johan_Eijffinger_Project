@@ -46,6 +46,7 @@ class Ordermanage extends Component {
                 {"label": trls('Quantity'), "value": "Quantity", "type": 'text', "show": true},
                 {"label": trls('Batch'), "value": "BatchNumbers", "type": 'text', "show": true},
                 {"label": trls('Download'), "value": "Download", "type": 'text', "show": true},
+                {"label": trls('Action'), "value": "Action", "type": 'text', "show": true},
             ],
             pageLodingFlag: false
         };
@@ -63,7 +64,7 @@ class Ordermanage extends Component {
         this._isMounted = true;
         this.setState({loading:true})
         var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.get(API.GetOrdersData, headers)
+        Axios.get(API.GetOrdersData+"?top=30", headers)
         .then(result => {
             if(this._isMounted){
                 if(result.data.value.length){
@@ -176,7 +177,7 @@ class Ordermanage extends Component {
                 <div className="orders">
                     <Row>
                         <Col sm={6}>
-                            <Button variant="primary" onClick={()=>this.addUser()}><i className="fas fa-plus add-icon"></i>{trls('Add_order')}</Button> 
+                            <Button variant="primary"><i className="fas fa-plus add-icon"></i>{trls('Add_order')}</Button> 
                         </Col>
                         <Col sm={6} className="has-search">
                             <div style={{display: 'flex', float: 'right'}}>
@@ -217,16 +218,21 @@ class Ordermanage extends Component {
                             {
                                 ordersData.map((data,i) =>(
                                     <tr id={i} key={i}>
-                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}>{data.DocNum}</td>
+                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><Form.Control type="text" name="Order" defaultValue={data.DocNum} placeholder={trls('Order')}/></td>
                                         <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
                                         <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenQty > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenQty > 0 ? "Open" : 'Send'}</div></td>
-                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}>{data.ItemCode} <img src={"data:image/png;base64,"+data.picture} alt={data.picture} style={{width: 20, height: 20}}></img></td>
+                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemCode}</td>
                                         <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.Collectie}</td>
                                         <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
                                         <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
-                                        <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>
+                                        <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>
                                             <Row style={{justifyContent: "space-around"}}>
 												<i className="fas fa-file-download add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title">{trls('Download')}</span></i>
+											</Row>
+                                        </td>
+                                        <td className={!this.showColumn(filterColunm[8].label) ? "filter-show__hide" : ''}>
+                                            <Row style={{justifyContent: "space-around"}}>
+												<i className="fas fa-trash-alt add-icon"><span className="action-title">{trls('Delete')}</span></i>
 											</Row>
                                         </td>
                                     </tr>

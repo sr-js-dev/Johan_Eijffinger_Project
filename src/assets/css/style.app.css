@@ -841,3 +841,16 @@ table.dataTable.no-footer {
 .table-responsive{
   overflow-y: hidden;
 }
+.image__zoom{
+  width: 30px;
+  height: 30px; 
+  border-radius: 5px; 
+  margin-right: 7px;
+}
+
+.image__zoom:hover {
+  -ms-transform: scale(1.5); /* IE 9 */
+  -webkit-transform: scale(1.5); /* Safari 3-8 */
+  transform: scale(2); 
+  margin-right: 15px;
+}

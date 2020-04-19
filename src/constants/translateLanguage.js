@@ -146,7 +146,7 @@ export const TRANSLATIONS = {
       Street: 'Street',
       Product_description: 'Product description',
       Image: "Image",
-      Expected_deliver_week: "Expected deliver week",
+      Expected_deliver_week: "Expected delivery week",
       Order: 'Order #'
     },
 
@@ -297,7 +297,7 @@ export const TRANSLATIONS = {
       Street: 'straat',
       Product_description: 'Product beschrijving',
       Image: 'beeld',
-      Expected_deliver_week : 'Verwacht lever week',
+      Expected_deliver_week : 'Verwacht levering week',
       Order: 'Bestellen#'
     }, 
     

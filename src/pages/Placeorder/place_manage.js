@@ -21,6 +21,7 @@ import 'datatables.net';
 import Productsearchform from './product_searchform';
 import Resumeform from './resume_form';
 // import history from '../../history';
+import Pageloadspiiner from '../../components/page_load_spinner';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -42,12 +43,13 @@ class Placemanage extends Component {
             itemCode: '',
             itemQuantity: 0,
             itemPriceData: [],
-            orderType: [{"value": 'Default', "label": 'Default'}, {"value": 'Sample', "label": 'Sample'}],
-            productSearch: [{'value': '7745-2', 'label': '7745-2'}, {'value': '7745-2', 'label': '7745-2'}],
+            pageLodingFlag: false,
             productDesription: '',
             itemPrice: '',
             quantity: '',
             unit: '',
+            productSearch: [{'value': '7745-2', 'label': '7745-2'}, {'value': '7745-2', 'label': '7745-2'}],
+            userInfo: Auth.getUserInfo(), 
         };
     }
 
@@ -67,10 +69,10 @@ class Placemanage extends Component {
         .then(result => {
             if(this._isMounted){
                 if(result.data.value.length){
-                    let businessPartner = result.data.value.map( s => ({value:s.CardCode,label:s.CardName}));
+                    // let businessPartner = result.data.value.map( s => ({value:s.CardCode,label:s.CardName}));
                     let shippingAddress = this.getShippingAddressOptionData(result.data.value);
                     let shippingData = shippingAddress.map( s => ({value:s.BPCode,label:s.AddressName+" "+s.Street+" "+s.City+" "+s.Country}));
-                    this.setState({businessPartnerOption: businessPartner, shippingAddressOption: shippingData});
+                    this.setState({businessPartnerOption: result.data.value, shippingAddressOption: shippingData});
                 }
             }
         });
@@ -86,27 +88,6 @@ class Placemanage extends Component {
             return data;
         });
         return returnOptionData;
-    }
-
-    getItemPriceData = (value) => {
-        this._isMounted = true;
-        const { itemCode } = this.state;
-        this.setState({itemQuantity: value})
-        let params = {
-            "itemCode": itemCode,
-            "quantity": value,
-            "date": Common.formatDate1(new Date()),
-            "orderType": "B2B"
-        };
-        var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.post(API.GetDiscountPrice, params, headers)
-        .then(result => {
-            if(this._isMounted){
-                if(result.data){
-                    this.setState({itemPriceData: result.data})                    
-                }
-            }
-        });
     }
     
     handleAddRow = () => {
@@ -132,9 +113,10 @@ class Placemanage extends Component {
         this.setState({productDesription: evt.target.value, itemPrice: 120, unit: 'unit'})
     }
 
-    getItemData = (itemCode) => {
+    getItemData = (itemCode, rowId) => {
         this._isMounted = true;
-        this.setState({itemCode: itemCode});
+        let itemData = this.state.itemData;
+        this.setState({itemCode: itemCode, pageLodingFlag: true});
         var settings = {
             "url": API.GetItemData+itemCode,
             "method": "GET",
@@ -146,13 +128,37 @@ class Placemanage extends Component {
         $.ajax(settings).done(function (response) {
         })
         .then(response => {
-            this.setState({itemData: response});
+           itemData[rowId] = response
+            this.setState({itemData: itemData, pageLodingFlag: false});
+        });
+    }
+
+    getItemPriceData = (value, rowId) => {
+        this._isMounted = true;
+        const { itemCode } = this.state;
+        let itemPriceData = this.state.itemPriceData;
+        itemPriceData[rowId] = '';
+        this.setState({itemQuantity: value, itemPriceData: itemPriceData, pageLodingFlag: true});
+        let params = {
+            "itemCode": itemCode,
+            "quantity": value ? value : 0,
+            "date": Common.formatDate1(new Date()),
+            "orderType": "B2B"
+        };
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetDiscountPrice, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                if(result.data){
+                    itemPriceData[rowId] = result.data;
+                    this.setState({itemPriceData: itemPriceData, pageLodingFlag: false})                    
+                }
+            }
         });
     }
 
     render(){   
-        const { businessPartnerOption, shippingAddressOption, itemData, itemPriceData, itemQuantity } = this.state;
-        console.log('123', itemPriceData)
+        const { businessPartnerOption, shippingAddressOption, itemData, itemPriceData, itemQuantity, pageLodingFlag, userInfo } = this.state;
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -175,7 +181,7 @@ class Placemanage extends Component {
                                         <Form.Label column sm="4">
                                             {trls("Business_partner")}  
                                         </Form.Label>
-                                        <Col sm="8" className="product-text">
+                                        {/* <Col sm="8" className="product-text">
                                             <Select
                                                 name="usinesspartner"
                                                 placeholder={trls('Business_partner')}
@@ -183,6 +189,9 @@ class Placemanage extends Component {
                                                 onChange={val => this.setState({val1:val})}
                                                 // defaultValue = {this.getSupplierData()}
                                             />
+                                        </Col> */}
+                                        <Col sm="8" className="product-text">
+                                            <Form.Control type="text" name="reference" required defaultValue = {businessPartnerOption[0] ? businessPartnerOption[0].CardName : ''} readOnly placeholder={trls('Customer_reference')} />
                                         </Col>
                                     </Form.Group>
                                     <Form.Group as={Row} controlId="formPlaintextPassword">
@@ -190,13 +199,7 @@ class Placemanage extends Component {
                                             {trls("Contact")}  
                                         </Form.Label>
                                         <Col sm="8" className="product-text">
-                                            <Select
-                                                name="usinesspartner"
-                                                placeholder={trls('Contact')}
-                                                // options={this.state.supplier}
-                                                onChange={val => this.setState({val1:val})}
-                                                // defaultValue = {this.getSupplierData()}
-                                            />
+                                            <Form.Control type="text" name="contact" defaultValue = {userInfo.userName} required placeholder={trls('Contact')} />
                                         </Col>
                                     </Form.Group>
                             </Col>
@@ -235,8 +238,8 @@ class Placemanage extends Component {
                         </thead>
                         {this.state.rows &&(<tbody>
                             {
-                                this.state.rows.map((data,i) =>(
-                                <tr id={data.id} key={i}>
+                                this.state.rows.map((data,index) =>(
+                                <tr id={index} key={index}>
                                     <td>
                                         {/* <Form.Control type="text" name="product" required placeholder={trls('Search')} /> */}
                                         <Select
@@ -245,26 +248,26 @@ class Placemanage extends Component {
                                             placeholder={<i className='fas fa-search'>Search</i>}
                                             options={this.state.productSearch}
                                             // className="select-search-class"
-                                            onChange={val => this.getItemData(val.value)}
+                                            onChange={val => this.getItemData(val.value, index)}
                                         />
                                     </td>
                                     <td>
-                                        <Form.Control type="text" name="description" readOnly required  defaultValue = {itemData.ItemName} placeholder={trls('Description')} />
+                                        <Form.Control type="text" name="description" readOnly required  defaultValue = {itemData[index] ? itemData[index].ItemName : ''} placeholder={trls('Description')} />
                                     </td>
                                     <td>
-                                        {itemData.SalesUnit}
+                                        {itemData[index] ? itemData[index].SalesUnit : ''}
                                     </td>
                                     <td>
-                                        <Form.Control type="text" name="quantity" required placeholder={trls('Quantity')} onChange={(evt)=>this.getItemPriceData(evt.target.value)} />
+                                        <Form.Control type="text" name="quantity" required placeholder={trls('Quantity')} onChange={(evt)=>this.getItemPriceData(evt.target.value, index)} />
                                     </td>
                                     <td>
-                                        {Common.formatMoney(itemPriceData.NewUnitPrice)}
+                                        {Common.formatMoney(itemPriceData[index] ? itemPriceData[index].NewUnitPrice : '')}
                                     </td>
                                     <td>
-                                        {Common.formatMoney(itemPriceData.NewUnitPrice*itemQuantity)}
+                                        {Common.formatMoney(itemPriceData[index] ? itemPriceData[index].NewUnitPrice*itemQuantity : '')}
                                     </td>   
                                     <td>
-                                        <img src={"data:image/png;base64,"+itemData.Image} alt={itemData.Image} style={{width: 20, height: 20}}></img>
+                                        <img src={ itemData[index] ? "data:image/png;base64," + itemData[index].Image : ''} alt={ itemData[index] ? index : ''} className = "image__zoom"></img>
                                     </td>
                                     <td>
                                         <Form.Control type="text" name="customerReference" required placeholder={trls('Customer_reference')} onChange={(evt)=>this.setState({quantity: evt.target.value})} />
@@ -307,6 +310,7 @@ class Placemanage extends Component {
                 show={this.state.modalResumeShow}
                 onHide={() => this.setState({modalResumeShow: false})}
             /> */}
+            <Pageloadspiiner loading = {pageLodingFlag}/>
         </div>
         );
     }
