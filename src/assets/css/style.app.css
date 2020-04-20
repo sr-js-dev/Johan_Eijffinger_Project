@@ -807,6 +807,22 @@ table.dataTable.no-footer {
 .filter-header__option .css-1szy77t-control{
   min-height: 27px !important;
 }
+.order-page__option {
+  padding: 10;
+  margin-right: 20px;
+  width: 20%;
+  height: 30px !important;
+}
+.order-page__option .css-1wy0on6{
+  min-height: 27px;
+  height: 10px;
+}
+.order-page__option .css-bg1rzq-control{
+  min-height: 27px !important;
+}
+.order-page__option .css-1szy77t-control{
+  min-height: 27px !important;
+}
 .filter-date__picker{
   width: 99%;
   height: 30px;
@@ -853,4 +869,14 @@ table.dataTable.no-footer {
   -webkit-transform: scale(1.5); /* Safari 3-8 */
   transform: scale(2); 
   margin-right: 15px;
+}
+.bill-shipping__address{
+  display: flex;
+  justify-content: space-around;
+  border: #68B0FA solid 1px;
+  border-radius: 4px;
+}
+.bill-shipping__address .address-header{
+  font-weight: 700;
+  margin-top: 20px;
 }

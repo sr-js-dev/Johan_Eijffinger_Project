@@ -7,6 +7,7 @@ import * as Auth from '../factories/auth';
 import $ from 'jquery';
 import { Button } from 'react-bootstrap';
 import { trls } from '../factories/translate';
+import Select from 'react-select';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -66,6 +67,12 @@ class Header extends Component {
         this.setState({userInfo : Auth.getUserInfo()});
         this.props.setUserType("admin");
     }
+
+    changeLangauge = (val) => {
+        this.setState({selectrolvalue:val.value, selectrollabel: val.label});
+        this.props.changeLan(val)
+    }
+
     render () {
         
         console.log("usertype-----",this.props.userType)
@@ -81,26 +88,24 @@ class Header extends Component {
                     <img title="" className="Logo--mobile" alt="Eijffinger Nederland" src="https://www.eijffinger.com/Themes/Eijffinger/Content/images/logo--mobile.svg"/>
                 </a>
                 <div className="header__controls">
-                        {/* <Select
-                                name="lan"
-                                options={this.state.roles}
-                                className="select-lang-class"
-                                value={{"label":this.state.selectrollabel,"value":this.state.selectrolvalue}}
-                                onChange={val => this.changeLangauge(val)}
-                            /> */}
-                            {this.state.userType === "user" ? <Button variant="primary" onClick={()=>this.goBackAdmin()}>{trls('Go_Back_Admin')}</Button>
-                            : '' }
-                            
-                            <Dropdown>
-                                <Dropdown.Toggle variant="success" id="dropdown-basic" style={{color:"#000000"}}>
-                                    Johan Boerema<img src={require("../assets/images/avatar.jpg")} alt="User avatar" className="header__user-dropdown-img"/> 
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu style={{marginLeft:15}}>
-                                    <Dropdown.Item onClick={this.logOut}>Logout</Dropdown.Item>
-                                    <Dropdown.Item onClick={()=>this.resetPassword()}>Reset Password</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-
+                    {this.state.userType === "user" ? <Button variant="primary" onClick={()=>this.goBackAdmin()}>{trls('Go_Back_Admin')}</Button>
+                    : '' }
+                    <Dropdown>
+                        <Dropdown.Toggle variant="success" id="dropdown-basic" style={{color:"#000000"}}>
+                            Johan Boerema<img src={require("../assets/images/avatar.jpg")} alt="User avatar" className="header__user-dropdown-img"/> 
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu style={{marginLeft:15}}>
+                            <Dropdown.Item onClick={this.logOut}>Logout</Dropdown.Item>
+                            <Dropdown.Item onClick={()=>this.resetPassword()}>Reset Password</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Select
+                        name="lan"
+                        options={this.state.roles}
+                        className="select-lang-class"
+                        value={{"label":this.state.selectrollabel,"value":this.state.selectrolvalue}}
+                        onChange={val => this.changeLangauge(val)}
+                    />
                 </div>
                 <div className="header__user">
                     <span className="header__user-name">

@@ -43,13 +43,19 @@ class Placemanage extends Component {
             itemCode: '',
             itemQuantity: 0,
             itemPriceData: [],
+            itemQuantityData: [],
+            itemProductCodeData: [],
             pageLodingFlag: false,
             productDesription: '',
             itemPrice: '',
             quantity: '',
             unit: '',
+            billAddress: [],
+            shippingAddress: [],
+            setSippingAddress: [],
             productSearch: [{'value': '7745-2', 'label': '7745-2'}, {'value': '7745-2', 'label': '7745-2'}],
             userInfo: Auth.getUserInfo(), 
+            rowId: 0
         };
     }
 
@@ -70,9 +76,9 @@ class Placemanage extends Component {
             if(this._isMounted){
                 if(result.data.value.length){
                     // let businessPartner = result.data.value.map( s => ({value:s.CardCode,label:s.CardName}));
-                    let shippingAddress = this.getShippingAddressOptionData(result.data.value);
-                    let shippingData = shippingAddress.map( s => ({value:s.BPCode,label:s.AddressName+" "+s.Street+" "+s.City+" "+s.Country}));
-                    this.setState({businessPartnerOption: result.data.value, shippingAddressOption: shippingData});
+                    let addressData = this.getShippingAddressOptionData(result.data.value);
+                    let shippingData = addressData[1].map( s => ({value:s.BPCode,label:s.AddressName+" "+s.Street+" "+s.City+" "+s.Country}));
+                    this.setState({businessPartnerOption: result.data.value, shippingAddressOption: shippingData, billAddress: addressData[0][0], shippingAddress: addressData[1]});
                 }
             }
         });
@@ -80,34 +86,37 @@ class Placemanage extends Component {
 
     getShippingAddressOptionData = (optionData) => {
         let returnOptionData = [];
+        let billAddress = [];
+        let shippingAddress = [];
+        // let shippingAddress = data.BPAddresses.filter(item => item.AddressName==="Ship To");
         optionData.map((data, index)=>{
             data.BPAddresses.map((bpAddress, key)=>{
-                returnOptionData.push(bpAddress);
+                if(bpAddress.AddressName==="Bill to"){
+                    billAddress.push(bpAddress);
+                }else if(bpAddress.AddressName==="Ship To"){
+                    shippingAddress.push(bpAddress)
+                }
                 return bpAddress;
             })
             return data;
         });
+        returnOptionData[0] = billAddress;
+        returnOptionData[1] = shippingAddress;
         return returnOptionData;
     }
     
     handleAddRow = () => {
+        let rowId = this.state.rowId;
         const item = {
-          productcode:''
+          rowId: rowId
         };
-        // if(!this.state.addnum){
-          this.setState({
-              rows: [...this.state.rows, item]
-          });
-          this.setState({addnum:true})
-        // }
-        
+        rowId += 1;
+        this.setState({
+            rows: [...this.state.rows, item],
+            rowId: rowId
+        });
+        this.setState({addnum:true});
       };
-    // showOrderDetail = (orderId) => {
-    //     history.push({
-    //         pathname: '/order-detail/orderId',
-    //         state: { id: orderId, newSubmit:true }
-    //       })
-    // }
 
     changeProductList = (evt) => {
         this.setState({productDesription: evt.target.value, itemPrice: 120, unit: 'unit'})
@@ -133,14 +142,15 @@ class Placemanage extends Component {
         });
     }
 
-    getItemPriceData = (value, rowId) => {
+    getItemPriceData = (value, rowId, productCode) => {
         this._isMounted = true;
-        const { itemCode } = this.state;
         let itemPriceData = this.state.itemPriceData;
+        let itemQuantityData = this.state.itemQuantityData;
+        itemQuantityData[rowId] = value;
         itemPriceData[rowId] = '';
-        this.setState({itemQuantity: value, itemPriceData: itemPriceData, pageLodingFlag: true});
+        this.setState({itemPriceData: itemPriceData, pageLodingFlag: true, itemQuantityData: itemQuantityData});
         let params = {
-            "itemCode": itemCode,
+            "itemCode": productCode,
             "quantity": value ? value : 0,
             "date": Common.formatDate1(new Date()),
             "orderType": "B2B"
@@ -151,14 +161,62 @@ class Placemanage extends Component {
             if(this._isMounted){
                 if(result.data){
                     itemPriceData[rowId] = result.data;
+                    itemPriceData[rowId].itemQuantity = parseFloat(value);
                     this.setState({itemPriceData: itemPriceData, pageLodingFlag: false})                    
                 }
             }
         });
     }
 
+    changeProductCode = (itemCode, rowId) => {
+        let itemProductCodeData = this.state.itemProductCodeData;
+        itemProductCodeData[rowId] = itemCode;
+        this.setState({itemProductCodeData: itemProductCodeData})
+    }
+
+    changeQuantityData = (quantity, rowId) => {
+        let itemQuantityData = this.state.itemQuantityData;
+        itemQuantityData[rowId] = quantity;
+        this.setState({itemQuantityData: itemQuantityData})
+    }
+
+    changeShippigAddress = (data) =>{
+        const { shippingAddress } = this.state;
+        
+        let setSippingAddress = shippingAddress.filter(item => item.BPCode===data.value);
+        if(setSippingAddress){
+            this.setState({setSippingAddress: setSippingAddress[0]})
+        }
+        
+    }
+
+    removeOrderRow = (rowId) => {
+        const { rows } = this.state;
+        let rowsArr = rows.filter((item, key) => item.rowId !== rowId);
+        this.setState({
+            rows: rowsArr,
+        });
+    }
+
     render(){   
-        const { businessPartnerOption, shippingAddressOption, itemData, itemPriceData, itemQuantity, pageLodingFlag, userInfo } = this.state;
+        let totalAmount = 0;
+        const { businessPartnerOption, 
+            shippingAddressOption, 
+            itemData, itemPriceData, 
+            pageLodingFlag, 
+            userInfo, 
+            billAddress, 
+            setSippingAddress,
+            itemQuantityData,
+            itemProductCodeData,
+            rows,
+         } = this.state;
+        if(itemPriceData){
+            rows.map((data, key)=>{
+                totalAmount +=  itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice*itemPriceData[data.rowId].itemQuantity : 0;
+                return data
+            })
+        }
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -168,7 +226,7 @@ class Placemanage extends Component {
                 <Container>
                     <Form className="container product-form" onSubmit = { this.handleSubmit }>
                         <Row className="order__info-bill">
-                            <Col sm={6} style={{paddingLeft: 0, paddingTop: 10}}>
+                            <Col sm={4} style={{paddingLeft: 0, paddingTop: 10}}>
                                     <Form.Group as={Row} controlId="formPlaintextPassword">
                                         <Form.Label column sm="4">
                                             {trls("Customer_reference")}  
@@ -203,7 +261,7 @@ class Placemanage extends Component {
                                         </Col>
                                     </Form.Group>
                             </Col>
-                            <Col sm={6} style={{paddingLeft: 0, paddingTop: 10}}>
+                            <Col sm={4} style={{paddingLeft: 0, paddingTop: 10}}>
                                 <Form.Group as={Row} controlId="formPlaintextPassword">
                                     <Form.Label column sm="4">
                                         {trls("Shipping_Address")}  
@@ -213,12 +271,26 @@ class Placemanage extends Component {
                                             name="usinesspartner"
                                             placeholder={trls('Shipping_Address')}
                                             options={shippingAddressOption}
-                                            onChange={val => this.setState({val1:val})}
+                                            onChange={val => this.changeShippigAddress(val)}
                                             // defaultValue = {this.getSupplierData()}
                                         />
                                     </Col>
                                 </Form.Group>
                             </Col> 
+                            <Col sm={4} className="bill-shipping__address" style={{paddingLeft: 0, paddingTop: 10}}>
+                                <div>
+                                    <p className="address-header">{trls('Billing_Address')}</p>
+                                    <p>{billAddress.City ? billAddress.City : ''}</p>
+                                    <p>{billAddress.City ? billAddress.Street + " " + billAddress.ZipCode : ''}</p>
+                                    <p>{billAddress.Country ? billAddress.Country : ''}</p>
+                                </div>
+                                <div>
+                                    <p className="address-header">{trls('Shipping_Address')}</p>
+                                    <p>{setSippingAddress.City ? setSippingAddress.City : ''}</p>
+                                    <p>{setSippingAddress.City ? setSippingAddress.Street + " " + setSippingAddress.ZipCode : ''}</p>
+                                    <p>{setSippingAddress.Country ? setSippingAddress.Country : ''}</p>
+                                </div>
+                            </Col>
                         </Row>                   
                     </Form>
                     {/* <div className="table-responsive"> */}
@@ -234,40 +306,37 @@ class Placemanage extends Component {
                                 <th>{trls("Image")}</th>
                                 <th>{trls("Customer_reference")}</th>
                                 <th>{trls("Expected_deliver_week")}</th>
+                                <th>{trls("Action")}</th>
                             </tr>
                         </thead>
-                        {this.state.rows &&(<tbody>
+                        {rows &&(<tbody>
                             {
-                                this.state.rows.map((data,index) =>(
+                                rows.map((data,index) =>(
                                 <tr id={index} key={index}>
                                     <td>
-                                        {/* <Form.Control type="text" name="product" required placeholder={trls('Search')} /> */}
-                                        <Select
-                                            name="search"
-                                            arrowRenderer={"<i class='fas fa-search'></i>"}
-                                            placeholder={<i className='fas fa-search'>Search</i>}
-                                            options={this.state.productSearch}
-                                            // className="select-search-class"
-                                            onChange={val => this.getItemData(val.value, index)}
-                                        />
+                                        <Row style={{justifyContent: "space-around"}}>
+                                            <Form.Control type="text" name="productcode" style={{width: '80%'}} required placeholder={trls('Product_code')} value={itemProductCodeData[data.rowId] ? itemProductCodeData[data.rowId] : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId)} /><i className="fas fa-fist-raised add-icon" style={{marginTop: 10}} onClick={()=>this.getItemData(itemProductCodeData[data.rowId], data.rowId)}></i>
+                                        </Row>
                                     </td>
                                     <td>
-                                        <Form.Control type="text" name="description" readOnly required  defaultValue = {itemData[index] ? itemData[index].ItemName : ''} placeholder={trls('Description')} />
+                                        <Form.Control type="text" name="description" readOnly required  defaultValue = {itemData[data.rowId] ? itemData[data.rowId].ItemName : ''} placeholder={trls('Description')} />
                                     </td>
                                     <td>
-                                        {itemData[index] ? itemData[index].SalesUnit : ''}
+                                        {itemData[data.rowId] ? itemData[data.rowId].SalesUnit : ''}
                                     </td>
                                     <td>
-                                        <Form.Control type="text" name="quantity" required placeholder={trls('Quantity')} onChange={(evt)=>this.getItemPriceData(evt.target.value, index)} />
+                                        <Row style={{justifyContent: "space-around"}}>
+                                            <Form.Control type="text" name="quantity" style={{width: '80%'}} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} /><i className="fas fa-fist-raised add-icon" style={{marginTop: 10}} onClick={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId, itemProductCodeData[data.rowId])}></i>
+                                        </Row>
                                     </td>
                                     <td>
-                                        {Common.formatMoney(itemPriceData[index] ? itemPriceData[index].NewUnitPrice : '')}
+                                        {Common.formatMoney(itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice : '')}
                                     </td>
                                     <td>
-                                        {Common.formatMoney(itemPriceData[index] ? itemPriceData[index].NewUnitPrice*itemQuantity : '')}
+                                        {Common.formatMoney(itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice*itemPriceData[data.rowId].itemQuantity : '')}
                                     </td>   
                                     <td>
-                                        <img src={ itemData[index] ? "data:image/png;base64," + itemData[index].Image : ''} alt={ itemData[index] ? index : ''} className = "image__zoom"></img>
+                                        <img src={ itemData[data.rowId] ? "data:image/png;base64," + itemData[data.rowId].Image : ''} alt={ itemData[data.rowId] ? data.rowId : ''} className = "image__zoom"></img>
                                     </td>
                                     <td>
                                         <Form.Control type="text" name="customerReference" required placeholder={trls('Customer_reference')} onChange={(evt)=>this.setState({quantity: evt.target.value})} />
@@ -276,6 +345,11 @@ class Placemanage extends Component {
                                         {this.state.productDesription&&(
                                             <DatePicker name="startdate" className="myDatePicker" dateFormat="dd-MM-yyyy" selected={new Date()} onChange={date =>this.setState({startdate:date})} />
                                         )}
+                                    </td>
+                                    <td>
+                                        <Row style={{justifyContent: "space-around"}}>
+                                            <i className="fas fa-trash-alt add-icon" onClick = {()=>this.removeOrderRow(data.rowId) }></i>
+                                        </Row>
                                     </td>
                                 </tr>
                             ))
@@ -292,14 +366,14 @@ class Placemanage extends Component {
                     )}
                 {/* </div> */}
                 <div>
-                    <Button variant="secondary" style={{height: 40, borderRadius: 20}} onClick={()=>this.handleAddRow()}>{trls('Click_to_make_new_row')}</Button>
+                    <Button variant="primary" onClick={()=>this.handleAddRow()}><i className="fas fa-plus add-icon"></i>{trls('Click_to_make_new_row')}</Button> 
                 </div>
                 <Col sm={4} style={{float: 'right', paddingLeft: 0, paddingRight: 0}}>
                     <div className="info-block info-block--green">
                         <span className="txt-bold">Order Total</span>
-                        <span>€428.00</span>
+                        <span>{Common.formatMoney(totalAmount)}</span>
                     </div>
-                    <Button variant="secondary" style={{height: 50, borderRadius: 5, float: 'right'}} onClick={()=>this.setState({modalResumeShow: true})}>{trls('Submit_Order')}</Button>
+                    <Button variant="primary" style={{float: 'right'}} onClick={()=>this.setState({modalResumeShow: true})}>{trls('Submit_Order')}</Button>
                 </Col>
             </Container>
             {/* <Productsearchform

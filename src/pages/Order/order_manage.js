@@ -20,6 +20,7 @@ import history from '../../history';
 import * as Common from '../../factories/common';
 import Filtercomponent from '../../components/filtercomponent';
 import Pageloadspiiner from '../../components/page_load_spinner';
+import Select from 'react-select';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -48,7 +49,8 @@ class Ordermanage extends Component {
                 {"label": trls('Download'), "value": "Download", "type": 'text', "show": true},
                 {"label": trls('Action'), "value": "Action", "type": 'text', "show": true},
             ],
-            pageLodingFlag: false
+            pageLodingFlag: false,
+            pages:[{"value":"all","label":"all"}, {"value":5,"label":5}, {"value":10,"label":10}, {"value":20,"label":20}, {"value":30,"label":30}, {"value":40,"label":40}],
         };
     }
 
@@ -57,14 +59,15 @@ class Ordermanage extends Component {
     }
 
     componentDidMount() {
-        this.getOrdersData();
+        this.getOrdersData(null, null);
     }
 
-    getOrdersData = (data) => {
+    getOrdersData = (data, count) => {
         this._isMounted = true;
+        let resultCount = count ? count : 10;
         this.setState({loading:true})
         var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.get(API.GetOrdersData+"?top=30", headers)
+        Axios.get(API.GetOrdersData+"?top=" + resultCount, headers)
         .then(result => {
             if(this._isMounted){
                 if(result.data.value.length){
@@ -165,6 +168,10 @@ class Ordermanage extends Component {
         link.href = uri;
         link.click();
     }
+
+    openPlaceOrder = () => {
+        history.push('/placemanage');
+    }
     
     render(){   
         const {filterColunm, ordersData, pageLodingFlag} = this.state;
@@ -177,10 +184,18 @@ class Ordermanage extends Component {
                 <div className="orders">
                     <Row>
                         <Col sm={6}>
-                            <Button variant="primary"><i className="fas fa-plus add-icon"></i>{trls('Add_order')}</Button> 
+                            <Button variant="primary" onClick = {()=>this.openPlaceOrder()}><i className="fas fa-plus add-icon"></i>{trls('Add_order')}</Button> 
                         </Col>
                         <Col sm={6} className="has-search">
                             <div style={{display: 'flex', float: 'right'}}>
+                                <div style={{padding: 5}}>ViewResuls</div>
+                                <Select
+                                    name="page"
+                                    className="order-page__option"
+                                    options={this.state.pages}
+                                    defaultValue={{"label": 10, "value": 10}}
+                                    onChange={(val)=>this.getOrdersData(null, val.value)}
+                                /> 
                                 <Button variant="light" onClick={()=>this.changeFilter()}><i className="fas fa-filter add-icon"></i>{trls('Filter')}</Button>
                                 <div style={{marginLeft: 20}}>
                                     <span className="fa fa-search form-control-feedback"></span>
@@ -218,7 +233,7 @@ class Ordermanage extends Component {
                             {
                                 ordersData.map((data,i) =>(
                                     <tr id={i} key={i}>
-                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><Form.Control type="text" name="Order" defaultValue={data.DocNum} placeholder={trls('Order')}/></td>
+                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}>{data.DocNum}</td>
                                         <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
                                         <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenQty > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenQty > 0 ? "Open" : 'Send'}</div></td>
                                         <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemCode}</td>

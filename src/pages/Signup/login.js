@@ -6,7 +6,6 @@ import { Row, Col, Form, Button } from 'react-bootstrap';
 import Message from '../../components/message';
 import { trls } from '../../factories/translate';
 import Pageloadspiiner from '../../components/page_load_spinner';
-import Select from 'react-select';
 
 const mapStateToProps = state => ({ ...state.auth });
 
@@ -22,9 +21,7 @@ class Login extends React.Component {
   constructor() {   
     super();
     this.state = {  
-      roles:[{"value":"en_US","label":"English"},{"value":"nl_BE","label":"Dutch"},{"value":"de_DE","label":"German"},{"value":"fr_FR","label":"French"}],
-      selectrolvalue:window.localStorage.getItem('eijf_lang'),
-      selectrollabel:window.localStorage.getItem('eijf_label')
+     
     };
   };
 
@@ -44,6 +41,7 @@ class Login extends React.Component {
   }
 
   render() {
+    const { loading } = this.props;
     return (
       <div className="container">
           <div className="col-xl-5 col-lg-7 col-md-12  vertical-center">
@@ -54,15 +52,6 @@ class Login extends React.Component {
                 <Col>
                   <Form className="container login-form" onSubmit = { this.handleSubmit }>
                       <p className="login-title">Log In</p>
-                      <Form.Group controlId="form" style={{textAlign:'left'}}>
-                          <Select
-                              name="lan"
-                              options={this.state.roles}
-                              className="login-select-lang-class"
-                              value={{"label":this.state.selectrollabel,"value":this.state.selectrolvalue}}
-                              onChange={val => this.changeLangauge(val)}
-                          />
-                      </Form.Group>
                       <Form.Group controlId="form">
                           <Col className="login-form__control">
                             <Form.Control type="text" name="username" className="login-input-email" placeholder={trls("Email")}/>
@@ -89,7 +78,7 @@ class Login extends React.Component {
                 </Col>
               </Row>
           </div>
-          <Pageloadspiiner/>
+          <Pageloadspiiner loading = {loading}/>
       </div>
     );
   }

@@ -3,8 +3,6 @@ import Loader from 'react-loader-spinner'
 import { connect } from 'react-redux';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
-const mapStateToProps = state => ({ ...state.auth });
-
 const mapDispatchToProps = dispatch => ({
 
 });
@@ -27,4 +25,4 @@ class Pageloadspinner extends React.Component {
     }
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Pageloadspinner);
+export default connect(mapDispatchToProps)(Pageloadspinner);

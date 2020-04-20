@@ -147,7 +147,7 @@ export const TRANSLATIONS = {
       Product_description: 'Product description',
       Image: "Image",
       Expected_deliver_week: "Expected delivery week",
-      Order: 'Order #'
+      Order: 'Order #',
     },
 
     nl_BE: {
@@ -298,7 +298,7 @@ export const TRANSLATIONS = {
       Product_description: 'Product beschrijving',
       Image: 'beeld',
       Expected_deliver_week : 'Verwacht levering week',
-      Order: 'Bestellen#'
+      Order: 'Bestellen#',
     }, 
     
     de_DE: {
@@ -449,7 +449,7 @@ export const TRANSLATIONS = {
       Product_description: 'Produkt Beschreibung',
       Image: 'Bild',
       Expected_deliver_week: 'Voraussichtliche Lieferwoche',
-      Order: 'Bestellen #'
+      Order: 'Bestellen #',
     },
 
     fr_FR: {
@@ -600,6 +600,6 @@ export const TRANSLATIONS = {
       Product_description: 'Description du produit',
       Image: 'Image',
       Expected_deliver_week: 'Semaine de livraison prévue',
-      Order: 'Ordre #'
+      Order: 'Ordre #',
     }
   };
