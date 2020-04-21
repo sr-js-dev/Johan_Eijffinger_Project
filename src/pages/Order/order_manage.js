@@ -46,7 +46,6 @@ class Ordermanage extends Component {
                 {"label": trls('Collection'), "value": "Collectie", "type": 'text', "show": true},
                 {"label": trls('Quantity'), "value": "Quantity", "type": 'text', "show": true},
                 {"label": trls('Batch'), "value": "BatchNumbers", "type": 'text', "show": true},
-                {"label": trls('Download'), "value": "Download", "type": 'text', "show": true},
                 {"label": trls('Action'), "value": "Action", "type": 'text', "show": true},
             ],
             pageLodingFlag: false,
@@ -217,7 +216,7 @@ class Ordermanage extends Component {
                         <thead>
                             <tr>
                                 {filterColunm.map((item, key)=>(
-                                    <th className={!item.show ? "filter-show__hide" : ''} key={key}>
+                                    <th className={!item.show ? "filter-show__hide" : ''} key={key} style={item.value==="Action" ? {width: 25} : {}}>
                                        {item.label}
                                         {/* <Contextmenu
                                             triggerTitle = {item.label}
@@ -236,18 +235,14 @@ class Ordermanage extends Component {
                                         <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}>{data.DocNum}</td>
                                         <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
                                         <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenQty > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenQty > 0 ? "Open" : 'Send'}</div></td>
-                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemCode}</td>
+                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemName}</td>
                                         <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.Collectie}</td>
                                         <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
                                         <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
                                         <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>
                                             <Row style={{justifyContent: "space-around"}}>
-												<i className="fas fa-file-download add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title">{trls('Download')}</span></i>
-											</Row>
-                                        </td>
-                                        <td className={!this.showColumn(filterColunm[8].label) ? "filter-show__hide" : ''}>
-                                            <Row style={{justifyContent: "space-around"}}>
-												<i className="fas fa-trash-alt add-icon"><span className="action-title">{trls('Delete')}</span></i>
+                                                <i className="far fa-file-pdf add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title"></span></i>
+												<i className="fas fa-trash-alt add-icon"><span className="action-title"></span></i>
 											</Row>
                                         </td>
                                     </tr>

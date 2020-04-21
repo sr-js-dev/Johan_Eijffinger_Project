@@ -138,7 +138,7 @@ class Adduserform extends Component {
                                 placeholder={trls('Roles')}
                                 options={this.state.roles}
                                 onChange={val => this.setState({val1: val})}
-                                defaultValue = {[{'label': userUpdateData.roles[0].name, 'value': userUpdateData.roles[0].name}]}
+                                defaultValue = {[{'label': userUpdateData.roles ? userUpdateData.roles[0].name : '', 'value': userUpdateData.roles ? userUpdateData.roles[0].name : ''}]}
                             />
                             <label className="placeholder-label">{trls('Roles')}</label>
                             {!this.props.disabled&&this.props.mode==="add" && (
