@@ -873,10 +873,18 @@ table.dataTable.no-footer {
 .bill-shipping__address{
   display: flex;
   justify-content: space-around;
-  border: #68B0FA solid 1px;
-  border-radius: 4px;
+  
+ 
 }
 .bill-shipping__address .address-header{
   font-weight: 700;
-  margin-top: 20px;
+  margin-top: 12px;
+}
+.place-order__address{
+  width: 45%;
+  border: #68B0FA solid 1px;
+  border-radius: 4px;
+  padding-left: 0px;
+  padding-top: 10px;
+  padding: 13px;
 }

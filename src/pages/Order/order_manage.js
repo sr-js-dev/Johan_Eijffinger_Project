@@ -20,7 +20,6 @@ import history from '../../history';
 import * as Common from '../../factories/common';
 import Filtercomponent from '../../components/filtercomponent';
 import Pageloadspiiner from '../../components/page_load_spinner';
-import Select from 'react-select';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -50,6 +49,7 @@ class Ordermanage extends Component {
             ],
             pageLodingFlag: false,
             pages:[{"value":"all","label":"all"}, {"value":5,"label":5}, {"value":10,"label":10}, {"value":20,"label":20}, {"value":30,"label":30}, {"value":40,"label":40}],
+            obj: this
         };
     }
 
@@ -59,11 +59,13 @@ class Ordermanage extends Component {
 
     componentDidMount() {
         this.getOrdersData(null, null);
+       
     }
 
     getOrdersData = (data, count) => {
         this._isMounted = true;
-        let resultCount = count ? count : 10;
+        let resultCount = count ? count : 5;
+        let obj = this.state.obj;
         this.setState({loading:true})
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.get(API.GetOrdersData+"?top=" + resultCount, headers)
@@ -79,24 +81,32 @@ class Ordermanage extends Component {
                     $('.fitler').on( 'keyup', function () {
                         table.search( this.value ).draw();
                     } );
+                    $('#order-table').on( 'length.dt', function ( e, settings, len ) {
+                        // table.page.len( 10 ).draw();
+                        obj.getOrdersData(null, len);
+                    } )
                     $('#order-table').dataTable().fnDestroy();
                     var table = $('#order-table').DataTable(
-                        {
-                            "language": {
-                                "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
-                                "zeroRecords": "Nothing found - sorry",
-                                "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
-                                "infoEmpty": "No records available",
-                                "infoFiltered": "(filtered from _MAX_ total records)",
-                                "search": trls('Search'),
-                                "paginate": {
-                                  "previous": trls('Previous'),
-                                  "next": trls('Next')
-                                }
-                            },
-                              "dom": 't<"bottom-datatable" lip>'
-                          }
-                      );
+                    {
+                        "language": {
+                            "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
+                            "zeroRecords": "Nothing found - sorry",
+                            "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
+                            "infoEmpty": "No records available",
+                            "infoFiltered": "(filtered from _MAX_ total records)",
+                            "search": trls('Search'),
+                            "paginate": {
+                                "previous": trls('Previous'),
+                                "next": trls('Next')
+                            }
+                        },
+                        "lengthMenu": [ 5, 10, 20, 25, 30, 35 ],
+                        "pageLength": 10,
+                        // "lengthChange": false,
+                        "dom": 't<"bottom-datatable" lip>',
+                        }
+                    );
+                    $('[name=order-table_length]').val( resultCount );
                 }
             }
         });
@@ -174,6 +184,7 @@ class Ordermanage extends Component {
     
     render(){   
         const {filterColunm, ordersData, pageLodingFlag} = this.state;
+        
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -187,14 +198,6 @@ class Ordermanage extends Component {
                         </Col>
                         <Col sm={6} className="has-search">
                             <div style={{display: 'flex', float: 'right'}}>
-                                <div style={{padding: 5}}>ViewResuls</div>
-                                <Select
-                                    name="page"
-                                    className="order-page__option"
-                                    options={this.state.pages}
-                                    defaultValue={{"label": 10, "value": 10}}
-                                    onChange={(val)=>this.getOrdersData(null, val.value)}
-                                /> 
                                 <Button variant="light" onClick={()=>this.changeFilter()}><i className="fas fa-filter add-icon"></i>{trls('Filter')}</Button>
                                 <div style={{marginLeft: 20}}>
                                     <span className="fa fa-search form-control-feedback"></span>

@@ -55,7 +55,8 @@ class Placemanage extends Component {
             setSippingAddress: [],
             productSearch: [{'value': '7745-2', 'label': '7745-2'}, {'value': '7745-2', 'label': '7745-2'}],
             userInfo: Auth.getUserInfo(), 
-            rowId: 0
+            rowId: 0,
+            selectShippingAddress: []
         };
     }
 
@@ -77,8 +78,8 @@ class Placemanage extends Component {
                 if(result.data.value.length){
                     // let businessPartner = result.data.value.map( s => ({value:s.CardCode,label:s.CardName}));
                     let addressData = this.getShippingAddressOptionData(result.data.value);
-                    let shippingData = addressData[1].map( s => ({value:s.BPCode,label:s.AddressName+" "+s.Street+" "+s.City+" "+s.Country}));
-                    this.setState({businessPartnerOption: result.data.value, shippingAddressOption: shippingData, billAddress: addressData[0][0], shippingAddress: addressData[1]});
+                    let shippingData = addressData[1].map( s => ({value:s.BPCode,label: s.Street+" "+s.City+" "+s.Country}));
+                    this.setState({businessPartnerOption: result.data.value, shippingAddressOption: shippingData, billAddress: addressData[0][0], shippingAddress: addressData[1], selectShippingAddress: shippingData[0], setSippingAddress: addressData[1][0]});
                 }
             }
         });
@@ -182,7 +183,7 @@ class Placemanage extends Component {
 
     changeShippigAddress = (data) =>{
         const { shippingAddress } = this.state;
-        
+        this.setState({selectShippingAddress: data})
         let setSippingAddress = shippingAddress.filter(item => item.BPCode===data.value);
         if(setSippingAddress){
             this.setState({setSippingAddress: setSippingAddress[0]})
@@ -210,6 +211,7 @@ class Placemanage extends Component {
             itemQuantityData,
             itemProductCodeData,
             rows,
+            selectShippingAddress
          } = this.state;
         if(itemPriceData){
             rows.map((data, key)=>{
@@ -272,22 +274,22 @@ class Placemanage extends Component {
                                             placeholder={trls('Shipping_Address')}
                                             options={shippingAddressOption}
                                             onChange={val => this.changeShippigAddress(val)}
-                                            // defaultValue = {this.getSupplierData()}
+                                            value={selectShippingAddress}
                                         />
                                     </Col>
                                 </Form.Group>
                             </Col> 
-                            <Col sm={4} className="bill-shipping__address" style={{paddingLeft: 0, paddingTop: 10}}>
-                                <div>
+                            <Col sm={4} className = "bill-shipping__address">
+                                <div className="place-order__address">
                                     <p className="address-header">{trls('Billing_Address')}</p>
-                                    <p>{billAddress.City ? billAddress.City : ''}</p>
-                                    <p>{billAddress.City ? billAddress.Street + " " + billAddress.ZipCode : ''}</p>
+                                    <p>{billAddress.City ? billAddress.Street : '' }</p>
+                                    <p>{billAddress.City ? billAddress.City + " " + billAddress.ZipCode : ''}</p>
                                     <p>{billAddress.Country ? billAddress.Country : ''}</p>
                                 </div>
-                                <div>
+                                <div className="place-order__address">
                                     <p className="address-header">{trls('Shipping_Address')}</p>
-                                    <p>{setSippingAddress.City ? setSippingAddress.City : ''}</p>
-                                    <p>{setSippingAddress.City ? setSippingAddress.Street + " " + setSippingAddress.ZipCode : ''}</p>
+                                    <p>{setSippingAddress.City ? setSippingAddress.Street : '' }</p>
+                                    <p>{setSippingAddress.City ? setSippingAddress.City + " " + setSippingAddress.ZipCode : ''}</p>
                                     <p>{setSippingAddress.Country ? setSippingAddress.Country : ''}</p>
                                 </div>
                             </Col>
@@ -315,7 +317,7 @@ class Placemanage extends Component {
                                 <tr id={index} key={index}>
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>
-                                            <Form.Control type="text" name="productcode" style={{width: '80%'}} required placeholder={trls('Product_code')} value={itemProductCodeData[data.rowId] ? itemProductCodeData[data.rowId] : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId)} /><i className="fas fa-fist-raised add-icon" style={{marginTop: 10}} onClick={()=>this.getItemData(itemProductCodeData[data.rowId], data.rowId)}></i>
+                                            <Form.Control type="text" name="productcode" style={{width: '80%'}} required placeholder={trls('Product_code')} value={itemProductCodeData[data.rowId] ? itemProductCodeData[data.rowId] : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId)} onBlur={()=>this.getItemData(itemProductCodeData[data.rowId], data.rowId)}/>
                                         </Row>
                                     </td>
                                     <td>
@@ -326,7 +328,12 @@ class Placemanage extends Component {
                                     </td>
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>
-                                            <Form.Control type="text" name="quantity" style={{width: '80%'}} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} /><i className="fas fa-fist-raised add-icon" style={{marginTop: 10}} onClick={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId, itemProductCodeData[data.rowId])}></i>
+                                            {itemProductCodeData[data.rowId] ? (
+                                                <Form.Control type="text" name="quantity" style={{width: '80%'}} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId, itemProductCodeData[data.rowId])}/>
+                                            ):
+                                                <Form.Control type="text" name="quantity" disabled style={{width: '80%'}} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId, itemProductCodeData[data.rowId])}/>     
+                                            }
+                                            
                                         </Row>
                                     </td>
                                     <td>
