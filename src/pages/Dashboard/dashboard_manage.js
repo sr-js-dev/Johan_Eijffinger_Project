@@ -129,7 +129,6 @@ class Dashboard extends Component {
             lastDeleiversFlag,
             lastOutstanding } = this.state;
         let lodingFlag = pageLodingFlag;
-        console.log('11122333', lodingFlag)
         if(dashBoardFlag && lastOrdersFlag && lastDeleiversFlag && lastOutstanding){
             lodingFlag = false;
         }

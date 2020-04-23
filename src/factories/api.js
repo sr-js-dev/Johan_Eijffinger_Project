@@ -3,7 +3,7 @@ export default {
     GetToken: `${BASEURL}/api/Token`,  
     PostResetPassword: `${BASEURL}/api/Account/ResetPassword`,  
     GetOrdersData: `${BASEURL}/api/Orders`,
-    GetUserData: `${BASEURL}/api/users/SearchUser?excludeInactiveUser=false`,
+    GetUserData: `${BASEURL}/api/users/SearchUser?excludeInactiveUser=false&pageNumber=1&pageSize=`,
     PostUserData: `${BASEURL}/api/users/Create`,
     GetUserDataById: `${BASEURL}/api/users/GetById/`,
     PostUserUpdate: `${BASEURL}/api/users/Update/`,
@@ -23,6 +23,7 @@ export default {
     GetItemData: `${BASEURL}/api/Items/`,
     GetDiscountPrice: `${BASEURL}/api/SapProxy/discountprice`,
     GetDashboardData: `${BASEURL}/api/Dashboard`,
+    PostItems: `${BASEURL}/api/Items`,
   };
   
   

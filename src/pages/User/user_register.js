@@ -70,36 +70,40 @@ class Userregister extends Component {
         this._isMounted = true;
         this.setState({loading: true})
         var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.get(API.GetUserData, headers)
+        Axios.get(API.GetUserData+1, headers)
         .then(result => {
-            if(this._isMounted){
-                if(!data){
-                    this.setState({userData: result.data.data, originFilterData: result.data.data});
-                }else{
-                    this.setState({userData: data});
+            Axios.get(API.GetUserData+result.data.totalCount, headers)
+            .then(result => {
+                if(this._isMounted){
+                    if(!data){
+                        this.setState({userData: result.data.data, originFilterData: result.data.data});
+                    }else{
+                        this.setState({userData: data});
+                    }
+                    this.setState({loading:false})
+                    $('#example').dataTable().fnDestroy();
+                    $('#example').DataTable(
+                        {
+                            "language": {
+                                "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
+                                "zeroRecords": "Nothing found - sorry",
+                                "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
+                                "infoEmpty": "No records available",
+                                "infoFiltered": "(filtered from _MAX_ total records)",
+                                "search": trls('Search'),
+                                "paginate": {
+                                  "previous": trls('Previous'),
+                                  "next": trls('Next')
+                                }
+                            },
+                              "searching": false,
+                              "dom": 't<"bottom-datatable" lip>'
+                          }
+                      );
                 }
-                this.setState({loading:false})
-                $('#example').dataTable().fnDestroy();
-                $('#example').DataTable(
-                    {
-                        "language": {
-                            "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
-                            "zeroRecords": "Nothing found - sorry",
-                            "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
-                            "infoEmpty": "No records available",
-                            "infoFiltered": "(filtered from _MAX_ total records)",
-                            "search": trls('Search'),
-                            "paginate": {
-                              "previous": trls('Previous'),
-                              "next": trls('Next')
-                            }
-                        },
-                          "searching": false,
-                          "dom": 't<"bottom-datatable" lip>'
-                      }
-                  );
-            }
-        });
+            });
+        })
+        
     }
     // filter module
     filterOptionData = (filterOption) =>{
@@ -281,8 +285,8 @@ class Userregister extends Component {
     }
 
     render () {
+        let userInfo = Auth.getUserInfo();
         const {filterColunm, userData } = this.state;
-        
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -348,7 +352,7 @@ class Userregister extends Component {
                                         <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 250}}>
                                             <Row>
 												<i className="fas fa-trash-alt add-icon" onClick={()=>this.userDeleteConfirm(data.id)}><span className="action-title">{trls('Delete')}</span></i>
-												{/*userInfo.role==="Administrator"*/ this.state.userType === "admin" ? (
+												{userInfo.role==="Administrator" ? (
                                                     <i className="fas fa-pen add-icon" onClick={()=>this.userUpdate(data.id)}><span className="action-title">{trls('Edit')}</span></i>
                                                 ):
                                                     <i className="fas fa-pen add-icon__deactive"><span className="action-title">{trls('Edit')}</span></i>
@@ -363,7 +367,7 @@ class Userregister extends Component {
                                         </td>
                                         <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 100}}>
                                             <Row>
-                                                {/*userInfo.role==="Administrator"*/ this.state.userType !== "user" ? (
+                                                {userInfo.role==="Administrator"? (
                                                     <i className="fas fa-pen add-icon" onClick={()=>this.loginAsUser(data.userName)}><span className="action-title">{trls('LoginAsUser')}</span></i>
                                                 ):
                                                     <i className="fas fa-pen add-icon__deactive"><span className="action-title">{trls('LoginAsUser')}</span></i>
@@ -389,7 +393,7 @@ class Userregister extends Component {
                     <Adduserform
                         show={this.state.modalShow}
                         mode={this.state.mode}
-                        onHide={() => this.setState({slideFormFlag: false})}
+                        onHide={() => this.setState({slideFormFlag: false, userUpdateData: []})}
                         onGetUser={() => this.getUserData()}
                         userUpdateData={this.state.userUpdateData}
                     /> 

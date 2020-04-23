@@ -23,8 +23,10 @@ class Adduserform extends Component {
     constructor(props) {
         super(props);
         this.state = {  
-            roles:[{"value":"Administrator","label":"Administrator"},{"value":"Customer","label":"Customer"}],
-            val1:'',
+            roles: [{"value":"Administrator","label":"Administrator"},{"value":"Customer","label":"Customer"}],
+            languageOption: [{"value":"English","label":"English"},{"value":"Dutch","label":"Dutch"},{"value":"German","label":"German"},{"value":"French","label":"French"}],
+            val1: '',
+            val2: '1'
         };
     }
 
@@ -46,12 +48,13 @@ class Adduserform extends Component {
         }
         let params = {
             email: data.email,
+            language: data.language,
             firstName: data.firstName,
             lastName: data.lastName,
             userCode: data.userCode,
             customerCode: data.customerCode,
             roles:[data.roles]
-        }        
+        }     
         if(this.props.mode==="add"){
             Axios.post(API.PostUserData, params, headers)
             .then(result => {
@@ -65,11 +68,12 @@ class Adduserform extends Component {
             });
         }else{
             params = {
-                "firstName": data.firstName,
-                "lastName": data.lastName,
-                "userCode": data.userCode,
-                "customerCode": data.customerCode,
-                "roles": [data.roles]
+                firstName: data.firstName,
+                lastName: data.lastName,
+                language: data.language,
+                userCode: data.userCode,
+                customerCode: data.customerCode,
+                roles: [data.roles]
               }
             headers = SessionManager.shared().getAuthorizationHeader();
             Axios.put(API.PostUserUpdate+this.props.userUpdateData.id, params, headers)
@@ -94,6 +98,7 @@ class Adduserform extends Component {
 
     render(){   
         const { userUpdateData, mode } = this.props;
+        const { languageOption } = this.state;
         return (
             <div className = "slide-form__controls open" style={{height: "100%"}}>
                 <div style={{marginBottom:30}}>
@@ -133,13 +138,22 @@ class Adduserform extends Component {
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextSupplier">
                         <Col>
-                            <Select
-                                name="roles"
-                                placeholder={trls('Roles')}
-                                options={this.state.roles}
-                                onChange={val => this.setState({val1: val})}
-                                defaultValue = {[{'label': userUpdateData.roles ? userUpdateData.roles[0].name : '', 'value': userUpdateData.roles ? userUpdateData.roles[0].name : ''}]}
-                            />
+                            {userUpdateData.roles ? (
+                                <Select
+                                    name="roles"
+                                    placeholder={trls('Roles')}
+                                    options={this.state.roles}
+                                    onChange={val => this.setState({val1: val})}
+                                    defaultValue = {[{'label': userUpdateData.roles ? userUpdateData.roles[0].name : '', 'value': userUpdateData.roles ? userUpdateData.roles[0].name : ''}]}
+                                />
+                            ) : 
+                                <Select
+                                    name="roles"
+                                    placeholder={trls('Roles')}
+                                    options={this.state.roles}
+                                    onChange={val => this.setState({val1: val})}
+                                />
+                            }
                             <label className="placeholder-label">{trls('Roles')}</label>
                             {!this.props.disabled&&this.props.mode==="add" && (
                                 <input
@@ -148,6 +162,28 @@ class Adduserform extends Component {
                                     autoComplete="off"
                                     style={{ opacity: 0, height: 0 }}
                                     value={this.state.val1}
+                                    required
+                                />
+                            )}
+                        </Col>
+                    </Form.Group>
+                    <Form.Group as={Row} controlId="formPlaintextSupplier">
+                        <Col>
+                            <Select
+                                name="language"
+                                placeholder={123}
+                                options={languageOption}
+                                onChange={val => this.setState({val2: val})}
+                                defaultValue = {[{'label': userUpdateData.language ? userUpdateData.language : '', 'value': userUpdateData.language ? userUpdateData.language : ''}]}
+                            />
+                            <label className="placeholder-label">{trls('Language')}</label>
+                            {!this.props.disabled&&this.props.mode==="add" && (
+                                <input
+                                    onChange={val=>console.log()}
+                                    tabIndex={-1}
+                                    autoComplete="off"
+                                    style={{ opacity: 0, height: 0 }}
+                                    value={this.state.val2}
                                     required
                                 />
                             )}

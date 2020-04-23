@@ -22,11 +22,12 @@ class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            roles:[{"value":"en_US","label":"English"},{"value":"nl_BE","label":"Dutch"},{"value":"de_DE","label":"German"},{"value":"fr_FR","label":"French"}],
-            selectrolvalue:window.localStorage.getItem('eijf_lang'),
-            selectrollabel:window.localStorage.getItem('eijf_label'),
+            roles:  [{"value":"English","label":"English"},{"value":"Dutch","label":"Dutch"},{"value":"German","label":"German"},{"value":"French","label":"French"}],
+            selectrolvalue: window.localStorage.getItem('eijf_lang'),
+            selectrollabel: window.localStorage.getItem('eijf_label'),
             userInfo: Auth.getUserInfo(),
             userType: this.props.userType,
+            loggedUserInfo: Auth.getLoggedUserInfo()
         };
     }
 
@@ -59,6 +60,7 @@ class Header extends Component {
         this.setState({selectrolvalue:val.value, selectrollabel: val.label});
         this.props.changeLan(val)
     }
+
     goBackAdmin = () => {
         const info = Auth.getAdminInfo();
         window.localStorage.setItem('eijf_token', info.userToken);
@@ -74,8 +76,7 @@ class Header extends Component {
     }
 
     render () {
-        
-        console.log("usertype-----",this.props.userType)
+        const { loggedUserInfo } = this.state;
       return (
         <div>
             <header className="header">
@@ -92,9 +93,9 @@ class Header extends Component {
                     : '' }
                     <Dropdown>
                         <Dropdown.Toggle variant="success" id="dropdown-basic" style={{color:"#000000"}}>
-                            Johan Boerema<img src={require("../assets/images/avatar.jpg")} alt="User avatar" className="header__user-dropdown-img"/> 
+                            {loggedUserInfo.FirstName +" "+loggedUserInfo.LastName}
                         </Dropdown.Toggle>
-                        <Dropdown.Menu style={{marginLeft:15}}>
+                        <Dropdown.Menu>
                             <Dropdown.Item onClick={this.logOut}>Logout</Dropdown.Item>
                             <Dropdown.Item onClick={()=>this.resetPassword()}>Reset Password</Dropdown.Item>
                         </Dropdown.Menu>

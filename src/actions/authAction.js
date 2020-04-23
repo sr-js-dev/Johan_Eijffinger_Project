@@ -20,6 +20,10 @@ export const fetchLoginData = (params) => {
             window.localStorage.setItem('eijf_token', response.token);
             window.localStorage.setItem('eijf_userName', response.claims.UserName);
             window.localStorage.setItem('eijf_role', response.claims.Role);
+            window.localStorage.setItem('eijf_loggedUser', JSON.stringify(response.claims));
+            let lang = response.claims.language ? response.claims.language : "Dutch"
+            window.localStorage.setItem('eijf_lang',  lang);
+            window.localStorage.setItem('eijf_label',  lang);
             dispatch(fetchLoginDataSuccess(response));
             history.push('/dashboard')
         })
@@ -57,7 +61,7 @@ export const fetchLoginDataSuccess = (data) => {
 export const changeLan = (params) => {
     return (dispatch) => {
         window.localStorage.setItem('eijf_lang',  params.value);
-        window.localStorage.setItem('eijf_label',  params.label);
+        window.localStorage.setItem('eijf_label',  params.value);
         dispatch(fetchChangeLan(params.value));
     };
 }

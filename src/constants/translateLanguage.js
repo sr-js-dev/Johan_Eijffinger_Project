@@ -1,5 +1,5 @@
 export const TRANSLATIONS = {
-    en_US: {
+  English: {
       Username: 'Username',
       Password: 'Password',
       ConfirmPassword: 'ConfirmPassword',
@@ -148,9 +148,12 @@ export const TRANSLATIONS = {
       Image: "Image",
       Expected_deliver_week: "Expected delivery week",
       Order: 'Order #',
+      Language: 'Language',
+      Search_Item: 'Search Item',
+      Add_to_order: 'Add to order'
     },
 
-    nl_BE: {
+    Dutch: {
       Username: 'Gebruikersnaam',
       Password: 'Wachtwoord',
       ConfirmPassword: 'Bevestig wachtwoord',
@@ -299,9 +302,12 @@ export const TRANSLATIONS = {
       Image: 'beeld',
       Expected_deliver_week : 'Verwacht levering week',
       Order: 'Bestellen#',
+      Language: 'Taal',
+      Search_Item: 'Item zoeken',
+      Add_to_order: 'Toevoegen aan bestelling',
     }, 
     
-    de_DE: {
+    German: {
       Username: 'Nutzername',
       Password: 'Passwort',
       ConfirmPassword: 'Bevestig wachtwoord',
@@ -450,9 +456,12 @@ export const TRANSLATIONS = {
       Image: 'Bild',
       Expected_deliver_week: 'Voraussichtliche Lieferwoche',
       Order: 'Bestellen #',
+      Language: 'Sprache',
+      Search_Item: 'Artikel suchen',
+      Add_to_order: 'Zur Bestellung hinzufügen',
     },
 
-    fr_FR: {
+    French: {
       Username: "Nom d'utilisateur",
       Password: 'Mot de passe',
       ConfirmPassword: 'Confirmez le mot de passe',
@@ -601,5 +610,8 @@ export const TRANSLATIONS = {
       Image: 'Image',
       Expected_deliver_week: 'Semaine de livraison prévue',
       Order: 'Ordre #',
+      Language: 'Langue',
+      Search_Item: "Rechercher un élément",
+      Add_to_order: 'Ajouter à la commande'
     }
   };

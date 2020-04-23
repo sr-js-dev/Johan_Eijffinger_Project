@@ -292,6 +292,7 @@ dl, ol, ul {
     padding-top:5px;
     padding-right: 5px;
     width: 79px;
+    margin-left: 12px;
 }
 .dataTables_wrapper .dataTables_filter input {
     margin-left: 0.5em;
@@ -887,4 +888,33 @@ table.dataTable.no-footer {
   padding-left: 0px;
   padding-top: 10px;
   padding: 13px;
+}
+.place-order__product-code{
+  background-color: red !important;
+}
+input:-internal-autofill-selected {
+  -webkit-appearance: menulist-button;
+  background-color: rgb(232, 240, 254) !important;
+  background-image: none !important;
+  color: -internal-light-dark-color(black, white) !important;
+}
+.place-order__itemcode-icon{
+  margin-left: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+.place-order__search-item{
+  padding-bottom: 20px;
+}
+.place-order__search-itemtable{
+  max-height: 400px;
+  overflow-y: auto !important;
+  padding: 0px 30px;
+  margin-bottom: 20px;
+}
+.search-spinner{
+  margin-right: 10px;
+  color: white !important;
+  width: 1.2rem;
+  height: 1.2rem;
 }

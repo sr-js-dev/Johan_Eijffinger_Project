@@ -13,10 +13,10 @@ import './assets/css/style.app.css';
 const isAuthenticated = getAuth();
 const store = configureStore()
 if(!isAuthenticated){
-  // window.localStorage.setItem('eijf_lang',  'nl_BE');
+  // window.localStorage.setItem('eijf_lang',  'Dutch');
   // window.localStorage.setItem('eijf_label',  'Dutch');
-  window.localStorage.setItem('eijf_lang',  'en_US');
-  window.localStorage.setItem('eijf_label',  'English');
+  // window.localStorage.setItem('eijf_lang',  'English');
+  // window.localStorage.setItem('eijf_label',  'English');
 }
 window.React = React
 

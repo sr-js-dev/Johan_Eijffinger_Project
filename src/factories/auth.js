@@ -25,6 +25,11 @@ export const getUserInfo = () => {
     return userInfo;
 };
 
+export const getLoggedUserInfo = () => {
+    var loggedUserInfo = JSON.parse(localStorage.getItem("eijf_loggedUser"));
+    return loggedUserInfo;
+};
+
 export const getAdminInfo = () => {
     let adminInfo = [];
     adminInfo.role = window.localStorage.getItem('admin_role');
@@ -32,3 +37,4 @@ export const getAdminInfo = () => {
     adminInfo.userToken = window.localStorage.getItem('admin_token');
     return adminInfo;
 }
+
