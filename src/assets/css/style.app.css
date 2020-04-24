@@ -890,13 +890,8 @@ table.dataTable.no-footer {
   padding: 13px;
 }
 .place-order__product-code{
-  background-color: red !important;
-}
-input:-internal-autofill-selected {
-  -webkit-appearance: menulist-button;
-  background-color: rgb(232, 240, 254) !important;
-  background-image: none !important;
-  color: -internal-light-dark-color(black, white) !important;
+  background-color: #f76060;
+  color: #fff
 }
 .place-order__itemcode-icon{
   margin-left: 10px;
