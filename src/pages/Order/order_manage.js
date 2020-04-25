@@ -38,14 +38,14 @@ class Ordermanage extends Component {
             ordersData: [],
             originFilterData: [],
             filterColunm: [
-                {"label": trls('Order'), "value": "DocNum", "type": 'text', "show": true},
-                {"label": trls('Order_Date'), "value": "DocDate", "type": 'date', "show": true},
-                {"label": trls('Status'), "value": "Status", "type": 'text', "show": true},
-                {"label": trls('Product'), "value": "Product", "type": 'text', "show": true},
-                {"label": trls('Collection'), "value": "Collectie", "type": 'text', "show": true},
-                {"label": trls('Quantity'), "value": "Quantity", "type": 'text', "show": true},
-                {"label": trls('Batch'), "value": "BatchNumbers", "type": 'text', "show": true},
-                {"label": trls('Action'), "value": "Action", "type": 'text', "show": true},
+                {"label": 'Order', "value": "DocNum", "type": 'text', "show": true},
+                {"label": 'Order_Date', "value": "DocDate", "type": 'date', "show": true},
+                {"label": 'Status', "value": "Status", "type": 'text', "show": true},
+                {"label": 'Product', "value": "Product", "type": 'text', "show": true},
+                {"label": 'Collection', "value": "Collectie", "type": 'text', "show": true},
+                {"label": 'Quantity', "value": "Quantity", "type": 'text', "show": true},
+                {"label": 'Batch', "value": "BatchNumbers", "type": 'text', "show": true},
+                {"label": 'Action', "value": "Action", "type": 'text', "show": true},
             ],
             pageLodingFlag: false,
             pages:[{"value":"all","label":"all"}, {"value":5,"label":5}, {"value":10,"label":10}, {"value":20,"label":20}, {"value":30,"label":30}, {"value":40,"label":40}],
@@ -220,7 +220,7 @@ class Ordermanage extends Component {
                             <tr>
                                 {filterColunm.map((item, key)=>(
                                     <th className={!item.show ? "filter-show__hide" : ''} key={key} style={item.value==="Action" ? {width: 25} : {}}>
-                                       {item.label}
+                                        {trls(item.label) ? trls(item.label) : ''}
                                         {/* <Contextmenu
                                             triggerTitle = {item.label}
                                             addFilterColumn = {(value)=>this.addFilterColumn(value)}

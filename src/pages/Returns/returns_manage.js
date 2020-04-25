@@ -37,12 +37,12 @@ class Deliveriesmanage extends Component {
             deliveriesData: [],
             originFilterData: [],
             filterColunm: [
-                {"label": trls('ItemCode'), "value": "ItemCode", "type": 'text', "show": true},
-                {"label": trls('ItemDescription'), "value": "ItemDescription", "type": 'text', "show": true},
-                {"label": trls('Quantity'), "value": "Quantity", "type": 'text', "show": true},
-                {"label": trls('DocDate'), "value": "DocDate", "type": 'date', "show": true},
-                {"label": trls('Price'), "value": "Price", "type": 'text', "show": true},
-                {"label": trls('Amount'), "value": "Amount", "type": 'text', "show": true},
+                {"label": 'ItemCode', "value": "ItemCode", "type": 'text', "show": true},
+                {"label": 'ItemDescription', "value": "ItemDescription", "type": 'text', "show": true},
+                {"label": 'Quantity', "value": "Quantity", "type": 'text', "show": true},
+                {"label": 'DocDate', "value": "DocDate", "type": 'date', "show": true},
+                {"label": 'Price', "value": "Price", "type": 'text', "show": true},
+                {"label": 'Amount', "value": "Amount", "type": 'text', "show": true},
             ]
         };
     }

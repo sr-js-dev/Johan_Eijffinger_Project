@@ -19,10 +19,10 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'datatables.net';
 import ItemSearchform from './Item_searchform';
-import Resumeform from './resume_form';
+// import Resumeform from './resume_form';
 // import history from '../../history';
 import Pageloadspiiner from '../../components/page_load_spinner';
-import { add } from 'date-fns';
+// import { add } from 'date-fns';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -416,7 +416,7 @@ class Placemanage extends Component {
                                     </td>   
                                     <td>
                                         {data.Image&&(
-                                            <img src={ data.Image ? "data:image/png;base64," + data.Image : ''} className = "image__zoom"></img>
+                                            <img src={ data.Image ? "data:image/png;base64," + data.Image : ''} className = "image__zoom" alt={data.ItemCode}></img>
                                         ) 
                                         }
                                         

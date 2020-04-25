@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import { Form, Button, Row, Col, Spinner } from 'react-bootstrap';
-import Select from 'react-select';
 import { connect } from 'react-redux';
 import * as authAction  from '../../actions/authAction';
 import SessionManager from '../../factories/session_manage';

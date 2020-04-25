@@ -38,12 +38,12 @@ class Userregister extends Component {
             filterFlag: false,
             filterData: [],
             filterColunm: [
-                {"label": trls('UserName'), "value": "UserName", "type": 'text', "show": true},
-                {"label": trls('Email'), "value": "Email", "type": 'text', "show": true},
-                {"label": trls('PhoneNumber'), "value": "PhoneNumber", "type": 'text', "show": true},
-                {"label": trls('Active'), "value": "active", "type": 'text', "show": true},
-                {"label": trls('Action'), "value": "action", "type": 'text', "show": true},
-                {"label": trls('LoginAsUser'), "value": "loginAsUser", "type": 'text', "show": true},
+                {"label": 'UserName', "value": "UserName", "type": 'text', "show": true},
+                {"label": 'Email', "value": "Email", "type": 'text', "show": true},
+                {"label": 'PhoneNumber', "value": "PhoneNumber", "type": 'text', "show": true},
+                {"label": 'Active', "value": "active", "type": 'text', "show": true},
+                {"label": 'Action', "value": "action", "type": 'text', "show": true},
+                {"label": 'LoginAsUser', "value": "loginAsUser", "type": 'text', "show": true},
             ],
             userInfo: Auth.getUserInfo(), 
             userType: '',
@@ -324,7 +324,7 @@ class Userregister extends Component {
                             <tr>
                                 {filterColunm.map((item, key)=>(
                                     <th className={!item.show ? "filter-show__hide" : ''} key={key}>
-                                       {item.label}
+                                       {trls(item.label) ? trls(item.label) : ''}
                                         {/* <Contextmenu
                                             triggerTitle = {item.label}
                                             addFilterColumn = {(value)=>this.addFilterColumn(value)}
