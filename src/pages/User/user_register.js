@@ -349,7 +349,7 @@ class Userregister extends Component {
                                                 <i className ="fas fa-check-circle inactive-icon"></i>
                                             }
                                         </td>
-                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 250}}>
+                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 300}}>
                                             <Row>
 												<i className="fas fa-trash-alt add-icon" onClick={()=>this.userDeleteConfirm(data.id)}><span className="action-title">{trls('Delete')}</span></i>
 												{userInfo.role==="Administrator" ? (
@@ -365,7 +365,7 @@ class Userregister extends Component {
                                                 }
 											</Row>
                                         </td>
-                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 100}}>
+                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 200}}>
                                             <Row>
                                                 {userInfo.role==="Administrator"? (
                                                     <i className="fas fa-pen add-icon" onClick={()=>this.loginAsUser(data.userName)}><span className="action-title">{trls('LoginAsUser')}</span></i>
