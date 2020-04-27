@@ -3,18 +3,14 @@ import { connect } from 'react-redux';
 import { trls } from '../../factories/translate';
 import { Container, Row, Col } from 'react-bootstrap';
 import SessionManager from '../../factories/session_manage';
-// import Select from 'react-select';
 import API from '../../factories/api'
+// import * as Queries  from '../../factories/queries'
 import Axios from 'axios';
-// import * as Auth from '../../components/auth'
 import  { Link } from 'react-router-dom';
 import * as Common from '../../factories/common';
 import * as authAction  from '../../actions/authAction';
-// import * as authAction  from '../../actions/authAction';
-// import Slider from 'react-bootstrap-slider';
-// import "bootstrap-slider/dist/css/bootstrap-slider.css"
-// import Map from './map.js'
 import Pageloadspiiner from '../../components/page_load_spinner';
+import history from '../../history';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -62,6 +58,11 @@ class Dashboard extends Component {
                 if(result.data){
                     this.setState({dashBoardData: result.data, dashBoardFlag: true});
                 }
+            }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
             }
         })
     }

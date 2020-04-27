@@ -8,6 +8,7 @@ import API from '../../factories/api'
 import Axios from 'axios';
 import { trls } from '../../factories/translate';
 import * as Common from '../../factories/common';
+import history from '../../history';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -83,7 +84,10 @@ class Adduserform extends Component {
                 this.props.removeState();
             })
             .catch(err => {
-            });
+                if(err.response.status===401){
+                    history.push('/login')
+                }
+            })
         }
     }
 

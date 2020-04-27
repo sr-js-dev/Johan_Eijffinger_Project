@@ -23,6 +23,7 @@ import ItemSearchform from './Item_searchform';
 // import history from '../../history';
 import Pageloadspiiner from '../../components/page_load_spinner';
 // import { add } from 'date-fns';
+import history from '../../history';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -82,7 +83,7 @@ class Placemanage extends Component {
                 if(result.data.value.length){
                     // let businessPartner = result.data.value.map( s => ({value:s.CardCode,label:s.CardName}));
                     let addressData = this.getShippingAddressOptionData(result.data.value);
-                    let shippingData = addressData[1].map( s => ({value:s.BPCode,label: s.Street+" "+s.City+" "+s.Country}));
+                    let shippingData = addressData[1].map( s => ({value:s.BPCode,label: s.Street+" "+s.ZipCode+" "+s.City+" "+s.Country}));
                     this.setState({businessPartnerOption: result.data.value, shippingAddressOption: shippingData, billAddress: addressData[0][0], shippingAddress: addressData[1], selectShippingAddress: shippingData[0], setSippingAddress: addressData[1][0]});
                 }
             }
@@ -199,7 +200,12 @@ class Placemanage extends Component {
             this.setState({itemData: response, pageLodingFlag: false});
         })
         .catch(err => {
-            this.setState({pageLodingFlag: false, itemFlag: true});
+            if(err.response.status===401){
+                history.push('/login')
+            }else{
+                this.setState({pageLodingFlag: false, itemFlag: true});
+            }
+           
         });;
     }
 
@@ -301,7 +307,7 @@ class Placemanage extends Component {
                 <Container>
                     <Form className="container product-form" onSubmit = { this.handleSubmit }>
                         <Row className="order__info-bill">
-                            <Col sm={4} style={{paddingLeft: 0, paddingTop: 10}}>
+                            <Col sm={6} style={{paddingLeft: 0, paddingTop: 10}}>
                                     <Form.Group as={Row} controlId="formPlaintextPassword">
                                         <Form.Label column sm="4">
                                             {trls("Customer_reference")}  
@@ -314,15 +320,6 @@ class Placemanage extends Component {
                                         <Form.Label column sm="4">
                                             {trls("Business_partner")}  
                                         </Form.Label>
-                                        {/* <Col sm="8" className="product-text">
-                                            <Select
-                                                name="usinesspartner"
-                                                placeholder={trls('Business_partner')}
-                                                options={businessPartnerOption}
-                                                onChange={val => this.setState({val1:val})}
-                                                // defaultValue = {this.getSupplierData()}
-                                            />
-                                        </Col> */}
                                         <Col sm="8" className="product-text">
                                             <Form.Control type="text" name="reference" required defaultValue = {businessPartnerOption[0] ? businessPartnerOption[0].CardName : ''} readOnly placeholder={trls('Customer_reference')} />
                                         </Col>
@@ -335,9 +332,7 @@ class Placemanage extends Component {
                                             <Form.Control type="text" name="contact" defaultValue = {userInfo.userName} required placeholder={trls('Contact')} />
                                         </Col>
                                     </Form.Group>
-                            </Col>
-                            <Col sm={4} style={{paddingLeft: 0, paddingTop: 10}}>
-                                <Form.Group as={Row} controlId="formPlaintextPassword">
+                                    <Form.Group as={Row} controlId="formPlaintextPassword">
                                     <Form.Label column sm="4">
                                         {trls("Shipping_Address")}  
                                     </Form.Label>
@@ -351,18 +346,18 @@ class Placemanage extends Component {
                                         />
                                     </Col>
                                 </Form.Group>
-                            </Col> 
-                            <Col sm={4} className = "bill-shipping__address">
+                            </Col>
+                            <Col sm={6} className = "bill-shipping__address">
                                 <div className="place-order__address">
                                     <p className="address-header">{trls('Billing_Address')}</p>
                                     <p>{billAddress.City ? billAddress.Street : '' }</p>
-                                    <p>{billAddress.City ? billAddress.City + " " + billAddress.ZipCode : ''}</p>
+                                    <p>{billAddress.City ? billAddress.ZipCode + " " + billAddress.City : ''}</p>
                                     <p>{billAddress.Country ? billAddress.Country : ''}</p>
                                 </div>
                                 <div className="place-order__address">
                                     <p className="address-header">{trls('Shipping_Address')}</p>
                                     <p>{setSippingAddress.City ? setSippingAddress.Street : '' }</p>
-                                    <p>{setSippingAddress.City ? setSippingAddress.City + " " + setSippingAddress.ZipCode : ''}</p>
+                                    <p>{setSippingAddress.City ? setSippingAddress.ZipCode + " " + setSippingAddress.City : ''}</p>
                                     <p>{setSippingAddress.Country ? setSippingAddress.Country : ''}</p>
                                 </div>
                             </Col>
@@ -449,14 +444,14 @@ class Placemanage extends Component {
                     )}
                 </div>
                 <div>
-                    <Button variant="primary" onClick={()=>this.handleAddRow()}><i className="fas fa-plus add-icon"></i>{trls('Click_to_make_new_row')}</Button> 
+                    <Button variant="light" onClick={()=>this.handleAddRow()}><i className="fas fa-plus add-icon"></i>{trls('Click_to_make_new_row')}</Button> 
                 </div>
                 <Col sm={4} style={{float: 'right', paddingLeft: 0, paddingRight: 0}}>
                     <div className="info-block info-block--green">
                         <span className="txt-bold">Order Total</span>
                         <span>{Common.formatMoney(totalAmount)}</span>
                     </div>
-                    <Button variant="primary" style={{float: 'right'}} onClick={()=>this.setState({modalResumeShow: true})}>{trls('Submit_Order')}</Button>
+                    <Button type="button" className="place-submit__order" onClick={()=>this.setState({modalResumeShow: true})}>Submit order</Button>
                 </Col>
             </Container>
             {slideFormFlag ? (

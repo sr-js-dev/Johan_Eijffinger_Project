@@ -883,7 +883,7 @@ table.dataTable.no-footer {
 }
 .place-order__address{
   width: 45%;
-  border: #68B0FA solid 1px;
+  border: #CCCCCC solid 1px;
   border-radius: 4px;
   padding-left: 0px;
   padding-top: 10px;
@@ -912,4 +912,28 @@ table.dataTable.no-footer {
   color: white !important;
   width: 1.2rem;
   height: 1.2rem;
+}
+.place-submit__order{
+	color: white;
+	background: #E15E35;
+	border-radius: 4px;	
+	height: 40px;
+  margin-top: -5px;
+  float: right;
+  border-color: #E15E35;
+}
+.place-submit__order:hover {
+  color:#fff;
+  background-color: #FF6434;
+  border-color: #FF6434;
+}
+.place-submit__order:not(:disabled):not(.disabled).active,.btn-primary:not(:disabled):not(.disabled):active,.show>.btn-primary.dropdown-toggle{
+  color:#fff;
+  background-color:#F35321;
+  border-color:#F35321
+}
+.place-submit__order.disabled,.btn-primary:disabled{
+  color:#fff;
+  background-color:#EFAE9A;
+  border-color:#EFAE9A
 }

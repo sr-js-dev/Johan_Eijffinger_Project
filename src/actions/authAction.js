@@ -2,6 +2,7 @@ import * as types from '../constants/actionTypes';
 import $ from 'jquery';
 import API from '../factories/api'
 import history from '../history';
+
 export const fetchLoginData = (params) => {
     return (dispatch) => {
         dispatch(fetchLoginDataFail(''));

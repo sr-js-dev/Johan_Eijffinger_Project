@@ -8,6 +8,8 @@ import Axios from 'axios';
 import { trls } from '../../factories/translate';
 import * as Common from '../../factories/common';
 import { BallBeat } from 'react-pure-loaders';
+import history from '../../history';
+
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -57,7 +59,10 @@ class Itemsearchform extends Component {
             }
         })
         .catch(err => {
-        });
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        })
     }
 
     selectItemData = (ItemCode) => {
@@ -108,13 +113,13 @@ class Itemsearchform extends Component {
                     <Col className="title add-product">{trls('Search_Item')}</Col>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="itemname" required placeholder={trls('Item_Name')}/>
+                            <Form.Control type="text" name="itemname" placeholder={trls('Item_Name')}/>
                             <label className="placeholder-label">{trls('Item_Name')}</label>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="collection" required placeholder={trls('Collection')}/>
+                            <Form.Control type="text" name="collection" placeholder={trls('Collection')}/>
                             <label className="placeholder-label">{trls('Collection')}</label>
                         </Col>
                     </Form.Group>
@@ -165,7 +170,7 @@ class Itemsearchform extends Component {
                     )}
                 </div>
                 <Col className="place-order__search-itemtable">
-                    <Button type="button" style={{width:"100px"}} onClick={()=>this.addOrderItem()}>{trls('Add_order')}</Button>
+                    <Button type="button" onClick={()=>this.addOrderItem()}>{trls('Add_to_order')}</Button>
                 </Col>
             </div>
         );

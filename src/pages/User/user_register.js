@@ -17,6 +17,7 @@ import * as Auth from '../../factories/auth';
 import Filtercomponent from '../../components/filtercomponent';
 // import history from '../../history';
 import * as authAction  from '../../actions/authAction';
+import history from '../../history';
 
 const mapStateToProps = state => ({ ...state.auth });
 
@@ -103,6 +104,11 @@ class Userregister extends Component {
                 }
             });
         })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        })
         
     }
     // filter module
@@ -138,6 +144,11 @@ class Userregister extends Component {
         .then(response => {
             this.setState({userUpdateData: response, mode:"update", slideFormFlag: true});
             Common.showSlideForm();
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
         });
     }
 
@@ -159,6 +170,11 @@ class Userregister extends Component {
         .then(result => {
             this.setState({loading:true})
             this.getUserData();               
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
         });
     }
 
@@ -240,6 +256,11 @@ class Userregister extends Component {
         })
         .then(response => {
             this.getUserData();    
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
         });
     }
 
@@ -256,6 +277,11 @@ class Userregister extends Component {
         })
         .then(response => {
             this.getUserData();    
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
         });
     }
 
@@ -281,6 +307,11 @@ class Userregister extends Component {
             window.localStorage.setItem('eijf_userName', response.claims.UserName);
             window.localStorage.setItem('eijf_role', response.claims.Role);
             this.setState({userInfo : Auth.getUserInfo()});
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
         });
     }
 

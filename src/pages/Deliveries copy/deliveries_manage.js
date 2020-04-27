@@ -19,6 +19,7 @@ import 'datatables.net';
 import history from '../../history';
 import * as Common from '../../factories/common';
 import Filtercomponent from '../../components/filtercomponent';
+import history from '../../history';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -93,6 +94,11 @@ class Deliveriesmanage extends Component {
                           }
                       );
                 }
+            }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
             }
         });
     }

@@ -109,6 +109,11 @@ class Ordermanage extends Component {
                     $('[name=order-table_length]').val( resultCount );
                 }
             }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
         });
     }
 
@@ -169,6 +174,11 @@ class Ordermanage extends Component {
                 this.downloadWithName("data:application/octet-stream;charset=utf-16le;base64,"+result.data.pdf, data.ItemCode+'.pdf');
             }
         })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        })
     }
 
     downloadWithName = (uri, name) => {
@@ -184,7 +194,6 @@ class Ordermanage extends Component {
     
     render(){   
         const {filterColunm, ordersData, pageLodingFlag} = this.state;
-        
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -243,7 +252,7 @@ class Ordermanage extends Component {
                                         <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
                                         <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
                                         <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>
-                                            <Row style={{justifyContent: "space-around"}}>
+                                            <Row style={{justifyContent: "space-around", width: 70}}>
                                                 <i className="far fa-file-pdf add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title"></span></i>
 												<i className="fas fa-trash-alt add-icon"><span className="action-title"></span></i>
 											</Row>
