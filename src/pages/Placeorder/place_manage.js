@@ -297,11 +297,19 @@ class Placemanage extends Component {
     }
 
     setOrderItem = (itemList) => {
+        let rowNum = this.state.rowNum;
+        let rows = this.state.rows;
         itemList.map((data, index) => {
-            data.rowId = index+1;
+            data.rowId = rowNum;
+            if(index===0){
+                rows[rowNum-1] = data;
+            }else{
+                rows.push(data);
+            }
+            rowNum += 1;
             return data
         })
-        this.setState({rows: itemList});
+        this.setState({rows: rows, rowNum: rowNum});
     }
 
     setLenghQuantity = (length, rowId) => {
