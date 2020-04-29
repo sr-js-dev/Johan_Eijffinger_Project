@@ -148,6 +148,7 @@ class Dashboard extends Component {
         if(dashBoardFlag && lastOrdersFlag && lastDeleiversFlag && lastOutstanding){
             lodingFlag = false;
         }
+        console.log('1111');
         return (
             <Container>
                 <div className="dashboard-header content__header content__header--with-line">
@@ -224,9 +225,9 @@ class Dashboard extends Component {
                             <table className="dashboard__bottom-item-table">
                                 <thead>
                                     <tr>
-                                        <th>{trls('DocNum')}</th>
-                                        <th>{trls('DocDate')}</th>
-                                        <th>{trls('DocTotal')}</th>
+                                        <th>#</th>
+                                        <th>{trls('Date')}</th>
+                                        <th>{trls('Total')}</th>
                                     </tr>
                                 </thead>
                                     {lastOrdersData &&(<tbody >
@@ -254,9 +255,9 @@ class Dashboard extends Component {
                             <table className="dashboard__bottom-item-table">
                                 <thead>
                                     <tr>
-                                        <th>{trls('DocNum')}</th>
-                                        <th>{trls('DocDate')}</th>
-                                        <th>{trls('DocTotal')}</th>
+                                        <th>#</th>
+                                        <th>{trls('Date')}</th>
+                                        <th>{trls('Total')}</th>
                                     </tr>
                                 </thead>
                                 {lastDeliveriesData &&(<tbody >
@@ -284,9 +285,9 @@ class Dashboard extends Component {
                             <table className="dashboard__bottom-item-table">
                                 <thead>
                                     <tr>
-                                        <th>{trls('DocNum')}</th>
-                                        <th>{trls('DocDate')}</th>
-                                        <th>{trls('DocTotal')}</th>
+                                        <th>#</th>
+                                        <th>{trls('Date')}</th>
+                                        <th>{trls('Total')}</th>
                                     </tr>
                                 </thead>
                                 {lastOutstandingData &&(<tbody >

@@ -8,7 +8,6 @@ import * as Common from '../../factories/common';
 import API from '../../factories/api'
 import Axios from 'axios';
 // import Select from 'react-select';
-import history from '../../history';
 import Pageloadspiiner from '../../components/page_load_spinner';
 
 const mapStateToProps = state => ({ 
@@ -66,7 +65,6 @@ class Patterncalculateform extends Component {
 
     handleAddRow = () => {
         let rowId = this.state.rowId;
-        const { addRow } = this.state;
         const item = {
           rowId: rowId
         };

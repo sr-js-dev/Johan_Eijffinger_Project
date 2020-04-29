@@ -6,6 +6,7 @@ import Header from '../components/header';
 import Dashboard from '../pages/Dashboard/dashboard_manage';
 import User from '../pages/User/user_register';
 import Order from '../pages/Order/order_manage';
+import Orderdetail from '../pages/Order/order_detail';
 import Deliveries from '../pages/Deliveries/deliveries_manage';
 import Salesinvoices from '../pages/Salesinvoices/salesinvoices_manage';
 import Returns from '../pages/Returns/returns_manage';
@@ -30,6 +31,7 @@ class Layout extends Component {
                   <Route path="/dashboard" component={Dashboard}/>
                   <Route path="/user" component={User}/>
                   <Route path="/orders" component={Order}/>
+                  <Route path="/order-detail" component={Orderdetail}/>
                   <Route path="/deliveries" component={Deliveries}/>
                   <Route path="/salesinvoices" component={Salesinvoices}/>
                   <Route path="/returns" component={Returns}/> 

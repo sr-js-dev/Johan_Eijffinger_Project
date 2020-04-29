@@ -1,21 +1,27 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux';
 import { trls } from '../../factories/translate';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 // import SessionManager from '../../components/session_manage';
-// import Select from 'react-select';
-// import API from '../../components/api'
-// import Axios from 'axios';
-// import * as Auth from '../../components/auth'
+import Select from 'react-select';
+import API from '../../factories/api'
+import * as Common from '../../factories/common';
+import Axios from 'axios';
+import * as Auth from '../../factories/auth'
 // import  { Link } from 'react-router-dom';
 // import * as authAction  from '../../actions/authAction';
 // import Slider from 'react-bootstrap-slider';
 // import "bootstrap-slider/dist/css/bootstrap-slider.css"
-// import $ from 'jquery';
+import SessionManager from '../../factories/session_manage';
+import $ from 'jquery';
 import { BallBeat } from 'react-pure-loaders';
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'datatables.net';
 // import history from '../../history';
+import Pageloadspiiner from '../../components/page_load_spinner';
+// import { add } from 'date-fns';
+import history from '../../history';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -25,12 +31,22 @@ const mapDispatchToProps = (dispatch) => ({
 
 });
 
-class Orderdetail extends Component {
+class Placemanage extends Component {
     _isMounted = false;
     constructor(props) {
+        let pathname = window.location.pathname;
+        let pathArray = pathname.split('/');
         super(props);
         this.state = {  
-            orderId: ''
+            orderData: [],
+            businessPartnerOption: [],
+            shippingAddressOption: [],
+            pageLodingFlag: false,
+            userInfo: Auth.getUserInfo(), 
+            billAddress: [],
+            shippingAddress: [],
+            setSippingAddress: [],
+            orderId: pathArray[2] ? pathArray[2] : '',
         };
     }
 
@@ -39,149 +55,226 @@ class Orderdetail extends Component {
     }
 
     componentDidMount() {
-        let pathname = window.location.pathname;
-        let pathArray = pathname.split('/')
-        let orderId = pathArray.pop();
-        this.setState({orderId: orderId})
+        this.getCustomerData();
     }
 
-    // showOrderDetail = (orderId) => {
-    //     history.push({
-    //         pathname: '/order-detail/orderId',
-    //         state: { id: orderId, newSubmit:true }
-    //       })
-    // }
-    
+    getCustomerData = () => {
+        this._isMounted = true;
+        this.setState({pageLodingFlag: true});
+        let params = {};
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetCustomerData, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                if(result.data.value.length){
+                    let addressData = this.getShippingAddressOptionData(result.data.value);
+                    let shippingData = addressData[1].map( s => ({value:s.BPCode,label: s.Street+" "+s.ZipCode+" "+s.City+" "+s.Country}));
+                    this.setState({businessPartnerOption: result.data.value, shippingAddressOption: shippingData, billAddress: addressData[0][0], shippingAddress: addressData[1], selectShippingAddress: shippingData[0], setSippingAddress: addressData[1][0]});
+                }
+                this.getOrderData();
+            }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        });
+    }
+
+    getShippingAddressOptionData = (optionData) => {
+        let returnOptionData = [];
+        let billAddress = [];
+        let shippingAddress = [];
+        optionData.map((data, index)=>{
+            data.BPAddresses.map((bpAddress, key)=>{
+                if(bpAddress.AddressName==="Bill to"){
+                    billAddress.push(bpAddress);
+                }else if(bpAddress.AddressName==="Ship To"){
+                    shippingAddress.push(bpAddress)
+                }
+                return bpAddress;
+            })
+            return data;
+        });
+        returnOptionData[0] = billAddress;
+        returnOptionData[1] = shippingAddress;
+        return returnOptionData;
+    }
+
+    getOrderData = () => {
+        this._isMounted = true;
+        this.setState({pageLodingFlag: true});
+        const { orderId } = this.state;
+        var settings = {
+            "url": API.GetOrderDetails+orderId,
+            "method": "GET",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+        }
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            if(this._isMounted){
+                if(response){
+                    this.setState({orderData: response})
+                }
+                this.setState({pageLodingFlag: false})
+            }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        });
+    }
+
     render(){   
+        let totalAmount = 0;
+        const { businessPartnerOption, 
+            shippingAddressOption, 
+            pageLodingFlag, 
+            userInfo, 
+            billAddress, 
+            setSippingAddress,
+            orderData,
+            selectShippingAddress,
+        } = this.state;
+        orderData.map((data, key)=>{
+            totalAmount +=  data.OpenAmount ? data.OpenAmount : 0;
+            return data
+        })
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
                     <div id="google_translate_element"></div>
-                    <h2 className="title">{trls("Orders")} > <span style={{color: "#1755C7", fontSize: 22}}>{this.state.orderId}</span></h2>
+                    <h2 className="title">{trls("Place_an_order")}</h2>
                 </div>
                 <Container>
-                    <div className="order__info-salesNum">
-                        {trls("Sales_Number")}: <span style={{color: "#1755C7", fontSize: 18}}>{this.state.orderId}</span>
-                    </div>
-                    <Row className="order__info-bill">
-                        <Col sm={4} style={{paddingLeft: 0, paddingTop: 10}}>
-                            <div style={{fontWeight: "bold"}}>Bill to</div>
-                            <div>Johan Boerema</div>
-                            <div>Neue Mainzer Str. 52-58, 60311 Frankfurt am Main, Germany</div>
-                        </Col>
-                        <Col sm={4} style={{paddingLeft: 0, paddingTop: 10}}>
-                            <div style={{fontWeight: "bold"}}>Ship to</div>
-                            <div>Johan Boerema</div>
-                            <div>Neue Mainzer Str. 52-58, 60311 Frankfurt am Main, Germany</div>
-                        </Col>
-                        <Col sm={4} style={{ paddingLeft: 0, paddingTop: 10}}>
-                            <div style={{float: "right"}}>
-                                <div><span style={{fontWeight: "bold", marginRight: 10}}>Order Date:</span>09/04/18</div>
-                                <div><span style={{fontWeight: "bold", marginRight: 10}}>Order Status:</span><img src={require("../../assets/images/icon-open-box-gray.svg")} style={{marginRight: 10}} alt={'open'}/>Open</div>
-                                <div><span style={{fontWeight: "bold", marginRight: 10}}>PO Ref No:</span>#ABC-728178</div>
-                            </div>
-                            
-                        </Col>
-                    </Row>
+                    <Form className="container product-form" onSubmit = { this.handleSubmit }>
+                        <Row className="order__info-bill">
+                            <Col sm={6} style={{paddingLeft: 0, paddingTop: 10}}>
+                                    <Form.Group as={Row} controlId="formPlaintextPassword">
+                                        <Form.Label column sm="4">
+                                            {trls("Customer_reference")}  
+                                        </Form.Label>
+                                        <Col sm="8" className="product-text">
+                                            <Form.Control type="text" name="reference" required readOnly placeholder={trls('Customer_reference')} />
+                                        </Col>
+                                    </Form.Group>
+                                    <Form.Group as={Row} controlId="formPlaintextPassword">
+                                        <Form.Label column sm="4">
+                                            {trls("Business_partner")}  
+                                        </Form.Label>
+                                        <Col sm="8" className="product-text">
+                                            <Form.Control type="text" name="reference" required defaultValue = {businessPartnerOption[0] ? businessPartnerOption[0].CardName : ''} readOnly placeholder={trls('Customer_reference')} />
+                                        </Col>
+                                    </Form.Group>
+                                    <Form.Group as={Row} controlId="formPlaintextPassword">
+                                        <Form.Label column sm="4">
+                                            {trls("Contact")}  
+                                        </Form.Label>
+                                        <Col sm="8" className="product-text">
+                                            <Form.Control type="text" name="contact" defaultValue = {userInfo.userName} readOnly required placeholder={trls('Contact')} />
+                                        </Col>
+                                    </Form.Group>
+                                    <Form.Group as={Row} controlId="formPlaintextPassword">
+                                    <Form.Label column sm="4">
+                                        {trls("Shipping_Address")}  
+                                    </Form.Label>
+                                    <Col sm="8" className="product-text">
+                                        <Select
+                                            name="usinesspartner"
+                                            placeholder={trls('Shipping_Address')}
+                                            options={shippingAddressOption}
+                                            onChange={val => this.changeShippigAddress(val)}
+                                            value={selectShippingAddress}
+                                            isDisabled={true}
+                                        />
+                                    </Col>
+                                </Form.Group>
+                            </Col>
+                            <Col sm={6} className = "bill-shipping__address">
+                                <div className="place-order__address">
+                                    <p className="address-header">{trls('Billing_Address')}</p>
+                                    <p>{billAddress.City ? billAddress.Street : '' }</p>
+                                    <p>{billAddress.City ? billAddress.ZipCode + " " + billAddress.City : ''}</p>
+                                    <p>{billAddress.Country ? billAddress.Country : ''}</p>
+                                </div>
+                                <div className="place-order__address">
+                                    <p className="address-header">{trls('Shipping_Address')}</p>
+                                    <p>{setSippingAddress.City ? setSippingAddress.Street : '' }</p>
+                                    <p>{setSippingAddress.City ? setSippingAddress.ZipCode + " " + setSippingAddress.City : ''}</p>
+                                    <p>{setSippingAddress.Country ? setSippingAddress.Country : ''}</p>
+                                </div>
+                            </Col>
+                        </Row>                   
+                    </Form>
                     <div className="table-responsive">
                         <table id="example" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>{trls("Item_Name")}</th>
-                                <th>{trls("Description")}</th>
+                                <th>{trls("Product_code")}</th>
+                                <th>{trls("Product_description")}</th>
+                                <th>{trls("Unit")}</th>
                                 <th>{trls("Quantity")}</th>
-                                <th>{trls("Shipped_Quantity")}</th>
                                 <th>{trls("Price")}</th>
+                                <th>{trls("Amount")}</th>
+                                <th>{trls("Image")}</th>
+                                <th>{trls("Customer_reference")}</th>
+                                <th>{trls("Expected_deliver_week")}</th>
                                 <th>{trls("Action")}</th>
                             </tr>
                         </thead>
-                        {/* {productData && !this.state.loading&&(<tbody>
+                        {orderData &&(<tbody>
                             {
-                                productData.map((data,i) =>(
-                                <tr id={data.id} key={i}>
-                                    <td>
-                                    <div id={data.id} style={{cursor: "pointer", color:'#004388', fontSize:"14px", fontWeight:'bold'}} onClick={this.loadProductDetail}>{data.Productcode}</div>
+                                orderData.map((data,index) =>(
+                                <tr id={index} key={index}>
+                                    <td style={{display: "flex"}}>
+                                        <Form.Control id={"itemCode"+data.rowId} disabled type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}/>
+                                        <i className="fas fa-search place-order__itemcode-icon"></i>
                                     </td>
                                     <td>
-                                        {data.Supplier}
+                                        <Form.Control type="text" name="description" disabled readOnly required defaultValue = {data.ItemDescription ? data.ItemDescription : ''} placeholder={trls('Description')} />
                                     </td>
-                                    <td>{data.Product}</td>
-                                    <td>{data.Customer}</td>
-                                    <td>{data.Productgroup}</td>
-                                    <td>{data.SalesUnit}</td>
-                                    <td>{data.Kilogram}</td>
                                     <td>
-                                    <Row style={{justifyContent:"center"}}>
-                                        <img src={require("../../assets/images/icon-orders.svg")} id={data.id} alt="copy" className="statu-item" onClick={()=>this.copyProduct(data)}/>
-                                    </Row>
+                                        {/* {data.SalesUnit ? data.SalesUnit : ''} */}
+                                    </td>
+                                    <td>
+                                        <Row style={{justifyContent: "space-around"}}>
+                                            <Form.Control type="text" name="quantity" style={{width: '80%'}} disabled required placeholder={trls('Quantity')} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)}/>
+                                        </Row>
+                                    </td>
+                                    <td>
+                                        {/* {Common.formatMoney(itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice : '')} */}
+                                        {/* {Common.formatMoney()} */}
+                                    </td>
+                                    <td>
+                                        {data.OpenAmount ? Common.formatMoney(data.OpenAmount) : ''}
+                                    </td>   
+                                    <td>
+                                        {data.picture&&(
+                                            <img src={ data.Image ? "data:image/png;base64," + data.picture : ''} className = "image__zoom" alt={index}></img>
+                                        ) 
+                                        }
+                                    </td>
+                                    <td>
+                                        <Form.Control type="text" name="customerReference" disabled required placeholder={trls('Customer_reference')} onChange={(evt)=>this.setState({quantity: evt.target.value})} />
+                                    </td>
+                                    <td>
+                                        <DatePicker name="startdate" className="myDatePicker" disabled dateFormat="dd-MM-yyyy" selected={new Date(data.docDate)} onChange={date =>this.setState({startdate:date})} />
+                                    </td>
+                                    <td>
+                                        <Row style={{justifyContent: "space-around"}}>
+                                            <i className="fas fa-trash-alt add-icon" disabled></i>
+                                        </Row>
                                     </td>
                                 </tr>
                             ))
                             }
-                        </tbody>)} */}
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <span className="txt-bold">7234</span>
-                                </td>
-                                <td>
-                                    <div className="open-order__item">
-                                        <img src="https://eijffinger-585084.c.cdn77.org/content/images/thumbs/000/0009596_pip-studio-5_480.png" style={{width: 25}} alt={'img1'}/>
-                                        <span>Lorem ipsum dolor sit amet</span>
-                                    </div>
-                                </td>
-                                <td>Vivamus at dolor ut nunc vehicula suscipit</td>
-                                <td>
-                                    20
-                                </td>
-                                <td>20</td>
-                                <td>
-                                    €1,025.00
-                                </td>
-                                <td style={{textAlign: 'center'}}>
-                                    <i className="fas fa-trash-alt action-icon" style={{color: '#DF3535'}}></i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <span className="txt-bold">7235</span>
-                                </td>
-                                <td>
-                                    <div className="open-order__item">
-                                        <img src="https://eijffinger-585084.c.cdn77.org/content/images/thumbs/000/0009596_pip-studio-5_480.png" style={{width: 25}} alt={'img2'}/>
-                                        <span>Lorem ipsum dolor sit amet</span>
-                                    </div>
-                                </td>
-                                <td>Vivamus at dolor ut nunc vehicula suscipit</td>
-                                <td>
-                                    20
-                                </td>
-                                <td>10</td>
-                                <td>
-                                    €1,025.00
-                                </td>
-                                <td style={{textAlign: 'center'}}>
-                                    <i className="fas fa-trash-alt action-icon" style={{color: '#DF3535'}}></i>
-                                </td>
-                            </tr>
-                        </tbody>
+                        </tbody>)}
                     </table>
-                    <div className="open-order__total-block">
-                        <div className="open-order__total-block-row">
-                            <span className="txt-bold">Sub-total:</span>
-                            <span>€4,100.00</span>
-                        </div>
-                        <div className="open-order__total-block-row">
-                            <span className="txt-bold">Discount:</span>
-                            <span>0.00%</span>
-                        </div>
-                        <div className="open-order__total-block-row">
-                            <span className="txt-bold">VAT:</span>
-                            <span>20%</span>
-                        </div>
-                        <div className="open-order__total">EUR 4,100.00</div>
-                    </div>
                     { this.state.loading&& (
                     <div className="col-md-4 offset-md-4 col-xs-12 loading" style={{textAlign:"center"}}>
                         <BallBeat
@@ -191,9 +284,20 @@ class Orderdetail extends Component {
                     </div>
                     )}
                 </div>
+                <div>
+                    <Button variant="light" disabled onClick={()=>this.handleAddRow()}><i className="fas fa-plus add-icon"></i>{trls('Click_to_make_new_row')}</Button> 
+                </div>
+                <Col sm={4} style={{float: 'right', paddingLeft: 0, paddingRight: 0}}>
+                    <div className="info-block info-block--green">
+                        <span className="txt-bold">Order Total</span>
+                        <span>{Common.formatMoney(totalAmount)}</span>
+                    </div>
+                    <Button type="button" className="place-submit__order" disabled onClick={()=>this.setState({modalResumeShow: true})}>Submit order</Button>
+                </Col>
             </Container>
+            <Pageloadspiiner loading = {pageLodingFlag}/>
         </div>
         );
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Orderdetail);
+export default connect(mapStateToProps, mapDispatchToProps)(Placemanage);

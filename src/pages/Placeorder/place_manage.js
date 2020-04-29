@@ -121,7 +121,6 @@ class Placemanage extends Component {
     
     handleAddRow = () => {
         let rowNum = this.state.rowNum;
-        const { addRow } = this.state;
         const item = {
           rowId: rowNum
         };
@@ -328,7 +327,6 @@ class Placemanage extends Component {
             billAddress, 
             setSippingAddress,
             itemQuantityData,
-            itemProductCodeData,
             rows,
             selectShippingAddress,
             itemFlag,

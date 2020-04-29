@@ -20,7 +20,7 @@ import history from '../../history';
 import * as Common from '../../factories/common';
 import Filtercomponent from '../../components/filtercomponent';
 import Pageloadspiiner from '../../components/page_load_spinner';
-import * as Auth from '../../factories/auth';
+// import * as Auth from '../../factories/auth';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -194,27 +194,28 @@ class Ordermanage extends Component {
     }
 
     showPlaceOrder = (orderId) => {
-        this._isMounted = true;
-        var settings = {
-            "url": API.GetOrderDetails+orderId,
-            "method": "GET",
-            "headers": {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer "+Auth.getUserToken(),
-        }
-        }
-        $.ajax(settings).done(function (response) {
-        })
-        .then(response => {
-            if(this._isMounted){
-                console.log('22222', response);
-            }
-        })
-        .catch(err => {
-            if(err.response.status===401){
-                history.push('/login')
-            }
-        });
+        // this._isMounted = true;
+        // var settings = {
+        //     "url": API.GetOrderDetails+orderId,
+        //     "method": "GET",
+        //     "headers": {
+        //         "Content-Type": "application/json",
+        //         "Authorization": "Bearer "+Auth.getUserToken(),
+        // }
+        // }
+        // $.ajax(settings).done(function (response) {
+        // })
+        // .then(response => {
+        //     if(this._isMounted){
+        //         console.log('22222', response);
+        //     }
+        // })
+        // .catch(err => {
+        //     if(err.response.status===401){
+        //         history.push('/login')
+        //     }
+        // });
+        history.push('/order-detail/'+orderId);
     }
     
     render(){   
@@ -279,7 +280,7 @@ class Ordermanage extends Component {
                                         <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>
                                             <Row style={{justifyContent: "space-around", width: 70}}>
                                                 <i className="far fa-file-pdf add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title"></span></i>
-												<i className="fas fa-trash-alt add-icon"><span className="action-title"></span></i>
+												{/* <i className="fas fa-trash-alt add-icon"><span className="action-title"></span></i> */}
 											</Row>
                                         </td>
                                     </tr>
