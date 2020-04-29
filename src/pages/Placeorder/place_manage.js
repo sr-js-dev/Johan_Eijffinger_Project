@@ -219,7 +219,9 @@ class Placemanage extends Component {
                 return data;
             })
             this.setState({itemData: response, orderLineNumber: lineNumber, slidePatternFormFlag: response.U_DBS_PARTIJCONTR==="Y" ? true : false, pageLodingFlag: false, itemCode: itemCode, rowId: rowId, rows: rows});
-            Common.showSlideForm();
+            if(response.U_DBS_PARTIJCONTR==="Y"){
+                Common.showSlideForm();
+            }
         })
         .catch(err => {
             itemFlag[rowId]=true;
@@ -331,9 +333,9 @@ class Placemanage extends Component {
                 return data
             })
         }
-        // console.log('123', rows);
+        console.log('123', rows);
         // console.log('33232', itemPriceData);
-        // console.log('itemQuantityData', itemQuantityData);
+        console.log('itemQuantityData', itemQuantityData);
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -431,7 +433,7 @@ class Placemanage extends Component {
                                     </td>
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>
-                                            <Form.Control type="text" name="quantity" style={{width: '80%'}} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? Common.formatNumber(itemQuantityData[data.rowId]) : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId)}/>
+                                            <Form.Control type="text" name="quantity" style={{width: '80%'}} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId)}/>
                                         </Row>
                                     </td>
                                     <td>
