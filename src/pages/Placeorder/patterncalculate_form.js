@@ -171,7 +171,7 @@ class Patterncalculateform extends Component {
                         <Form className="container product-form" onSubmit = { this.handleSubmit }>
                             <Form.Group as={Row} controlId="email">
                                 <Form.Label column sm="3">
-                                    {trls('Orderline')}   
+                                    {trls('Pattern_calculation')}   
                                 </Form.Label>
                                 <Col sm="9" className="product-text place-pattern__form">
                                     <Form.Control type="text" name="role" className="input-text" disabled defaultValue={orderLineNumber} required placeholder={trls('OrderNumber')} />

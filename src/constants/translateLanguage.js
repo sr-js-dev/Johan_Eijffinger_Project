@@ -158,7 +158,8 @@ export const TRANSLATIONS = {
       Row_length_calculated: 'Row length calculated',
       Total_row_length: 'Total row length',
       Total_lengh: 'Total length',
-      Add_to_row: 'Add to row'
+      Add_to_row: 'Add to row',
+      Pattern_calculation: 'Pattern calculation'
     },
 
     Dutch: {
@@ -320,7 +321,8 @@ export const TRANSLATIONS = {
       Row_length_calculated: 'Rij lengte berekend',
       Total_row_length: 'Totaal rij lengte',
       Total_lengh: 'Totaal lengte',
-      Add_to_row: 'Toevoegen aan rij'
+      Add_to_row: 'Toevoegen aan rij',
+      Pattern_calculation: 'Patroonberekening'
     }, 
     
     German: {
@@ -482,7 +484,8 @@ export const TRANSLATIONS = {
       Row_length_calculated: 'Reihe long berechnet',
       Total_row_length: 'Gesamt Reihe Länge',
       Total_lengh: 'Gesamt Länge',
-      Add_to_row: 'Zur Zeile hinzufügen'
+      Add_to_row: 'Zur Zeile hinzufügen',
+      Pattern_calculation: 'Musterberechnung'
     },
 
     French: {
@@ -644,6 +647,7 @@ export const TRANSLATIONS = {
       Row_length_calculated: 'Rangée longueur calculé',
       Total_row_length: 'Total rangée longueur',
       Total_lengh: 'Total longueur',
-      Add_to_row: 'Ajouter à la ligne'
+      Add_to_row: 'Ajouter à la ligne',
+      Pattern_calculation: 'Calculate the model'
     }
   };
