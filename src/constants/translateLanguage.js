@@ -150,7 +150,15 @@ export const TRANSLATIONS = {
       Order: 'Order #',
       Language: 'Language',
       Search_Item: 'Search Item',
-      Add_to_order: 'Add to order'
+      Add_to_order: 'Add to order',
+      Orderline: 'Orderline',
+      Staggered: 'Staggered',
+      Rows: 'Rows',
+      Row_length: 'Row length',
+      Row_length_calculated: 'Row length calculated',
+      Total_row_length: 'Total row length',
+      Total_lengh: 'Total length',
+      Add_to_row: 'Add to row'
     },
 
     Dutch: {
@@ -305,6 +313,14 @@ export const TRANSLATIONS = {
       Language: 'Taal',
       Search_Item: 'Item zoeken',
       Add_to_order: 'Toevoegen aan bestelling',
+      Orderline: 'Orderregel',
+      Staggered: 'Wankelend',
+      Rows: 'Rijen',
+      Row_length: 'Rij lengte',
+      Row_length_calculated: 'Rij lengte berekend',
+      Total_row_length: 'Totaal rij lengte',
+      Total_lengh: 'Totaal lengte',
+      Add_to_row: 'Toevoegen aan rij'
     }, 
     
     German: {
@@ -459,6 +475,14 @@ export const TRANSLATIONS = {
       Language: 'Sprache',
       Search_Item: 'Artikel suchen',
       Add_to_order: 'Zur Bestellung hinzufügen',
+      Orderline: 'Bestelllinie',
+      Staggered: 'Gestaffelt',
+      Rows: 'Reihen',
+      Row_length: 'Zeilenlänge',
+      Row_length_calculated: 'Reihe long berechnet',
+      Total_row_length: 'Gesamt Reihe Länge',
+      Total_lengh: 'Gesamt Länge',
+      Add_to_row: 'Zur Zeile hinzufügen'
     },
 
     French: {
@@ -612,6 +636,14 @@ export const TRANSLATIONS = {
       Order: 'Ordre #',
       Language: 'Langue',
       Search_Item: "Rechercher un élément",
-      Add_to_order: 'Ajouter à la commande'
+      Add_to_order: 'Ajouter à la commande',
+      Orderline: 'Order look like',
+      Staggered: 'Décalé',
+      Rows: 'Lignes',
+      Row_length: 'Longueur de ligne',
+      Row_length_calculated: 'Rangée longueur calculé',
+      Total_row_length: 'Total rangée longueur',
+      Total_lengh: 'Total longueur',
+      Add_to_row: 'Ajouter à la ligne'
     }
   };

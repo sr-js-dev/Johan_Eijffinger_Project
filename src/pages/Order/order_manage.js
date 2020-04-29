@@ -20,6 +20,7 @@ import history from '../../history';
 import * as Common from '../../factories/common';
 import Filtercomponent from '../../components/filtercomponent';
 import Pageloadspiiner from '../../components/page_load_spinner';
+import * as Auth from '../../factories/auth';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -191,6 +192,30 @@ class Ordermanage extends Component {
     openPlaceOrder = () => {
         history.push('/placemanage');
     }
+
+    showPlaceOrder = (orderId) => {
+        this._isMounted = true;
+        var settings = {
+            "url": API.GetOrderDetails+orderId,
+            "method": "GET",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+        }
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            if(this._isMounted){
+                console.log('22222', response);
+            }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        });
+    }
     
     render(){   
         const {filterColunm, ordersData, pageLodingFlag} = this.state;
@@ -244,7 +269,7 @@ class Ordermanage extends Component {
                             {
                                 ordersData.map((data,i) =>(
                                     <tr id={i} key={i}>
-                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}>{data.DocNum}</td>
+                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div id={data.id} className="action-div" onClick={()=>this.showPlaceOrder(data.DocNum)}>{data.DocNum}</div></td>
                                         <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
                                         <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenQty > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenQty > 0 ? "Open" : 'Send'}</div></td>
                                         <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemName}</td>

@@ -80,6 +80,11 @@ class Dashboard extends Component {
                
             }
         })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        })
     }
 
     getLastDeliveriesData = () => {
@@ -94,6 +99,11 @@ class Dashboard extends Component {
                 }
             }
         })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        })
     }
 
     getLastOutstandingData = () => {
@@ -106,6 +116,11 @@ class Dashboard extends Component {
                 if(result.data.value){
                     this.setState({lastOutstandingData: result.data.value, lastOutstanding: true})
                 }
+            }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
             }
         })
     }

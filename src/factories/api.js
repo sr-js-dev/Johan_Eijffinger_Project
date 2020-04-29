@@ -20,10 +20,12 @@ export default {
     GetDownloadFile: `${BASEURL}/api/SapProxy/pdf`,
     PostLoginAsUser: `${BASEURL}/api/Token/LoginAs/`,
     GetCustomerData: `${BASEURL}/api/SapFactory/execute/get/GetCustomer`,
-    GetItemData: `${BASEURL}/api/Items/`,
+    GetItemData: `${BASEURL}/api/Items/StockItems/`,
     GetDiscountPrice: `${BASEURL}/api/SapProxy/discountprice`,
     GetDashboardData: `${BASEURL}/api/Dashboard`,
     PostItems: `${BASEURL}/api/Items`,
+    GetOrderDetails: `${BASEURL}/api/Orders/GetOrderDetails/`,
+    PostPatroonberekening: `${BASEURL}/api/SapProxy/patroonberekening`,
   };
   
   

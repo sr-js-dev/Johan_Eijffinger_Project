@@ -59,6 +59,17 @@ export const formatPercent = (num) => {
    
 };
 
+export const formatNumber = (num) => {
+    num = parseFloat(num);
+    if(num){
+        var value = num.toFixed(2);
+        return  value.toString();
+    }else{
+        return "0.00" 
+    }
+   
+};
+
 export const formatDateSecond = (date) =>{
     if(date){
         var dateStr = date.split('-')
