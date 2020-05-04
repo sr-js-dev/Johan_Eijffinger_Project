@@ -882,6 +882,7 @@ table.dataTable.no-footer {
   margin-top: 12px;
 }
 .place-order__address{
+  max-height: 165px;
   width: 45%;
   border: #CCCCCC solid 1px;
   border-radius: 4px;
@@ -949,4 +950,10 @@ table.dataTable.no-footer {
 .pattern-total__length{
   background: rgba(2, 11, 14, 0.05);
   margin-bottom: 20px;
+}
+.order-docdue__datepicker{
+  height: 35px;
+}
+.order_detail-table{
+  max-height: 100px;
 }

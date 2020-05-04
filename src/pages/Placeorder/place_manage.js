@@ -24,6 +24,7 @@ import Patterncalculateform from './patterncalculate_form';
 import Pageloadspiiner from '../../components/page_load_spinner';
 // import { add } from 'date-fns';
 import history from '../../history';
+import Orderdetailform from './orderdetail_form';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -65,7 +66,12 @@ class Placemanage extends Component {
             slidePatternFormFlag: false,
             addRow: false,
             orderLineNumber: '',
-            rowNum: 0
+            rowNum: 0,
+            currentUserInfo: Auth.getLoggedUserInfo(),
+            customer_reference: '',
+            docDueDate: new Date(),
+            orderDetailData: [],
+            orderExpenses: []
         };
     }
 
@@ -85,7 +91,6 @@ class Placemanage extends Component {
         .then(result => {
             if(this._isMounted){
                 if(result.data.value.length){
-                    // let businessPartner = result.data.value.map( s => ({value:s.CardCode,label:s.CardName}));
                     let addressData = this.getShippingAddressOptionData(result.data.value);
                     let shippingData = addressData[1].map( s => ({value:s.BPCode,label: s.Street+" "+s.ZipCode+" "+s.City+" "+s.Country}));
                     this.setState({businessPartnerOption: result.data.value, shippingAddressOption: shippingData, billAddress: addressData[0][0], shippingAddress: addressData[1], selectShippingAddress: shippingData[0], setSippingAddress: addressData[1][0]});
@@ -103,7 +108,6 @@ class Placemanage extends Component {
         let returnOptionData = [];
         let billAddress = [];
         let shippingAddress = [];
-        // let shippingAddress = data.BPAddresses.filter(item => item.AddressName==="Ship To");
         optionData.map((data, index)=>{
             data.BPAddresses.map((bpAddress, key)=>{
                 if(bpAddress.AddressName==="Bill to"){
@@ -139,6 +143,86 @@ class Placemanage extends Component {
         this.setState({productDesription: evt.target.value, itemPrice: 120, unit: 'unit'})
     }
 
+    onSubmitOrder = () => {
+        this._isMounted = true;
+        this.setState({pageLodingFlag: true});
+        const { currentUserInfo, customer_reference, docDueDate, setSippingAddress, billAddress, rows, itemQuantityData } = this.state;
+        let documentLineArray = [];
+        if(rows){
+            rows.map((data, index)=>{
+                let lineArray = [];
+                lineArray = {
+                    ItemCode: data.ItemCode,
+                    Quantity: itemQuantityData[data.rowId]
+                }
+                documentLineArray.push(lineArray);
+                return data;
+            })
+        }
+        let params = {
+            "requestData": {
+                "CardCode": currentUserInfo.SapCustomerCode,
+                "DocDate": Common.formatDate1(new Date()),
+                "DocDueDate": Common.formatDate1(docDueDate),
+                "Reference1": customer_reference,
+                 "BillingAddress": {
+                        "ShipToStreet": setSippingAddress.Street,
+                        "ShipToStreetNo": null,
+                        "ShipToBlock": null,
+                        "ShipToBuilding": "",
+                        "ShipToCity": setSippingAddress.City,
+                        "ShipToZipCode": setSippingAddress.ZipCode,
+                        "ShipToCounty": null,
+                        "ShipToState": null,
+                        "ShipToCountry": setSippingAddress.Country,
+                        "ShipToAddressType": null,
+                        "BillToStreet": billAddress.Street,
+                        "BillToStreetNo": null,
+                        "BillToBlock": null,
+                        "BillToBuilding": "",
+                        "BillToCity": billAddress.City,
+                        "BillToZipCode": billAddress.ZipCode,
+                        "BillToCounty": null,
+                        "BillToState": null,
+                        "BillToCountry": "NL",
+                        "BillToAddressType": null,
+                        "ShipToGlobalLocationNumber": null,
+                        "BillToGlobalLocationNumber": null,
+                        "ShipToAddress2": null,
+                        "ShipToAddress3": null,
+                        "BillToAddress2": null,
+                        "BillToAddress3": null,
+                        "PlaceOfSupply": null,
+                        "PurchasePlaceOfSupply": null
+                     },
+                     "DocumentLines": documentLineArray
+            },
+              "parameters": {
+              }
+        }
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.PostOrder, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                let param = {
+                    "docEntry": result.data.DocEntry
+                }
+                result.data.customerReference = customer_reference;
+                let orderDetailData = result.data;
+                Axios.post(API.GetOrderExpenses, param, headers)
+                .then(result => {
+                    if(this._isMounted){
+                        this.setState({orderDetailData: orderDetailData, showDetailModal: true, orderExpenses: result.data, pageLodingFlag: false});
+                    }
+                })
+            }
+        })
+        // .catch(err => {
+        //     if(err.response.status===401){
+        //         history.push('/login')
+        //     }
+        // });
+    }
     // getItemData = (itemCode, rowId) => {
     //     this._isMounted = true;
     //     let itemData = this.state.itemData;
@@ -342,7 +426,8 @@ class Placemanage extends Component {
             selectShippingAddress,
             itemFlag,
             slideItemFormFlag,
-            slidePatternFormFlag
+            slidePatternFormFlag,
+            docDueDate
         } = this.state;
         if(itemPriceData){
             rows.map((data, key)=>{
@@ -360,31 +445,31 @@ class Placemanage extends Component {
                     <Form className="container product-form" onSubmit = { this.handleSubmit }>
                         <Row className="order__info-bill">
                             <Col sm={6} style={{paddingLeft: 0, paddingTop: 10}}>
-                                    <Form.Group as={Row} controlId="formPlaintextPassword">
-                                        <Form.Label column sm="4">
-                                            {trls("Customer_reference")}  
-                                        </Form.Label>
-                                        <Col sm="8" className="product-text">
-                                            <Form.Control type="text" name="reference" required placeholder={trls('Customer_reference')} />
-                                        </Col>
-                                    </Form.Group>
-                                    <Form.Group as={Row} controlId="formPlaintextPassword">
-                                        <Form.Label column sm="4">
-                                            {trls("Business_partner")}  
-                                        </Form.Label>
-                                        <Col sm="8" className="product-text">
-                                            <Form.Control type="text" name="reference" required defaultValue = {businessPartnerOption[0] ? businessPartnerOption[0].CardName : ''} readOnly placeholder={trls('Customer_reference')} />
-                                        </Col>
-                                    </Form.Group>
-                                    <Form.Group as={Row} controlId="formPlaintextPassword">
-                                        <Form.Label column sm="4">
-                                            {trls("Contact")}  
-                                        </Form.Label>
-                                        <Col sm="8" className="product-text">
-                                            <Form.Control type="text" name="contact" defaultValue = {userInfo.userName} required placeholder={trls('Contact')} />
-                                        </Col>
-                                    </Form.Group>
-                                    <Form.Group as={Row} controlId="formPlaintextPassword">
+                                <Form.Group as={Row} controlId="formPlaintextPassword">
+                                    <Form.Label column sm="4">
+                                        {trls("Customer_reference")}  
+                                    </Form.Label>
+                                    <Col sm="8" className="product-text">
+                                        <Form.Control type="text" name="reference" required placeholder={trls('Customer_reference')} onChange = {(evt)=>this.setState({customer_reference: evt.target.value})} />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} controlId="formPlaintextPassword">
+                                    <Form.Label column sm="4">
+                                        {trls("Business_partner")}  
+                                    </Form.Label>
+                                    <Col sm="8" className="product-text">
+                                        <Form.Control type="text" name="reference" required defaultValue = {businessPartnerOption[0] ? businessPartnerOption[0].CardName : ''} readOnly placeholder={trls('Customer_reference')} />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} controlId="formPlaintextPassword">
+                                    <Form.Label column sm="4">
+                                        {trls("Contact")}  
+                                    </Form.Label>
+                                    <Col sm="8" className="product-text">
+                                        <Form.Control type="text" name="contact" defaultValue = {userInfo.userName} required placeholder={trls('Contact')} />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} controlId="formPlaintextPassword">
                                     <Form.Label column sm="4">
                                         {trls("Shipping_Address")}  
                                     </Form.Label>
@@ -396,6 +481,14 @@ class Placemanage extends Component {
                                             onChange={val => this.changeShippigAddress(val)}
                                             value={selectShippingAddress}
                                         />
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} controlId="formPlaintextPassword">
+                                    <Form.Label column sm="4">
+                                        {trls("DocDueDate")}  
+                                    </Form.Label>
+                                    <Col sm="8" className="product-text">
+                                        <DatePicker name="docDueDate" className="myDatePicker order-docdue__datepicker" dateFormat="dd-MM-yyyy" selected={new Date(docDueDate)} onChange={date =>this.setState({docDueDate:date})} />
                                     </Col>
                                 </Form.Group>
                             </Col>
@@ -497,7 +590,7 @@ class Placemanage extends Component {
                         <span className="txt-bold">Order Total</span>
                         <span>{Common.formatMoney(totalAmount)}</span>
                     </div>
-                    <Button type="button" className="place-submit__order" onClick={()=>this.setState({modalResumeShow: true})}>Submit order</Button>
+                    <Button type="button" className="place-submit__order" onClick={()=>this.onSubmitOrder()}>Submit order</Button>
                 </Col>
             </Container>
             {slideItemFormFlag ? (
@@ -518,6 +611,12 @@ class Placemanage extends Component {
                     onSetQuantity={(length, patternRowId)=>this.setLenghQuantity(length, patternRowId)}
                 />
             ): null}
+            <Orderdetailform
+                show={this.state.showDetailModal}
+                onHide={() => this.setState({showDetailModal: false})}
+                orderDetailData={this.state.orderDetailData}
+                orderExpenses={this.state.orderExpenses}
+            />
             <Pageloadspiiner loading = {pageLodingFlag}/>
         </div>
         );

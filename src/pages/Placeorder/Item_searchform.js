@@ -27,7 +27,8 @@ class Itemsearchform extends Component {
         super(props);
         this.state = {  
             itemData: [],
-            loading: false
+            loading: false,
+            itemDataList: []
         };
     }
 
@@ -77,7 +78,8 @@ class Itemsearchform extends Component {
             }
             return data;
         });
-        this.setState({itemData: itemData});
+        let itemDataList = itemData.filter((item, key)=>item.checked===true);
+        this.setState({itemData: itemData, itemDataList: itemDataList});
     }
 
     selectAllItemData = (val) =>{
@@ -86,7 +88,8 @@ class Itemsearchform extends Component {
             data.checked =  val.target.checked
             return data;
         });
-        this.setState({itemData: itemData});
+        let itemDataList = itemData.filter((item, key)=>item.checked===true);
+        this.setState({itemData: itemData, itemDataList: itemDataList});
     }
 
     addOrderItem = () => {
@@ -103,7 +106,7 @@ class Itemsearchform extends Component {
     }
 
     render(){   
-        const{ loading, itemData } = this.state;
+        const{ loading, itemData, itemDataList } = this.state;
         return (
             <div className = "slide-form__controls open" style={{height: "100%"}}>
                 <div style={{marginBottom:30}}>
@@ -169,9 +172,15 @@ class Itemsearchform extends Component {
                     </div>
                     )}
                 </div>
-                <Col className="place-order__search-itemtable">
-                    <Button type="button" onClick={()=>this.addOrderItem()}>{trls('Add_to_order')}</Button>
-                </Col>
+                {itemDataList.length>0 ? (
+                    <Col className="place-order__search-itemtable">
+                        <Button type="button" onClick={()=>this.addOrderItem()}>{trls('Add_to_order')}</Button>
+                    </Col>
+                ):
+                    <Col className="place-order__search-itemtable">
+                        <Button type="button" disabled onClick={()=>this.addOrderItem()}>{trls('Add_to_order')}</Button>
+                    </Col>
+                }
             </div>
         );
     }

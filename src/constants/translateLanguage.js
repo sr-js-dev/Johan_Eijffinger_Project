@@ -160,7 +160,9 @@ export const TRANSLATIONS = {
       Total_lengh: 'Total length',
       Add_to_row: 'Add to row',
       Pattern_calculation: 'Pattern calculation',
-      Date: 'Date'
+      Date: 'Date',
+      DocDueDate: 'DocDueDate',
+      OrderSummary: 'Order Summary'
     },
 
     Dutch: {
@@ -324,7 +326,9 @@ export const TRANSLATIONS = {
       Total_lengh: 'Totaal lengte',
       Add_to_row: 'Toevoegen aan rij',
       Pattern_calculation: 'Patroonberekening',
-      Date: 'Datum'
+      Date: 'Datum',
+      DocDueDate: 'DocTengevolgeDatum',
+      OrderSummary: 'Bestellen Overzicht'
     }, 
     
     German: {
@@ -488,7 +492,9 @@ export const TRANSLATIONS = {
       Total_lengh: 'Gesamt Länge',
       Add_to_row: 'Zur Zeile hinzufügen',
       Pattern_calculation: 'Musterberechnung',
-      Date: 'Datum'
+      Date: 'Datum',
+      DocDueDate: 'DocFälligDatum',
+      OrderSummary: 'Auftrag Zusammenfassung'
     },
 
     French: {
@@ -652,6 +658,8 @@ export const TRANSLATIONS = {
       Total_lengh: 'Total longueur',
       Add_to_row: 'Ajouter à la ligne',
       Pattern_calculation: 'Calculate the model',
-      Date: 'Date'
+      Date: 'Date',
+      DocDueDate: 'DocDueDate',
+      OrderSummary: 'Ordre Sommaire'
     }
   };

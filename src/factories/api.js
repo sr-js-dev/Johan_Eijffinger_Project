@@ -26,6 +26,7 @@ export default {
     PostItems: `${BASEURL}/api/Items`,
     GetOrderDetails: `${BASEURL}/api/Orders/GetOrderDetails/`,
     PostPatroonberekening: `${BASEURL}/api/SapProxy/patroonberekening`,
+    PostOrder: `${BASEURL}/api/SapFactory/execute/post/PostOrder`,
+    GetOrderExpenses: `${BASEURL}/api/SapProxy/orderexpenses`,
   };
-  
   
