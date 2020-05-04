@@ -161,7 +161,7 @@ class Dashboard extends Component {
                                 <div className="dashboard__top-long-title">{trls('Place_an_order')}</div>
                             </div>
                             <div className="dashboard__top-long-img">
-                                <Link to={'/place-order'}>
+                                <Link to={'/placemanage'}>
                                     <img src={require("../../assets/images/icon-cart-white.svg")} style={{cursor: "pointer"}} alt="cart" onClick={this.visitPlaceOrder}/>
                                 </Link>
                             </div>

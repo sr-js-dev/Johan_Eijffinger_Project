@@ -71,7 +71,8 @@ class Placemanage extends Component {
             customer_reference: '',
             docDueDate: new Date(),
             orderDetailData: [],
-            orderExpenses: []
+            orderExpenses: [],
+            showDetailModal: false
         };
     }
 
