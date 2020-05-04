@@ -58,6 +58,7 @@ class Placemanage extends Component {
             productSearch: [{'value': '7745-2', 'label': '7745-2'}, {'value': '7745-2', 'label': '7745-2'}],
             userInfo: Auth.getUserInfo(), 
             rowId: 0,
+            patternRowId: [],
             selectShippingAddress: [],
             itemFlag: [],
             slideItemFormFlag: false,
@@ -194,6 +195,7 @@ class Placemanage extends Component {
         this._isMounted = true;
         let itemFlag = this.state.itemFlag;
         let itemCode = this.state.itemCode;
+        let patternRowId = this.state.patternRowId;
         let rows = this.state.rows;
         itemCode =$("#itemCode"+rowId).val();
         this.setState({itemCode: itemCode, pageLodingFlag: true});
@@ -209,6 +211,7 @@ class Placemanage extends Component {
         })
         .then(response => {
             itemFlag[rowId]=false;
+            patternRowId.push(rowId);
             rows.map((data, index) => {
                 if(data.rowId===rowId){
                     data.ItemName = response.ItemName;
@@ -217,7 +220,7 @@ class Placemanage extends Component {
                 }
                 return data;
             })
-            this.setState({itemData: response, orderLineNumber: lineNumber, slidePatternFormFlag: response.U_DBS_PARTIJCONTR==="Y" ? true : false, pageLodingFlag: false, itemCode: itemCode, rowId: rowId, rows: rows});
+            this.setState({itemData: response, orderLineNumber: lineNumber, slidePatternFormFlag: response.U_DBS_PARTIJCONTR==="Y" ? true : false, pageLodingFlag: false, itemCode: itemCode, patternRowId: patternRowId, rows: rows});
             if(response.U_DBS_PARTIJCONTR==="Y"){
                 Common.showSlideForm();
             }
@@ -297,23 +300,31 @@ class Placemanage extends Component {
 
     setOrderItem = (itemList) => {
         let rowNum = this.state.rowNum;
+        let patternRowId = this.state.patternRowId;
         let rows = this.state.rows;
         itemList.map((data, index) => {
             data.rowId = rowNum;
             if(index===0){
+                let row_id = rowNum;
+                patternRowId.push(row_id);
                 rows[rowNum-1] = data;
             }else{
+                patternRowId.push(rowNum);
                 rows.push(data);
             }
             rowNum += 1;
             return data
         })
-        this.setState({rows: rows, rowNum: rowNum});
+        Common.showSlideForm();
+        this.setState({rows: rows, rowNum: rowNum, patternRowId: patternRowId, itemData: itemList[0], itemCode: itemList[0].ItemCode, slidePatternFormFlag: true});
     }
 
-    setLenghQuantity = (length, rowId) => {
+    setLenghQuantity = (length, patternRowId) => {
         let itemQuantityData = this.state;
-        itemQuantityData[rowId] = length;
+        patternRowId.map((rowId, index)=>{
+            itemQuantityData[rowId] = length;
+            return rowId;
+        })
         this.setState({itemQuantityData: itemQuantityData});
     }
 
@@ -339,9 +350,6 @@ class Placemanage extends Component {
                 return data
             })
         }
-        console.log('123', rows);
-        // console.log('33232', itemPriceData);
-        console.log('itemQuantityData', itemQuantityData);
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -506,8 +514,8 @@ class Placemanage extends Component {
                     orderLineNumber={this.state.orderLineNumber}
                     itemData={this.state.itemData}
                     itemCode={this.state.itemCode}
-                    rowId={this.state.rowId}
-                    onSetQuantity={(length, rowId)=>this.setLenghQuantity(length, rowId)}
+                    patternRowId={this.state.patternRowId}
+                    onSetQuantity={(length, patternRowId)=>this.setLenghQuantity(length, patternRowId)}
                 />
             ): null}
             <Pageloadspiiner loading = {pageLodingFlag}/>

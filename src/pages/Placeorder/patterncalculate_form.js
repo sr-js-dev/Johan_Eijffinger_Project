@@ -100,7 +100,7 @@ class Patterncalculateform extends Component {
         let params = {
             "data": [
                 {
-                  "line": orderLineNumber,
+                  "line": orderLineNumber ? orderLineNumber : 0,
                   "rows": rowsVal[rowId],
                   "length": rowLength[rowId],
                   "pattern": itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0,
@@ -143,10 +143,10 @@ class Patterncalculateform extends Component {
 
     submitTotalLength = (totalLength) => {
         let lengthVal = [];
-        const{ rowId } = this.props;
+        const{ patternRowId } = this.props;
         lengthVal = parseInt(totalLength);
         this.props.onHide();
-        this.props.onSetQuantity(lengthVal, rowId);
+        this.props.onSetQuantity(lengthVal, patternRowId);
         Common.hideSlideForm();
     }
 
