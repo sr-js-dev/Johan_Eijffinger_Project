@@ -24,6 +24,7 @@
     "react-dropzone": "^10.2.1",
     "react-dropzone-component": "^3.2.0",
     "react-file-drop": "^0.2.8",
+    "react-flags-select": "^1.1.12",
     "react-flash-message": "^1.0.2",
     "react-jquery-datatables": "^1.0.0",
     "react-loader-spinner": "^3.1.5",

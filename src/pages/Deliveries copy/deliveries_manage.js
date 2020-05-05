@@ -165,6 +165,14 @@ class Deliveriesmanage extends Component {
     
     render(){   
         const {filterColunm, deliveriesData} = this.state;
+        let filterData = [
+            {"label": trls('Order'), "value": "DocNum", "type": 'text', "show": true},
+            {"label": trls('Order_Date'), "value": "DocDate", "type": 'date', "show": true},
+            {"label": trls('Product'), "value": "Product", "type": 'text', "show": true},
+            {"label": trls('Collection'), "value": "Collectie", "type": 'text', "show": true},
+            {"label": trls('Quantity'), "value": "Quantity", "type": 'text', "show": true},
+            {"label": trls('Batch'), "value": "BatchNumbers", "type": 'text', "show": true},
+        ]
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">

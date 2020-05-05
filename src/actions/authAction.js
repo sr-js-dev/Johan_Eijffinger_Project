@@ -22,7 +22,7 @@ export const fetchLoginData = (params) => {
             window.localStorage.setItem('eijf_userName', response.claims.UserName);
             window.localStorage.setItem('eijf_role', response.claims.Role);
             window.localStorage.setItem('eijf_loggedUser', JSON.stringify(response.claims));
-            let lang = response.claims.language ? response.claims.language : "Dutch"
+            let lang = response.claims.Language ? response.claims.Language : "Dutch"
             window.localStorage.setItem('eijf_lang',  lang);
             window.localStorage.setItem('eijf_label',  lang);
             dispatch(fetchLoginDataSuccess(response));

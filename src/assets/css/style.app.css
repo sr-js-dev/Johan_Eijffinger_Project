@@ -957,3 +957,21 @@ table.dataTable.no-footer {
 .order_detail-table{
   max-height: 100px;
 }
+.flag-select__options{
+  margin-left: 15px;
+}
+.flag-select__btn:after {
+  margin-top: 5px;
+}
+.profile-title{
+  font-style: normal;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 37px;
+}
+.profile-back__icon{
+  padding-top: 10px;
+}
+.profile-back__icon i{
+  font-size: 20px;
+}

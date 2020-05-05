@@ -40,6 +40,10 @@ class Login extends React.Component {
     this.props.changeLan(val)
   }
 
+  changeShowPrice = (evt) => {
+      localStorage.setItem('eijf_showPrice', evt.target.checked);
+  }
+
   render() {
     const { loading } = this.props;
     return (
@@ -64,9 +68,9 @@ class Login extends React.Component {
                             <label className="placeholder-label__login">{trls('Password')}</label>
                           </Col>
                       </Form.Group>
-                      {/* <Form.Group controlId="form">
-                          <Form.Check type="checkbox" label={trls('keep_logged_in')} style={{color: '#B9C0CE'}}/>
-                      </Form.Group> */}
+                      <Form.Group controlId="form">
+                          <Form.Check type="checkbox" label={trls('ShowPrice')} style={{color: '#B9C0CE'}} onChange={(evt)=>this.changeShowPrice(evt)}/>
+                      </Form.Group>
                       <Button variant="primary" type="submit" style={{width: "100%", height: 42}} onClick={()=>this.setState({modalResumeShow: true})}>{trls('Sign_in')}</Button>
                       <p className="text-xs-center" style={{marginTop: 10}}>
                           <Link to="/forgot-password" className="back-to_signin">

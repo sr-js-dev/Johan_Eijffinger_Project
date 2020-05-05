@@ -17,7 +17,8 @@ class Productpriceform extends Component {
     constructor(props) {
         super(props);
         this.state = {  
-            userInfo: Auth.getLoggedUserInfo()
+            userInfo: Auth.getLoggedUserInfo(),
+            showPrice: localStorage.getItem('eijf_showPrice')==="true"
         };
     }
     componentWillUnmount() {
@@ -25,7 +26,7 @@ class Productpriceform extends Component {
     }
 
     render(){
-        const { userInfo } = this.state;
+        const { userInfo, showPrice } = this.state;
         const { orderDetailData, orderExpenses } = this.props;
         let totalAmount = 0;
         if(orderDetailData.DocumentLines){
@@ -130,8 +131,12 @@ class Productpriceform extends Component {
                                         <th>{trls("Product_description")}</th>
                                         <th>{trls("Unit")}</th>
                                         <th>{trls("Quantity")}</th>
-                                        <th>{trls("Price")}</th>
-                                        <th>{trls("Amount")}</th>
+                                        {showPrice ? (
+                                            <th>{trls("Price")}</th>
+                                        ): null}
+                                        {showPrice ? (
+                                            <th>{trls("Amount")}</th>
+                                        ): null}
                                         <th>{trls("Image")}</th>
                                         <th>{trls("Customer_reference")}</th>
                                         <th>{trls("Expected_deliver_week")}</th>
@@ -157,11 +162,15 @@ class Productpriceform extends Component {
                                                     <Form.Control type="text" name="quantity" style={{width: '80%'}} disabled required placeholder={trls('Quantity')} defaultValue = {data.InventoryQuantity ? data.InventoryQuantity : ''}/>
                                                 </Row>
                                             </td>
-                                            <td>
-                                            </td>
-                                            <td>
-                                                {data.OpenAmount ? Common.formatMoney(data.OpenAmount) : ''}
-                                            </td>   
+                                            {showPrice ? (
+                                                <td>
+                                                </td>
+                                            ): null}
+                                            {showPrice ? (
+                                                <td>
+                                                    {data.OpenAmount ? Common.formatMoney(data.OpenAmount) : ''}
+                                                </td> 
+                                            ): null}
                                             <td>
                                                 {/* {data.picture&&(
                                                     <img src={ data.Image ? "data:image/png;base64," + data.picture : ''} className = "image__zoom" alt={index}></img>
@@ -198,11 +207,15 @@ class Productpriceform extends Component {
                                                     <Form.Control type="text" name="quantity" style={{width: '80%'}} disabled defaultValue={1} required placeholder={trls('Quantity')}/>
                                                 </Row>
                                             </td>
-                                            <td>
-                                            </td>
-                                            <td>
-                                                {orderExpenses.expenses ? Common.formatMoney(orderExpenses.expenses) : ''}
-                                            </td>   
+                                            {showPrice ? (
+                                                <td>
+                                                </td>
+                                            ): null}
+                                            {showPrice ? (
+                                                <td>
+                                                    {orderExpenses.expenses ? Common.formatMoney(orderExpenses.expenses) : ''}
+                                                </td> 
+                                            ): null}
                                             <td>
                                                 {/* {data.picture&&(
                                                     <img src={ data.Image ? "data:image/png;base64," + data.picture : ''} className = "image__zoom" alt={index}></img>

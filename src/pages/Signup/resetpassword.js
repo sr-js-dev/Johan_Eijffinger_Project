@@ -74,7 +74,7 @@ class Resetpassword extends React.Component {
                     </div>
                     <Col>
                         <Form className="container login-form" onSubmit = { this.handleSubmit }>
-                            <p className="login-title">Reset Password</p>
+                            <p className="login-title">{trls('ResetPassword')}</p>
                             <Form.Group controlId="form">
                                 <Col className="login-form__control">
                                     <Form.Control type="password" name="password" className="login-input-email" required placeholder={trls("New_Password")}/>

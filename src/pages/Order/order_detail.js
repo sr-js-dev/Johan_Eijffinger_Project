@@ -47,6 +47,7 @@ class Placemanage extends Component {
             shippingAddress: [],
             setSippingAddress: [],
             orderId: pathArray[2] ? pathArray[2] : '',
+            showPrice: localStorage.getItem('eijf_showPrice')
         };
     }
 

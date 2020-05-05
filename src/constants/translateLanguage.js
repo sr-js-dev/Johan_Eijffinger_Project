@@ -162,7 +162,12 @@ export const TRANSLATIONS = {
       Pattern_calculation: 'Pattern calculation',
       Date: 'Date',
       DocDueDate: 'DocDueDate',
-      OrderSummary: 'Order Summary'
+      OrderSummary: 'Order Summary',
+      Profile: 'Profile',
+      ResetPassword: 'ResetPassword',
+      Logout: 'Logout',
+      CustomerName: 'CustomerName',
+      ShowPrice: 'ShowPrice'
     },
 
     Dutch: {
@@ -328,7 +333,12 @@ export const TRANSLATIONS = {
       Pattern_calculation: 'Patroonberekening',
       Date: 'Datum',
       DocDueDate: 'DocTengevolgeDatum',
-      OrderSummary: 'Bestellen Overzicht'
+      OrderSummary: 'Bestellen Overzicht',
+      Profile: 'Profiel',
+      ResetPassword: 'ResetWachtwoord',
+      Logout: 'Uitloggen',
+      CustomerName: 'Klantnaam',
+      ShowPrice: 'Prijs Laten zien'
     }, 
     
     German: {
@@ -494,7 +504,12 @@ export const TRANSLATIONS = {
       Pattern_calculation: 'Musterberechnung',
       Date: 'Datum',
       DocDueDate: 'DocFälligDatum',
-      OrderSummary: 'Auftrag Zusammenfassung'
+      OrderSummary: 'Auftrag Zusammenfassung',
+      Profile: 'Profil',
+      ResetPassword: 'ZurücksetzenPasswort',
+      Logout: 'Ausloggen',
+      CustomerName: 'Kundenname',
+      ShowPrice: 'PreisAnzeigen'
     },
 
     French: {
@@ -660,6 +675,11 @@ export const TRANSLATIONS = {
       Pattern_calculation: 'Calculate the model',
       Date: 'Date',
       DocDueDate: 'DocDueDate',
-      OrderSummary: 'Ordre Sommaire'
+      OrderSummary: 'Ordre Sommaire',
+      Profile: 'Profil',
+      ResetPassword: 'Réinitialiser Mot de passe',
+      Logout: 'Se déconnecter',
+      CustomerName: 'CustomerName',
+      ShowPrice: 'Afficher le prix'
     }
   };

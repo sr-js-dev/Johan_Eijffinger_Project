@@ -29,4 +29,3 @@ export default {
     PostOrder: `${BASEURL}/api/SapFactory/execute/post/PostOrder`,
     GetOrderExpenses: `${BASEURL}/api/SapProxy/orderexpenses`,
   };
-  

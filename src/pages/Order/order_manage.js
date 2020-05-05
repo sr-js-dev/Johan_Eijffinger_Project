@@ -103,7 +103,6 @@ class Ordermanage extends Component {
                         },
                         "lengthMenu": [ 5, 10, 20, 25, 30, 35 ],
                         "pageLength": 10,
-                        // "lengthChange": false,
                         "dom": 't<"bottom-datatable" lip>',
                         }
                     );
@@ -220,6 +219,14 @@ class Ordermanage extends Component {
     
     render(){   
         const {filterColunm, ordersData, pageLodingFlag} = this.state;
+        let filterData = [
+            {"label": trls('Order'), "value": "DocNum", "type": 'text', "show": true},
+            {"label": trls('Order_Date'), "value": "DocDate", "type": 'date', "show": true},
+            {"label": trls('Product'), "value": "Product", "type": 'text', "show": true},
+            {"label": trls('Collection'), "value": "Collectie", "type": 'text', "show": true},
+            {"label": trls('Quantity'), "value": "Quantity", "type": 'text', "show": true},
+            {"label": trls('Batch'), "value": "BatchNumbers", "type": 'text', "show": true},
+        ]
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -243,7 +250,7 @@ class Ordermanage extends Component {
                         {filterColunm.length&&(
                             <Filtercomponent
                                 onHide={()=>this.setState({filterFlag: false})}
-                                filterData={filterColunm}
+                                filterData={filterData}
                                 onFilterData={(filterOption)=>this.filterOptionData(filterOption)}
                                 showFlag={this.state.filterFlag}
                             />

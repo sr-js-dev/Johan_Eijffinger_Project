@@ -42,6 +42,7 @@ class Itemsearchform extends Component {
     handleSubmit = (event) => {
         this._isMounted = true;
         this.setState({loading: true});
+        const { itemCode } = this.props;
         var headers = SessionManager.shared().getAuthorizationHeader();
         event.preventDefault();
         const clientFormData = new FormData(event.target);
@@ -52,6 +53,7 @@ class Itemsearchform extends Component {
         let params = {
             itemName: data.itemname,
             collection: data.collection,
+            itemCode: itemCode
         }     
         Axios.post(API.PostItems, params, headers)
         .then(result => {

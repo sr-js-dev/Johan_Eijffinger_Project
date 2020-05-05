@@ -37,9 +37,8 @@ class Userregister extends Component {
             slideFormFlag: false,
             originFilterData: [],
             filterFlag: false,
-            filterData: [],
             filterColunm: [
-                {"label": 'UserName', "value": "UserName", "type": 'text', "show": true},
+                {"label": 'UserName', "value": "userName", "type": 'text', "show": true},
                 {"label": 'Email', "value": "Email", "type": 'text', "show": true},
                 {"label": 'PhoneNumber', "value": "PhoneNumber", "type": 'text', "show": true},
                 {"label": 'Active', "value": "active", "type": 'text', "show": true},
@@ -61,7 +60,6 @@ class Userregister extends Component {
     }
 
     componentWillReceiveProps = nextProps => {
-        console.log("nextprops: ", nextProps.userType);
         this.setState({
             userType: nextProps.userType
         });
@@ -318,6 +316,10 @@ class Userregister extends Component {
     render () {
         let userInfo = Auth.getUserInfo();
         const {filterColunm, userData } = this.state;
+        let filterData = [
+            {"label": trls('UserName'), "value": "userName", "type": 'text'},
+            {"label": trls('Email'), "value": "email", "type": 'text'},
+        ]
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -340,10 +342,10 @@ class Userregister extends Component {
                                 </div>
                             </div>
                         </Col>
-                        {filterColunm.length&&(
+                        {filterData.length&&(
                             <Filtercomponent
                                 onHide={()=>this.setState({filterFlag: false})}
-                                filterData={filterColunm}
+                                filterData={filterData}
                                 onFilterData={(filterOption)=>this.filterOptionData(filterOption)}
                                 showFlag={this.state.filterFlag}
                             />

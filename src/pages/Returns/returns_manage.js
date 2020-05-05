@@ -68,7 +68,7 @@ class Deliveriesmanage extends Component {
                     if(!data){
                         this.setState({deliveriesData: deliveriesDataList, originFilterData: deliveriesDataList});
                     }else{
-                        this.setState({ordersData: data});
+                        this.setState({deliveriesData: data});
                     }
                     this.setState({loading:false});
                     $('.fitler').on( 'keyup', function () {
@@ -150,7 +150,7 @@ class Deliveriesmanage extends Component {
         if(!filterOption.length){
             dataA=null;
         }
-        this.getOrdersData(dataA);
+        this.getDeliveriesData(dataA);
     }
 
     changeFilter = () => {
@@ -164,6 +164,14 @@ class Deliveriesmanage extends Component {
     
     render(){   
         const {filterColunm, deliveriesData} = this.state;
+        let filterData = [
+            {"label": trls('ItemCode'), "value": "ItemCode", "type": 'text', "show": true},
+            {"label": trls('ItemDescription'), "value": "ItemDescription", "type": 'text', "show": true},
+            {"label": trls('Quantity'), "value": "Quantity", "type": 'text', "show": true},
+            {"label": trls('DocDate'), "value": "DocDate", "type": 'date', "show": true},
+            {"label": trls('Price'), "value": "Price", "type": 'text', "show": true},
+            {"label": trls('Amount'), "value": "Amount", "type": 'text', "show": true},
+        ]
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -187,7 +195,7 @@ class Deliveriesmanage extends Component {
                         {filterColunm.length&&(
                             <Filtercomponent
                                 onHide={()=>this.setState({filterFlag: false})}
-                                filterData={filterColunm}
+                                filterData={filterData}
                                 onFilterData={(filterOption)=>this.filterOptionData(filterOption)}
                                 showFlag={this.state.filterFlag}
                             />

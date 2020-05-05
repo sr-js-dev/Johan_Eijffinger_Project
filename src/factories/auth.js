@@ -6,6 +6,11 @@ export const removeAuth = () => {
     window.localStorage.setItem('eijf_token', '')
     window.localStorage.setItem('eijf_userName', '')
     window.localStorage.setItem('eijf_role', '')
+    window.localStorage.setItem('eijf_loggedUser', '')
+    window.localStorage.setItem('admin_role', '')
+    window.localStorage.setItem('admin_userName', '')
+    window.localStorage.setItem('admin_token', '')
+    window.localStorage.setItem('eijf_showPrice', '')
     return true
 };
 

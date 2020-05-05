@@ -7,7 +7,8 @@ import * as Auth from '../factories/auth';
 import $ from 'jquery';
 import { Button } from 'react-bootstrap';
 import { trls } from '../factories/translate';
-import Select from 'react-select';
+import ReactFlagsSelect from 'react-flags-select';
+import 'react-flags-select/css/react-flags-select.css';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -22,9 +23,8 @@ class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            roles:  [{"value":"English","label":"English"},{"value":"Dutch","label":"Dutch"},{"value":"German","label":"German"},{"value":"French","label":"French"}],
-            selectrolvalue: window.localStorage.getItem('eijf_lang'),
-            selectrollabel: window.localStorage.getItem('eijf_label'),
+            lang:  [{"value":"English","label":"US"},{"value":"Dutch","label":"NL"},{"value":"German","label":"DE"},{"value":"French","label":"FR"}],
+            selectLangValue: window.localStorage.getItem('eijf_lang'),
             userInfo: Auth.getUserInfo(),
             userType: this.props.userType,
             loggedUserInfo: Auth.getLoggedUserInfo()
@@ -52,15 +52,14 @@ class Header extends Component {
             history.push('/login')
         }
     }
-    resetPassword = () => {
-        // const { userInfo } = this.state;
-        history.push('/forgot-password?loginUser=true')
+    changeItem = (mode) => {
+        if(mode==="resetPassword"){
+            history.push('/forgot-password?loginUser=true');
+        }else if(mode==="profile"){
+            history.push('/profile');
+        }
+        
     }
-    changeLangauge = (val) => {
-        this.setState({selectrolvalue:val.value, selectrollabel: val.label});
-        this.props.changeLan(val)
-    }
-
     goBackAdmin = () => {
         const info = Auth.getAdminInfo();
         window.localStorage.setItem('eijf_token', info.userToken);
@@ -71,12 +70,14 @@ class Header extends Component {
     }
 
     changeLangauge = (val) => {
-        this.setState({selectrolvalue:val.value, selectrollabel: val.label});
-        this.props.changeLan(val)
+        let lang = this.state.lang;
+        lang = lang.filter((item, key)=>item.label===val);
+        this.props.changeLan(lang[0]);
     }
 
     render () {
-        const { loggedUserInfo } = this.state;
+        const { loggedUserInfo, lang, selectLangValue } = this.state;
+        let selectLang = lang.filter((item, key)=>item.value===selectLangValue);
       return (
         <div>
             <header className="header">
@@ -96,17 +97,22 @@ class Header extends Component {
                             {loggedUserInfo.FirstName +" "+loggedUserInfo.LastName}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            <Dropdown.Item onClick={this.logOut}>Logout</Dropdown.Item>
-                            <Dropdown.Item onClick={()=>this.resetPassword()}>Reset Password</Dropdown.Item>
+                            <Dropdown.Item onClick={this.logOut}>{trls('Logout')}</Dropdown.Item>
+                            <Dropdown.Item onClick={()=>this.changeItem('profile')}>{trls('Profile')}</Dropdown.Item>
+                            <Dropdown.Item onClick={()=>this.changeItem('resetPassword')}>{trls('ResetPassword')}</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
-                    <Select
-                        name="lan"
-                        options={this.state.roles}
-                        className="select-lang-class"
-                        value={{"label":this.state.selectrollabel,"value":this.state.selectrolvalue}}
-                        onChange={val => this.changeLangauge(val)}
+                    <ReactFlagsSelect
+                        countries={["US", "NL", "DE", "FR"]}
+                        // placeholder="Select Language"
+                        defaultCountry={selectLang[0].label}
+                        showSelectedLabel={false}
+                        showOptionLabel={false}
+                        selectedSize={18}
+                        optionsSize={14} 
+                        onSelect={val=>this.changeLangauge(val)}
                     />
+
                 </div>
                 <div className="header__user">
                     <span className="header__user-name">
