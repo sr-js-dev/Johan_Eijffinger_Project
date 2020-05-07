@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 });
 
-class Placemanage extends Component {
+class Salesinvoicedetail extends Component {
     _isMounted = false;
     constructor(props) {
         let pathname = window.location.pathname;
@@ -107,7 +107,7 @@ class Placemanage extends Component {
         this.setState({pageLodingFlag: true});
         const { orderId } = this.state;
         var settings = {
-            "url": API.GetOrderDetails+orderId,
+            "url": API.GetInvoiceDetails+orderId,
             "method": "GET",
             "headers": {
                 "Content-Type": "application/json",
@@ -151,7 +151,7 @@ class Placemanage extends Component {
             <div className="order_div">
                 <div className="content__header content__header--with-line">
                     <div id="google_translate_element"></div>
-                    <h2 className="title">{trls("Place_an_order")}</h2>
+                    <h2 className="title">{trls("InvoiceDetail")}</h2>
                 </div>
                 <Container>
                     <Form className="container product-form" onSubmit = { this.handleSubmit }>
@@ -313,4 +313,4 @@ class Placemanage extends Component {
         );
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Placemanage);
+export default connect(mapStateToProps, mapDispatchToProps)(Salesinvoicedetail);

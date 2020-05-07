@@ -161,6 +161,13 @@ class Salesinvoicesmanage extends Component {
         return filterColum[0].show;
     }
 
+    showDetail = (docNumber) => {
+        history.push({
+            pathname: '/salesinvoice-deail/'+docNumber,
+            state: { id: docNumber, newSubmit:true }
+          })
+    }
+
     // filter module
     filterOptionData = (filterOption) =>{
         let dataA = []
@@ -240,7 +247,7 @@ class Salesinvoicesmanage extends Component {
                             {
                                 deliveriesData.map((data,i) =>(
                                     <tr id={i} key={i}>
-                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}>{data.ItemCode}</td>
+                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div className="action-div" onClick={()=>this.showDetail(data.DocNum)}>{data.ItemCode}</div></td>
                                         <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{data.ItemDescription}</td>
                                         <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
                                         <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>

@@ -74,7 +74,9 @@ class Placemanage extends Component {
             orderExpenses: [],
             showDetailModal: false,
             showPrice: localStorage.getItem('eijf_showPrice')==="true",
-            itemCodeList: []
+            itemCodeList: [],
+            patternCheckFlag: [],
+            patternRowLengthCalcFlag: false
         };
     }
 
@@ -230,7 +232,7 @@ class Placemanage extends Component {
 
     getItemData = (rowId, lineNumber, code) => {
         this._isMounted = true;
-        const { itemCodeList } = this.state;
+        const { itemCodeList, patternCheckFlag } = this.state;
         let itemFlag = this.state.itemFlag;
         let itemCode = '';
         let patternRowId = this.state.patternRowId;
@@ -258,7 +260,7 @@ class Placemanage extends Component {
             //     }
             //     return data;
             // })
-            this.setState({itemData: response, orderLineNumber: lineNumber, pageLodingFlag: false, itemCode: itemCode, patternRowId: patternRowId, rows: rows}, function(){
+            this.setState({itemData: response, orderLineNumber: lineNumber, pageLodingFlag: false, itemCode: itemCode, patternRowId: patternRowId, rows: rows, patternRowLengthCalcFlag: patternCheckFlag[rowId]}, function(){
                 this.searchItemForm();
             });
             // this.setState({itemData: response, orderLineNumber: lineNumber, slidePatternFormFlag: response.U_DBS_PARTIJCONTR==="Y" ? true : false, pageLodingFlag: false, itemCode: itemCode, patternRowId: patternRowId, rows: rows}, function(){
@@ -274,36 +276,36 @@ class Placemanage extends Component {
         });
     }
 
-    getItemPriceData = (value, rowId) => {
-        this._isMounted = true;
-        let itemPriceData = this.state.itemPriceData;
-        let itemQuantityData = this.state.itemQuantityData;
-        itemQuantityData[rowId] = value;
-        itemPriceData[rowId] = '';
-        this.setState({itemPriceData: itemPriceData, pageLodingFlag: true, itemQuantityData: itemQuantityData});
-        let params = {
-            "itemCode": $("#itemCode"+rowId).val(),
-            "quantity": value ? value : 0,
-            "date": Common.formatDate1(new Date()),
-            "orderType": "B2B"
-        };
-        var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.post(API.GetDiscountPrice, params, headers)
-        .then(result => {
-            if(this._isMounted){
-                if(result.data){
-                    itemPriceData[rowId] = result.data;
-                    itemPriceData[rowId].itemQuantity = parseFloat(value);
-                    this.setState({itemPriceData: itemPriceData, pageLodingFlag: false})                    
-                }
-            }
-        })
-        .catch(err => {
-            if(err.response.status===401){
-                history.push('/login')
-            }
-        });
-    }
+    // getItemPriceData = (value, rowId) => {
+    //     this._isMounted = true;
+    //     let itemPriceData = this.state.itemPriceData;
+    //     let itemQuantityData = this.state.itemQuantityData;
+    //     itemQuantityData[rowId] = value;
+    //     itemPriceData[rowId] = '';
+    //     this.setState({itemPriceData: itemPriceData, pageLodingFlag: true, itemQuantityData: itemQuantityData});
+    //     let params = {
+    //         "itemCode": $("#itemCode"+rowId).val(),
+    //         "quantity": value ? value : 0,
+    //         "date": Common.formatDate1(new Date()),
+    //         "orderType": "B2B"
+    //     };
+    //     var headers = SessionManager.shared().getAuthorizationHeader();
+    //     Axios.post(API.GetDiscountPrice, params, headers)
+    //     .then(result => {
+    //         if(this._isMounted){
+    //             if(result.data){
+    //                 itemPriceData[rowId] = result.data;
+    //                 itemPriceData[rowId].itemQuantity = parseFloat(value);
+    //                 this.setState({itemPriceData: itemPriceData, pageLodingFlag: false})                    
+    //             }
+    //         }
+    //     })
+    //     .catch(err => {
+    //         if(err.response.status===401){
+    //             history.push('/login')
+    //         }
+    //     });
+    // }
 
     changeProductCode = (itemCode, rowId) => {
         let itemCodeList = this.state.itemCodeList;
@@ -374,6 +376,20 @@ class Placemanage extends Component {
         this.setState({itemQuantityData: itemQuantityData, addRow: false});
     }
 
+    calculatePattern = (itemData, itemCode, rowId) => {
+        const { patternCheckFlag } =  this.state;
+        let patternRowId = this.state.patternRowId;
+        patternRowId = [rowId];
+        Common.showSlideForm();
+        this.setState({itemData: itemData, itemCode: itemCode, patternRowId: patternRowId, slidePatternFormFlag: true, patternRowLengthCalcFlag: patternCheckFlag[rowId]})
+    }
+
+    changeCaculateCheck = (evt, rowId) => {
+        let patternCheckFlag = this.state.patternCheckFlag;
+        patternCheckFlag[0] = evt.target.checked;
+        this.setState({patternCheckFlag: patternCheckFlag})
+    }
+
     render(){   
         let totalAmount = 0;
         const { businessPartnerOption, 
@@ -390,7 +406,8 @@ class Placemanage extends Component {
             slideItemFormFlag,
             slidePatternFormFlag,
             docDueDate,
-            showPrice
+            showPrice,
+            addRow
         } = this.state;
         if(itemPriceData){
             rows.map((data, key)=>{
@@ -398,6 +415,8 @@ class Placemanage extends Component {
                 return data
             })
         }
+
+        console.log('22222222', rows);
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -488,6 +507,7 @@ class Placemanage extends Component {
                                 <th>{trls("Image")}</th>
                                 <th>{trls("Customer_reference")}</th>
                                 <th>{trls("Expected_deliver_week")}</th>
+                                <th>{trls("NoPatternCalculation")}</th>
                                 <th>{trls("Action")}</th>
                             </tr>
                         </thead>
@@ -507,9 +527,17 @@ class Placemanage extends Component {
                                         {data.SalesUnit ? data.SalesUnit : ''}
                                     </td>
                                     <td>
-                                        <Row style={{justifyContent: "space-around"}}>
-                                            <Form.Control type="text" name="quantity" style={{width: '80%'}} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId)}/>
-                                        </Row>
+                                        { !addRow && data.U_DBS_STUKSCONTR!=='Y' ? (
+                                            <Row style={{justifyContent: "space-around"}}>
+                                                <Form.Control type="text" name="quantity" style={{width: '80%'}} readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId)}/>
+                                                <i className="fas fa-pen place-order__itemcode-icon" onClick={()=>this.calculatePattern(data, data.ItemCode, data.rowId)}></i>
+                                            </Row>
+                                        ): 
+                                            <Row style={{justifyContent: "space-around"}}>
+                                                <Form.Control type="text" name="quantity" style={{width: '80%'}} readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId)}/>
+                                            </Row>
+                                        }
+                                        
                                     </td>
                                     {showPrice ? (
                                         <td>
@@ -534,6 +562,9 @@ class Placemanage extends Component {
                                         {this.state.productDesription&&(
                                             <DatePicker name="startdate" className="myDatePicker" dateFormat="dd-MM-yyyy" selected={new Date()} onChange={date =>this.setState({startdate:date})} />
                                         )}
+                                    </td>
+                                    <td>
+                                        <Form.Check type="checkbox" onChange={(evt)=>this.changeCaculateCheck(evt, data.rowId)}/>
                                     </td>
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>
@@ -583,6 +614,7 @@ class Placemanage extends Component {
                     itemData={this.state.itemData}
                     itemCode={this.state.itemCode}
                     patternRowId={this.state.patternRowId}
+                    patternRowLengthCalcFlag={this.state.patternRowLengthCalcFlag}
                     onSetQuantity={(length, patternRowId)=>this.setLenghQuantity(length, patternRowId)}
                 />
             ): null}

@@ -28,4 +28,7 @@ export default {
     PostPatroonberekening: `${BASEURL}/api/SapProxy/patroonberekening`,
     PostOrder: `${BASEURL}/api/SapFactory/execute/post/PostOrder`,
     GetOrderExpenses: `${BASEURL}/api/SapProxy/orderexpenses`,
+    GetReturnDetails: `${BASEURL}/api/Orders/GetReturnDetails/`,
+    GetInvoiceDetails: `${BASEURL}/api/Orders/GetInvoiceDetails/`,
+    GetDeliveryDetails: `${BASEURL}/api/Orders/GetDeliveryDetails/`,
   };

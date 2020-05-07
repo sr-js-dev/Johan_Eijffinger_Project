@@ -167,7 +167,11 @@ export const TRANSLATIONS = {
       ResetPassword: 'ResetPassword',
       Logout: 'Logout',
       CustomerName: 'CustomerName',
-      ShowPrice: 'ShowPrice'
+      ShowPrice: 'ShowPrice',
+      ReturnDetail: 'ReturnDetail',
+      InvoiceDetail: 'InvoiceDetail',
+      DeiveryDetail: 'DeiveryDetail',
+      NoPatternCalculation: 'NoPatternCalculation'
     },
 
     Dutch: {
@@ -338,7 +342,11 @@ export const TRANSLATIONS = {
       ResetPassword: 'ResetWachtwoord',
       Logout: 'Uitloggen',
       CustomerName: 'Klantnaam',
-      ShowPrice: 'Prijs Laten zien'
+      ShowPrice: 'Prijs Laten zien',
+      ReturnDetail: 'Retourdetails',
+      InvoiceDetail: 'Factuurgegevens',
+      DeiveryDetail: 'LeveringDetail',
+      NoPatternCalculation: 'Geen patroonberekening'
     }, 
     
     German: {
@@ -509,7 +517,11 @@ export const TRANSLATIONS = {
       ResetPassword: 'ZurücksetzenPasswort',
       Logout: 'Ausloggen',
       CustomerName: 'Kundenname',
-      ShowPrice: 'PreisAnzeigen'
+      ShowPrice: 'PreisAnzeigen',
+      ReturnDetail: 'Detail zurückgeben',
+      InvoiceDetail: 'Rechnungsdetail',
+      DeiveryDetail: 'Lieferdetail',
+      NoPatternCalculation: 'Keine Musterberechnung'
     },
 
     French: {
@@ -680,6 +692,10 @@ export const TRANSLATIONS = {
       ResetPassword: 'Réinitialiser Mot de passe',
       Logout: 'Se déconnecter',
       CustomerName: 'CustomerName',
-      ShowPrice: 'Afficher le prix'
+      ShowPrice: 'Afficher le prix',
+      ReturnDetail: 'Détails de retour',
+      InvoiceDetail: 'Détail de la facture',
+      DeiveryDetail: 'Détail de livraison',
+      NoPatternCalculation: 'Aucun calcul de modèle'
     }
   };

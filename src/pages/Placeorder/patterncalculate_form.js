@@ -86,8 +86,13 @@ class Patterncalculateform extends Component {
 
     changeRowLength = (val, rowId) => {
         let rowLength = this.state.rowLength;
+        let totalRowsLength = 0;
         rowLength[rowId] = val;
-        this.setState({rowLength: rowLength})
+        rowLength.map((data, index)=>{
+            totalRowsLength += data;
+            return data;
+        })
+        this.setState({rowLength: rowLength, totalRowsLength: totalRowsLength})
     }
 
     getCalculateLength = (rowId) => {
@@ -131,14 +136,16 @@ class Patterncalculateform extends Component {
 
     removeRow = (rowId) => {
         let rowDatas = this.state.rowDatas;
-        const { rowsVal, calcRowLength } = this.state;
+        const { rowsVal, calcRowLength, rowLength } = this.state;
         let totalLength = 0;
+        let totalRowsLength = 0;
         rowDatas = rowDatas.filter((item, key)=>item.rowId!==rowId);
         rowDatas.map((data, index)=>{
             totalLength += rowsVal[data.rowId]*calcRowLength[data.rowId];
+            totalRowsLength += parseFloat(rowLength[data.rowId])-1+1;
             return data;
         })
-        this.setState({rowDatas: rowDatas, totalLength: totalLength})
+        this.setState({rowDatas: rowDatas, totalLength: totalLength, totalRowsLength: totalRowsLength})
     }
 
     submitTotalLength = (totalLength) => {
@@ -156,9 +163,8 @@ class Patterncalculateform extends Component {
     }
     
     render(){
-        const { orderLineNumber, itemCode, itemData } = this.props;
-        const { rowDatas, calcRowLength, rowsVal, rowLength, totalLength, pageLodingFlag } = this.state;
-        
+        const { orderLineNumber, itemCode, itemData, patternRowLengthCalcFlag } = this.props;
+        const { rowDatas, calcRowLength, rowsVal, rowLength, totalLength, pageLodingFlag, totalRowsLength } = this.state;
         return (
             <div className = "slide-form__controls open" style={{height: "100%"}}>
                 <div style={{marginBottom:30}}>
@@ -213,7 +219,13 @@ class Patterncalculateform extends Component {
                                                 rowDatas.map((data,index) =>(
                                                 <tr id={index} key={index}>
                                                     <td><Form.Control type="number" name="rows" required placeholder={trls('Rows')} value={rowsVal[data.rowId] ? rowsVal[data.rowId] : ''} onChange={(evt)=>this.changeRowsVal(evt.target.value, data.rowId)}/></td>
-                                                    <td><Form.Control type="number" name="rows" step="0.01" required  placeholder={trls('Row_length')} value={rowLength[data.rowId] ? rowLength[data.rowId] : ''} onChange={(evt)=>this.changeRowLength(evt.target.value, data.rowId)} onBlur={()=>this.getCalculateLength(data.rowId)}/></td>
+                                                    <td>
+                                                        {!patternRowLengthCalcFlag ? (
+                                                            <Form.Control type="number" name="rows" step="0.01" required  placeholder={trls('Row_length')} value={rowLength[data.rowId] ? rowLength[data.rowId] : ''} onChange={(evt)=>this.changeRowLength(evt.target.value, data.rowId)} onBlur={()=>this.getCalculateLength(data.rowId)}/>
+                                                        ): 
+                                                            <Form.Control type="number" name="rows" step="0.01" required  placeholder={trls('Row_length')} value={rowLength[data.rowId] ? rowLength[data.rowId] : ''} onChange={(evt)=>this.changeRowLength(evt.target.value, data.rowId)}/>
+                                                        }
+                                                    </td>
                                                     <td>{calcRowLength[data.rowId] ? Common.formatNumber(calcRowLength[data.rowId]) : 0}</td>
                                                     <td>{calcRowLength[data.rowId] ? Common.formatNumber(rowsVal[data.rowId]*calcRowLength[data.rowId]) : 0}</td>
                                                     <td>
@@ -235,9 +247,17 @@ class Patterncalculateform extends Component {
                                 <Col sm={8} style={{float: 'right', paddingLeft: 0, paddingRight: 0}}>
                                     <div className="info-block pattern-total__length">
                                         <span className="txt-bold">{trls('Total_lengh')}</span>
-                                        <span>{totalLength ? Common.formatNumber(totalLength): 0.00}</span>
+                                        {patternRowLengthCalcFlag ? (
+                                            <span>{totalRowsLength ? Common.formatNumber(totalRowsLength): 0.00}</span>
+                                        ):
+                                            <span>{totalLength ? Common.formatNumber(totalLength): 0.00}</span>
+                                        }
                                     </div>
-                                    <Button type="button" className="place-submit__order" onClick={()=>this.submitTotalLength(totalLength)}>Submit</Button>
+                                    {patternRowLengthCalcFlag ? (
+                                        <Button type="button" className="place-submit__order" onClick={()=>this.submitTotalLength(totalRowsLength)}>Submit</Button>
+                                    ):
+                                        <Button type="button" className="place-submit__order" onClick={()=>this.submitTotalLength(totalLength)}>Submit</Button>
+                                    }
                                 </Col>
                             </Form.Group>
                         </Form>
