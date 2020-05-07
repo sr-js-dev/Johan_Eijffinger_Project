@@ -8,13 +8,11 @@ import PrivateRoute from '../components/privateroute';
 import Forgotpass from '../pages/Signup/forgotpassword.js'
 import Resetpass from '../pages/Signup/resetpassword.js'
 import Userprofile from '../pages/User/userprofile';
-import { LastLocationProvider } from 'react-router-last-location';
 
 class App extends Component {
   render () {
     return (
       <Router history={history}>
-        <LastLocationProvider>
           <Switch >
             <Route path="/login" component={Login} />
             <Route path="/forgot-password" component={Forgotpass}/>
@@ -22,7 +20,6 @@ class App extends Component {
             <PrivateRoute path="/profile" component={Userprofile}/>
             <PrivateRoute path="/" component={GuestLayout} />
           </Switch>
-        </LastLocationProvider>
       </Router>
      
     )
