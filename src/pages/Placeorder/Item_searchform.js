@@ -109,6 +109,7 @@ class Itemsearchform extends Component {
 
     render(){   
         const{ loading, itemData, itemDataList } = this.state;
+        const { itemCode } = this.props;
         return (
             <div className = "slide-form__controls open" style={{height: "100%"}}>
                 <div style={{marginBottom:30}}>
@@ -118,7 +119,7 @@ class Itemsearchform extends Component {
                     <Col className="title add-product">{trls('Search_Item')}</Col>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="itemname" placeholder={trls('Item_Name')}/>
+                            <Form.Control type="text" name="itemname" defaultValue={itemCode} placeholder={trls('Item_Name')}/>
                             <label className="placeholder-label">{trls('Item_Name')}</label>
                         </Col>
                     </Form.Group>

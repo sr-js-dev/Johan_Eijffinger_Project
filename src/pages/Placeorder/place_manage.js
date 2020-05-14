@@ -416,7 +416,6 @@ class Placemanage extends Component {
             })
         }
 
-        console.log('22222222', rows);
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
