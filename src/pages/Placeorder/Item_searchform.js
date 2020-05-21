@@ -119,7 +119,7 @@ class Itemsearchform extends Component {
                     <Col className="title add-product">{trls('Search_Item')}</Col>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="itemname" defaultValue={itemCode} placeholder={trls('Item_Name')}/>
+                            <Form.Control type="text" name="itemname" placeholder={trls('Item_Name')}/>
                             <label className="placeholder-label">{trls('Item_Name')}</label>
                         </Col>
                     </Form.Group>

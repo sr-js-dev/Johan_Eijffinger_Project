@@ -252,23 +252,11 @@ class Placemanage extends Component {
         .then(response => {
             itemFlag[rowId]=false;
             patternRowId.push(rowId);
-            // rows.map((data, index) => {
-            //     if(data.rowId===rowId){
-            //         data.ItemName = response.ItemName;
-            //         data.SalesUnit = response.SalesUnit;
-            //         data.Image = response.Image;
-            //     }
-            //     return data;
-            // })
-            this.setState({itemData: response, orderLineNumber: lineNumber, pageLodingFlag: false, itemCode: itemCode, patternRowId: patternRowId, rows: rows, patternRowLengthCalcFlag: patternCheckFlag[rowId]}, function(){
-                this.searchItemForm();
+            response.rowId = rowId;
+            rows[rowId] = response;
+            this.setState({itemData: response, orderLineNumber: lineNumber, pageLodingFlag: false, itemCode: itemCode, patternRowId: patternRowId, rows: rows, itemFlag: itemFlag, patternRowLengthCalcFlag: patternCheckFlag[rowId]}, function(){
+                // this.searchItemForm();
             });
-            // this.setState({itemData: response, orderLineNumber: lineNumber, slidePatternFormFlag: response.U_DBS_PARTIJCONTR==="Y" ? true : false, pageLodingFlag: false, itemCode: itemCode, patternRowId: patternRowId, rows: rows}, function(){
-            //     this.searchItemForm();
-            // });
-            // if(response.U_DBS_PARTIJCONTR==="Y"){
-            //     Common.showSlideForm();
-            // }
         })
         .catch(err => {
             itemFlag[rowId]=true;
@@ -276,36 +264,35 @@ class Placemanage extends Component {
         });
     }
 
-    // getItemPriceData = (value, rowId) => {
-    //     this._isMounted = true;
-    //     let itemPriceData = this.state.itemPriceData;
-    //     let itemQuantityData = this.state.itemQuantityData;
-    //     itemQuantityData[rowId] = value;
-    //     itemPriceData[rowId] = '';
-    //     this.setState({itemPriceData: itemPriceData, pageLodingFlag: true, itemQuantityData: itemQuantityData});
-    //     let params = {
-    //         "itemCode": $("#itemCode"+rowId).val(),
-    //         "quantity": value ? value : 0,
-    //         "date": Common.formatDate1(new Date()),
-    //         "orderType": "B2B"
-    //     };
-    //     var headers = SessionManager.shared().getAuthorizationHeader();
-    //     Axios.post(API.GetDiscountPrice, params, headers)
-    //     .then(result => {
-    //         if(this._isMounted){
-    //             if(result.data){
-    //                 itemPriceData[rowId] = result.data;
-    //                 itemPriceData[rowId].itemQuantity = parseFloat(value);
-    //                 this.setState({itemPriceData: itemPriceData, pageLodingFlag: false})                    
-    //             }
-    //         }
-    //     })
-    //     .catch(err => {
-    //         if(err.response.status===401){
-    //             history.push('/login')
-    //         }
-    //     });
-    // }
+    getItemPriceData = (rowId) => {
+        this._isMounted = true;
+        this.setState({pageLodingFlag: true});
+        let itemPriceData = this.state.itemPriceData;
+        let itemQuantityData = this.state.itemQuantityData;
+        let itemCodeList = this.state.itemCodeList;
+        itemPriceData[rowId] = '';
+        let params = {
+            "itemCode": itemCodeList[rowId] ? itemCodeList[rowId] : '' ,
+            "quantity": itemQuantityData[rowId] ? itemQuantityData[rowId] : 0,
+            "date": Common.formatDate1(new Date()),
+            "orderType": "B2B"
+        };
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetDiscountPrice, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                if(result.data){
+                    itemPriceData[rowId] = result.data;
+                    this.setState({itemPriceData: itemPriceData, pageLodingFlag: false})                    
+                }
+            }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        });
+    }
 
     changeProductCode = (itemCode, rowId) => {
         let itemCodeList = this.state.itemCodeList;
@@ -349,22 +336,25 @@ class Placemanage extends Component {
         let rowNum = this.state.rowNum;
         let patternRowId = [];
         let rows = this.state.rows;
+        let itemCodeList = this.state.itemCodeList;
         itemList.map((data, index) => {
             if(index===0){
                 data.rowId = rowNum-1;
                 let row_id = rowNum-1;
                 patternRowId.push(row_id);
                 rows[rowNum-1] = data;
+                itemCodeList[rowNum-1] = data.ItemCode
             }else{
                 data.rowId = rowNum;
                 patternRowId.push(rowNum);
                 rows.push(data);
+                itemCodeList[rowNum] = data.ItemCode
             }
             rowNum += 1;
             return data
         })
         Common.showSlideForm();
-        this.setState({rows: rows, rowNum: rowNum-1, patternRowId: patternRowId, itemData: itemList[0], itemCode: itemList[0].ItemCode, slidePatternFormFlag: true});
+        this.setState({rows: rows, rowNum: rowNum-1, patternRowId: patternRowId, itemData: itemList[0], itemCode: itemList[0].ItemCode, itemCodeList: itemCodeList, slidePatternFormFlag: true});
     }
 
     setLenghQuantity = (length, patternRowId) => {
@@ -407,15 +397,16 @@ class Placemanage extends Component {
             slidePatternFormFlag,
             docDueDate,
             showPrice,
-            addRow
+            addRow,
+            itemCodeList
         } = this.state;
         if(itemPriceData){
             rows.map((data, key)=>{
-                totalAmount +=  itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice*itemPriceData[data.rowId].itemQuantity : 0;
+                totalAmount +=  itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice*itemQuantityData[data.rowId] : 0;
                 return data
             })
         }
-
+        console.log('3333', itemCodeList, rows);
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -516,8 +507,12 @@ class Placemanage extends Component {
                                 <tr id={index} key={index}>
                                     <td style={{display: "flex"}}>
                                         {/* <Form.Control id={"itemCode"+data.rowId} type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}/> */}
-                                        <Form.Control id={"itemCode"+data.rowId} type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId)}/>
-                                        <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}></i>
+                                        <Form.Control id={"itemCode"+data.rowId} type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}/>
+                                        {/* <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}></i> */}
+                                        {itemFlag[data.rowId]===false && (
+                                            // <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}></i>
+                                            <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.searchItemForm()}></i>
+                                        )}
                                     </td>
                                     <td>
                                         <Form.Control type="text" name="description" readOnly required  defaultValue = {data.ItemName ? data.ItemName : ''} placeholder={trls('Description')} />
@@ -525,18 +520,18 @@ class Placemanage extends Component {
                                     <td>
                                         {data.SalesUnit ? data.SalesUnit : ''}
                                     </td>
+                                    {/* onBlur={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId)} */}
                                     <td>
                                         { !addRow && data.U_DBS_STUKSCONTR!=='Y' ? (
                                             <Row style={{justifyContent: "space-around"}}>
-                                                <Form.Control type="text" name="quantity" style={{width: '80%'}} readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId)}/>
+                                                <Form.Control type="text" name="quantity" style={{width: '80%'}} readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId)}/>
                                                 <i className="fas fa-pen place-order__itemcode-icon" onClick={()=>this.calculatePattern(data, data.ItemCode, data.rowId)}></i>
                                             </Row>
                                         ): 
                                             <Row style={{justifyContent: "space-around"}}>
-                                                <Form.Control type="text" name="quantity" style={{width: '80%'}} readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId)}/>
+                                                <Form.Control type="text" name="quantity" style={{width: '80%'}} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId)}/>
                                             </Row>
                                         }
-                                        
                                     </td>
                                     {showPrice ? (
                                         <td>
@@ -545,7 +540,7 @@ class Placemanage extends Component {
                                     ): null}
                                     {showPrice ? (
                                         <td>
-                                            {Common.formatMoney(itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice*itemPriceData[data.rowId].itemQuantity : '')}
+                                            {Common.formatMoney(itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice*itemQuantityData[data.rowId] : '')}
                                         </td> 
                                     ): null}
                                     <td>
@@ -607,7 +602,7 @@ class Placemanage extends Component {
                 /> 
             ): null}
             {slidePatternFormFlag ? (
-                 <Patterncalculateform
+                <Patterncalculateform
                     onHide={() => this.setState({slidePatternFormFlag: false})}
                     orderLineNumber={this.state.orderLineNumber}
                     itemData={this.state.itemData}
