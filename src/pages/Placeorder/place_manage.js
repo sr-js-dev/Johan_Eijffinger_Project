@@ -509,10 +509,10 @@ class Placemanage extends Component {
                                         {/* <Form.Control id={"itemCode"+data.rowId} type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}/> */}
                                         <Form.Control id={"itemCode"+data.rowId} type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}/>
                                         {/* <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}></i> */}
-                                        {itemFlag[data.rowId]===false && (
-                                            // <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}></i>
+                                        {/* {itemFlag[data.rowId]===false && ( */}
+                                            {/* <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}></i> */}
                                             <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.searchItemForm()}></i>
-                                        )}
+                                        {/* )} */}
                                     </td>
                                     <td>
                                         <Form.Control type="text" name="description" readOnly required  defaultValue = {data.ItemName ? data.ItemName : ''} placeholder={trls('Description')} />

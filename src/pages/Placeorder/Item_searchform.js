@@ -42,7 +42,6 @@ class Itemsearchform extends Component {
     handleSubmit = (event) => {
         this._isMounted = true;
         this.setState({loading: true});
-        const { itemCode } = this.props;
         var headers = SessionManager.shared().getAuthorizationHeader();
         event.preventDefault();
         const clientFormData = new FormData(event.target);
@@ -53,7 +52,7 @@ class Itemsearchform extends Component {
         let params = {
             itemName: data.itemname,
             collection: data.collection,
-            itemCode: itemCode
+            itemCode: data.productcode
         }     
         Axios.post(API.PostItems, params, headers)
         .then(result => {
@@ -117,6 +116,12 @@ class Itemsearchform extends Component {
                 </div>
                 <Form className="container place-order__search-item" onSubmit = { this.handleSubmit }>
                     <Col className="title add-product">{trls('Search_Item')}</Col>
+                    <Form.Group as={Row} controlId="formPlaintextPassword">
+                        <Col className="product-text">
+                            <Form.Control type="text" name="productcode" defaultValue={itemCode} placeholder={trls('Product_code')}/>
+                            <label className="placeholder-label">{trls('Product_code')}</label>
+                        </Col>
+                    </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
                             <Form.Control type="text" name="itemname" placeholder={trls('Item_Name')}/>
