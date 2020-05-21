@@ -9,6 +9,7 @@ import API from '../../factories/api'
 import Axios from 'axios';
 // import Select from 'react-select';
 import Pageloadspiiner from '../../components/page_load_spinner';
+import Sweetalert from 'sweetalert';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -23,14 +24,16 @@ class Patterncalculateform extends Component {
     _isMounted = false;
     constructor(props) {
         super(props);
+        const { editPatternCalcuRow } = this.props;
         this.state = {  
             productSearch: [{'value': 'Description: Product with strokes', 'label': '7512-1'}, {'value': 'Product without strokes', 'label': '7513-1'}],
-            rowId: 0,
-            rowDatas: [],
-            rowsVal: [],
-            rowLength: [],
-            calcRowLength: [],
-            totalLength: 0,
+            rowId: editPatternCalcuRow.rowId ? editPatternCalcuRow.rowId : 0,
+            rowDatas: editPatternCalcuRow.rowDatas ? editPatternCalcuRow.rowDatas : [],
+            rowsVal: editPatternCalcuRow.rowsVal ? editPatternCalcuRow.rowsVal : [],
+            rowLength: editPatternCalcuRow.rowLength ? editPatternCalcuRow.rowLength : [],
+            calcRowLength: editPatternCalcuRow.calcRowLength ? editPatternCalcuRow.calcRowLength : [],
+            totalLength: editPatternCalcuRow.totalLength ? editPatternCalcuRow.totalLength : 0,
+            totalRowsLength: editPatternCalcuRow.totalRowsLength ? editPatternCalcuRow.totalRowsLength : 0,
             pageLodingFlag: false
         };
     }
@@ -148,27 +151,61 @@ class Patterncalculateform extends Component {
         this.setState({rowDatas: rowDatas, totalLength: totalLength, totalRowsLength: totalRowsLength})
     }
 
-    submitTotalLength = (totalLength) => {
+    submitTotalLength = (totalLength, patternCalcuRowData) => {
         let lengthVal = [];
         const{ patternRowId } = this.props;
         lengthVal = parseInt(totalLength);
         this.props.onHide();
-        this.props.onSetQuantity(lengthVal, patternRowId);
+        this.props.onSetQuantity(lengthVal, patternRowId, patternCalcuRowData);
         Common.hideSlideForm();
+    }
+
+    removeOrderLine = () => {
+        const { patternRowId } = this.props;
+        Sweetalert({
+            title: "Are you sure?",
+            text: trls("Pattern calculation needs to be filled for this product, do you want to delete the product from the order lines?"),
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                this.props.removeOrderLine(patternRowId);
+                Sweetalert("Success!", {
+                icon: "success",
+              });
+            } else {
+            }
+        });
     }
 
     onHide = () => {
         this.props.onHide();
         Common.hideSlideForm();
     }
+
+    changeCaculateCheck = (evt, rowId) => {
+        let patternCheckFlag = this.state.patternCheckFlag;
+        patternCheckFlag[0] = evt.target.checked;
+        this.setState({patternCheckFlag: patternCheckFlag})
+    }
     
     render(){
-        const { orderLineNumber, itemCode, itemData, patternRowLengthCalcFlag } = this.props;
-        const { rowDatas, calcRowLength, rowsVal, rowLength, totalLength, pageLodingFlag, totalRowsLength } = this.state;
+        const { orderLineNumber, itemCode, itemData, patternRowLengthCalcFlag, editPatternCalcuRow } = this.props;
+        const { rowId, rowDatas, calcRowLength, rowsVal, rowLength, totalLength, pageLodingFlag, totalRowsLength } = this.state;
+        let editPatternCalcuData = [];
+        editPatternCalcuData.rowId = rowId;
+        editPatternCalcuData.rowDatas = rowDatas;
+        editPatternCalcuData.calcRowLength = calcRowLength;
+        editPatternCalcuData.rowLength = rowLength;
+        editPatternCalcuData.rowsVal = rowsVal;
+        editPatternCalcuData.totalLength = totalLength;
+        editPatternCalcuData.totalRowsLength = totalRowsLength;
         return (
             <div className = "slide-form__controls open" style={{height: "100%"}}>
                 <div style={{marginBottom:30}}>
-                    <i className="fas fa-times slide-close" style={{ fontSize: 20, cursor: 'pointer'}} onClick={()=>this.onHide()}></i>
+                    <i className="fas fa-times slide-close" style={{ fontSize: 20, cursor: 'pointer'}} onClick={()=> editPatternCalcuRow.rowId ? this.onHide() : this.removeOrderLine()}></i>
                 </div>
                 <Row>
                     <Col sm={12}>
@@ -211,6 +248,7 @@ class Patterncalculateform extends Component {
                                                 <th>{trls("Row_length")}</th>
                                                 <th>{trls("Row_length_calculated")}</th>
                                                 <th>{trls("Total_row_length")}</th>
+                                                <th>{trls("NoPatternCalculation")}</th>
                                                 <th>{trls("Action")}</th>
                                             </tr>
                                         </thead>
@@ -228,6 +266,9 @@ class Patterncalculateform extends Component {
                                                     </td>
                                                     <td>{calcRowLength[data.rowId] ? Common.formatNumber(calcRowLength[data.rowId]) : 0}</td>
                                                     <td>{calcRowLength[data.rowId] ? Common.formatNumber(rowsVal[data.rowId]*calcRowLength[data.rowId]) : 0}</td>
+                                                    <td>
+                                                        <Form.Check type="checkbox" onChange={(evt)=>this.changeCaculateCheck(evt, data.rowId)}/>
+                                                    </td>
                                                     <td>
                                                         <Row style={{justifyContent: "space-around"}}>
                                                             <i className="fas fa-trash-alt add-icon" onClick = {()=>this.removeRow(data.rowId)}></i>
@@ -254,9 +295,9 @@ class Patterncalculateform extends Component {
                                         }
                                     </div>
                                     {patternRowLengthCalcFlag ? (
-                                        <Button type="button" className="place-submit__order" onClick={()=>this.submitTotalLength(totalRowsLength)}>Submit</Button>
+                                        <Button type="button" className="place-submit__order" disabled={rowDatas.length===0 ? true : false} onClick={()=>this.submitTotalLength(totalRowsLength, editPatternCalcuData)}>Submit</Button>
                                     ):
-                                        <Button type="button" className="place-submit__order" onClick={()=>this.submitTotalLength(totalLength)}>Submit</Button>
+                                        <Button type="button" className="place-submit__order" disabled={rowDatas.length===0 ? true : false} onClick={()=>this.submitTotalLength(totalLength, editPatternCalcuData)}>Submit</Button>
                                     }
                                 </Col>
                             </Form.Group>

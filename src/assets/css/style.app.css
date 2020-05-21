@@ -928,33 +928,33 @@ table.dataTable.no-footer {
   background-color: #FF6434;
   border-color: #FF6434;
 }
-.place-submit__order:not(:disabled):not(.disabled).active,.place-submit__order:not(:disabled):not(.disabled):active{
+.place-submit__order:not(:disabled):not(.disabled).active,.place-submit__order:not(:disabled):not(.disabled):active {
   color:#fff;
   background-color:#F35321;
   border-color:#F35321
 }
-.place-submit__order.disabled,.place-submit__order:disabled{
+.place-submit__order.disabled,.place-submit__order:disabled {
   color:#fff;
   background-color:#EFAE9A;
   border-color:#EFAE9A
 }
-.action-div{
+.action-div {
   cursor: pointer; 
   color: #004388; 
   font-size: 14px; 
   font-weight: bold;
 }
-.place-pattern__form{
+.place-pattern__form {
   margin-left: auto;
 }
 .pattern-total__length{
   background: rgba(2, 11, 14, 0.05);
   margin-bottom: 20px;
 }
-.order-docdue__datepicker{
+.order-docdue__datepicker {
   height: 35px;
 }
-.order_detail-table{
+.order_detail-table {
   max-height: 100px;
 }
 .flag-select__options{
@@ -963,15 +963,22 @@ table.dataTable.no-footer {
 .flag-select__btn:after {
   margin-top: 5px;
 }
-.profile-title{
+.profile-title {
   font-style: normal;
   font-weight: 500;
   font-size: 30px;
   line-height: 37px;
 }
-.profile-back__icon{
+.profile-back__icon {
   padding-top: 10px;
 }
-.profile-back__icon i{
+.profile-back__icon i {
   font-size: 20px;
+}
+.place_an_orrder-quantity {
+  width: 80%;
+  margin-left: 7px;
+}
+.place_an_orrder-quantity-y {
+  width: 80%;
 }

@@ -2,16 +2,11 @@ import React, {Component} from 'react'
 import { connect } from 'react-redux';
 import { trls } from '../../factories/translate';
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
-// import SessionManager from '../../components/session_manage';
 import Select from 'react-select';
 import API from '../../factories/api'
 import * as Common from '../../factories/common';
 import Axios from 'axios';
 import * as Auth from '../../factories/auth'
-// import  { Link } from 'react-router-dom';
-// import * as authAction  from '../../actions/authAction';
-// import Slider from 'react-bootstrap-slider';
-// import "bootstrap-slider/dist/css/bootstrap-slider.css"
 import SessionManager from '../../factories/session_manage';
 import $ from 'jquery';
 import { BallBeat } from 'react-pure-loaders';
@@ -20,9 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import 'datatables.net';
 import ItemSearchform from './Item_searchform';
 import Patterncalculateform from './patterncalculate_form';
-// import history from '../../history';
 import Pageloadspiiner from '../../components/page_load_spinner';
-// import { add } from 'date-fns';
 import history from '../../history';
 import Orderdetailform from './orderdetail_form';
 
@@ -76,7 +69,9 @@ class Placemanage extends Component {
             showPrice: localStorage.getItem('eijf_showPrice')==="true",
             itemCodeList: [],
             patternCheckFlag: [],
-            patternRowLengthCalcFlag: false
+            patternRowLengthCalcFlag: false,
+            patternCalcuRowData: [],
+            editPatternCalcuRow: [],
         };
     }
 
@@ -133,13 +128,14 @@ class Placemanage extends Component {
         let rowNum = this.state.rowNum;
         const { addRow } = this.state;
         const item = {
-          rowId: rowNum
+          rowId: rowNum,
+          ItemCode: ''
         };
         rowNum += 1;
         if(!addRow){
             this.setState({
                 rows: [...this.state.rows, item],
-                rowId: rowNum
+                rowId: rowNum,
             });
             this.setState({rowNum: rowNum, addRow: true});
         }
@@ -253,9 +249,9 @@ class Placemanage extends Component {
             itemFlag[rowId]=false;
             patternRowId.push(rowId);
             response.rowId = rowId;
-            rows[rowId] = response;
+            let rowLength = rows.length;
+            rows[rowLength-1] = response;
             this.setState({itemData: response, orderLineNumber: lineNumber, pageLodingFlag: false, itemCode: itemCode, patternRowId: patternRowId, rows: rows, itemFlag: itemFlag, patternRowLengthCalcFlag: patternCheckFlag[rowId]}, function(){
-                // this.searchItemForm();
             });
         })
         .catch(err => {
@@ -264,15 +260,18 @@ class Placemanage extends Component {
         });
     }
 
-    getItemPriceData = (rowId) => {
+    getItemPriceData = (rowId, itemCode) => {
         this._isMounted = true;
-        this.setState({pageLodingFlag: true});
+        const { itemFlag } = this.state;
         let itemPriceData = this.state.itemPriceData;
         let itemQuantityData = this.state.itemQuantityData;
-        let itemCodeList = this.state.itemCodeList;
+        if(!itemCode || itemFlag[rowId]!==false){
+            return;
+        }
+        this.setState({pageLodingFlag: true});
         itemPriceData[rowId] = '';
         let params = {
-            "itemCode": itemCodeList[rowId] ? itemCodeList[rowId] : '' ,
+            "itemCode": itemCode ? itemCode : '' ,
             "quantity": itemQuantityData[rowId] ? itemQuantityData[rowId] : 0,
             "date": Common.formatDate1(new Date()),
             "orderType": "B2B"
@@ -294,10 +293,12 @@ class Placemanage extends Component {
         });
     }
 
-    changeProductCode = (itemCode, rowId) => {
+    changeProductCode = (itemCode, rowId, index) => {
         let itemCodeList = this.state.itemCodeList;
+        let rows = this.state.rows;
+        rows[index].ItemCode = itemCode;
         itemCodeList[rowId] = itemCode;
-        this.setState({itemCode: itemCode, itemCodeList: itemCodeList})
+        this.setState({itemCode: itemCode, itemCodeList: itemCodeList, rows: rows})
     }
 
     changeQuantityData = (quantity, rowId) => {
@@ -320,15 +321,27 @@ class Placemanage extends Component {
         const { rows } = this.state;
         let rowsArr = rows.filter((item, key) => item.rowId !== rowId);
         let rowNum = this.state.rowNum;
-        rowNum--;
         this.setState({addRow: false, rowNum: rowNum});
         this.setState({
             rows: rowsArr,
         });
     }
 
-    searchItemForm = () => {
-        this.setState({slideItemFormFlag: true})
+    removeOredrLine = (patternRowId) => {
+        let rowsArr  = this.state.rows;
+        let rowNum = this.state.rowNum;
+        patternRowId.map((rowId, index)=>{
+            rowsArr = rowsArr.filter((item, key) => item.rowId !== rowId);
+        })
+        this.setState({addRow: false, rowNum: rowNum, slidePatternFormFlag: false});
+        Common.hideSlideForm();
+        this.setState({
+            rows: rowsArr,
+        });
+    }
+
+    searchItemForm = (itemCode) => {
+        this.setState({slideItemFormFlag: true, itemCode: itemCode, editPatternCalcuRow: []})
         Common.showSlideForm();
     }
 
@@ -336,48 +349,46 @@ class Placemanage extends Component {
         let rowNum = this.state.rowNum;
         let patternRowId = [];
         let rows = this.state.rows;
+        let rowLength = rows.length;
         let itemCodeList = this.state.itemCodeList;
         itemList.map((data, index) => {
             if(index===0){
                 data.rowId = rowNum-1;
                 let row_id = rowNum-1;
                 patternRowId.push(row_id);
-                rows[rowNum-1] = data;
+                rows[rowLength-1] = data;
                 itemCodeList[rowNum-1] = data.ItemCode
             }else{
                 data.rowId = rowNum;
                 patternRowId.push(rowNum);
-                rows.push(data);
+                rows[rowLength] = data;
                 itemCodeList[rowNum] = data.ItemCode
+                rowLength++;
+                rowNum += 1;
             }
-            rowNum += 1;
             return data
         })
         Common.showSlideForm();
-        this.setState({rows: rows, rowNum: rowNum-1, patternRowId: patternRowId, itemData: itemList[0], itemCode: itemList[0].ItemCode, itemCodeList: itemCodeList, slidePatternFormFlag: true});
+        this.setState({rows: rows, rowNum: rowNum, patternRowId: patternRowId, itemData: itemList[0], itemCode: itemList[0].ItemCode, itemCodeList: itemCodeList, slidePatternFormFlag: true, itemFlag: []});
     }
 
-    setLenghQuantity = (length, patternRowId) => {
-        let itemQuantityData = this.state;
+    setLenghQuantity = (length, patternRowId, calcuRowData) => {
+        let itemQuantityData = this.state.itemQuantityData;
+        let patternCalcuRowData = this.state.patternCalcuRowData;
         patternRowId.map((rowId, index)=>{
-            itemQuantityData[rowId] = length;
+            itemQuantityData[rowId] = length ? length : 0;
+            patternCalcuRowData[rowId] = calcuRowData;
             return rowId;
         })
-        this.setState({itemQuantityData: itemQuantityData, addRow: false});
+        this.setState({itemQuantityData: itemQuantityData, patternCalcuRowData: patternCalcuRowData, addRow: false});
     }
 
     calculatePattern = (itemData, itemCode, rowId) => {
-        const { patternCheckFlag } =  this.state;
+        const { patternCheckFlag, patternCalcuRowData } =  this.state;
         let patternRowId = this.state.patternRowId;
         patternRowId = [rowId];
         Common.showSlideForm();
-        this.setState({itemData: itemData, itemCode: itemCode, patternRowId: patternRowId, slidePatternFormFlag: true, patternRowLengthCalcFlag: patternCheckFlag[rowId]})
-    }
-
-    changeCaculateCheck = (evt, rowId) => {
-        let patternCheckFlag = this.state.patternCheckFlag;
-        patternCheckFlag[0] = evt.target.checked;
-        this.setState({patternCheckFlag: patternCheckFlag})
+        this.setState({itemData: itemData, itemCode: itemCode, patternRowId: patternRowId, slidePatternFormFlag: true, patternRowLengthCalcFlag: patternCheckFlag[rowId], editPatternCalcuRow: patternCalcuRowData[rowId] ? patternCalcuRowData[rowId] : []})
     }
 
     render(){   
@@ -398,15 +409,13 @@ class Placemanage extends Component {
             docDueDate,
             showPrice,
             addRow,
-            itemCodeList
-        } = this.state;
+        } = this.state; 
         if(itemPriceData){
             rows.map((data, key)=>{
                 totalAmount +=  itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice*itemQuantityData[data.rowId] : 0;
                 return data
             })
         }
-        console.log('3333', itemCodeList, rows);
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -497,7 +506,7 @@ class Placemanage extends Component {
                                 <th>{trls("Image")}</th>
                                 <th>{trls("Customer_reference")}</th>
                                 <th>{trls("Expected_deliver_week")}</th>
-                                <th>{trls("NoPatternCalculation")}</th>
+                                {/* <th>{trls("NoPatternCalculation")}</th> */}
                                 <th>{trls("Action")}</th>
                             </tr>
                         </thead>
@@ -506,13 +515,8 @@ class Placemanage extends Component {
                                 rows.map((data,index) =>(
                                 <tr id={index} key={index}>
                                     <td style={{display: "flex"}}>
-                                        {/* <Form.Control id={"itemCode"+data.rowId} type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}/> */}
-                                        <Form.Control id={"itemCode"+data.rowId} type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}/>
-                                        {/* <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}></i> */}
-                                        {/* {itemFlag[data.rowId]===false && ( */}
-                                            {/* <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}></i> */}
-                                            <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.searchItemForm()}></i>
-                                        {/* )} */}
+                                        <Form.Control id={"itemCode"+data.rowId} type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} value={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId, index)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}/>
+                                        <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.searchItemForm(data.ItemCode)}></i>
                                     </td>
                                     <td>
                                         <Form.Control type="text" name="description" readOnly required  defaultValue = {data.ItemName ? data.ItemName : ''} placeholder={trls('Description')} />
@@ -520,16 +524,15 @@ class Placemanage extends Component {
                                     <td>
                                         {data.SalesUnit ? data.SalesUnit : ''}
                                     </td>
-                                    {/* onBlur={()=>this.getItemPriceData(itemQuantityData[data.rowId], data.rowId)} */}
                                     <td>
-                                        { !addRow && data.U_DBS_STUKSCONTR!=='Y' ? (
+                                        { data.ItemName && data.U_DBS_STUKSCONTR!=='Y' ? (
                                             <Row style={{justifyContent: "space-around"}}>
-                                                <Form.Control type="text" name="quantity" style={{width: '80%'}} readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId)}/>
+                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity-y" readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : 0} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}/>
                                                 <i className="fas fa-pen place-order__itemcode-icon" onClick={()=>this.calculatePattern(data, data.ItemCode, data.rowId)}></i>
                                             </Row>
                                         ): 
-                                            <Row style={{justifyContent: "space-around"}}>
-                                                <Form.Control type="text" name="quantity" style={{width: '80%'}} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId)}/>
+                                            <Row>
+                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity" readOnly={itemFlag[data.rowId]===true ? true : false} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : 0} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}/>
                                             </Row>
                                         }
                                     </td>
@@ -556,9 +559,6 @@ class Placemanage extends Component {
                                         {this.state.productDesription&&(
                                             <DatePicker name="startdate" className="myDatePicker" dateFormat="dd-MM-yyyy" selected={new Date()} onChange={date =>this.setState({startdate:date})} />
                                         )}
-                                    </td>
-                                    <td>
-                                        <Form.Check type="checkbox" onChange={(evt)=>this.changeCaculateCheck(evt, data.rowId)}/>
                                     </td>
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>
@@ -594,22 +594,22 @@ class Placemanage extends Component {
             </Container>
             {slideItemFormFlag ? (
                 <ItemSearchform
-                    // mode={this.state.mode}
                     onHide={() => this.setState({slideItemFormFlag: false})}
                     onSetItemData={(itemList) => this.setOrderItem(itemList)}
                     itemCode={this.state.itemCode}
-                    // userUpdateData={this.state.userUpdateData}
                 /> 
             ): null}
             {slidePatternFormFlag ? (
                 <Patterncalculateform
-                    onHide={() => this.setState({slidePatternFormFlag: false})}
+                    onHide={() => this.setState({slidePatternFormFlag: false}) }
+                    removeOrderLine={(patternRowId) => this.removeOredrLine(patternRowId)}
                     orderLineNumber={this.state.orderLineNumber}
                     itemData={this.state.itemData}
                     itemCode={this.state.itemCode}
                     patternRowId={this.state.patternRowId}
+                    editPatternCalcuRow={this.state.editPatternCalcuRow}
                     patternRowLengthCalcFlag={this.state.patternRowLengthCalcFlag}
-                    onSetQuantity={(length, patternRowId)=>this.setLenghQuantity(length, patternRowId)}
+                    onSetQuantity={(length, patternRowId, patternCalcuRowData)=>this.setLenghQuantity(length, patternRowId, patternCalcuRowData)}
                 />
             ): null}
             <Orderdetailform
