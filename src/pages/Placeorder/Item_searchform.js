@@ -165,7 +165,12 @@ class Itemsearchform extends Component {
                                         <td>{data.ItemName}</td>
                                         <td>{data.SalesUnit}</td>
                                         <td>{data.U_DBS_COLLECTION}</td>
-                                        <td>{data.Image}</td>
+                                        <td>
+                                            {data.Image&&(
+                                                <img src={ data.Image ? "data:image/png;base64," + data.Image : ''} className = "image__zoom" alt={data.ItemName}></img>
+                                            ) 
+                                            }
+                                        </td>
                                     </tr>
                             ))
                             }

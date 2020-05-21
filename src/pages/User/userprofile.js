@@ -1,6 +1,4 @@
-import { Link } from 'react-router-dom';
 import React from 'react';
-import * as authAction  from '../../actions/authAction';
 import { connect } from 'react-redux';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import Message from '../../components/message';
