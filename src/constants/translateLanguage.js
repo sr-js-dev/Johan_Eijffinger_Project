@@ -172,7 +172,20 @@ export const TRANSLATIONS = {
       "InvoiceDetail": 'InvoiceDetail',
       "DeiveryDetail": 'DeiveryDetail',
       "NoPatternCalculation": 'NoPattern Calculation',
-      "Pattern calculation needs to be filled for this product, do you want to delete the product from the order lines?": 'Pattern calculation needs to be filled for this product, do you want to delete the product from the order lines?'
+      "Pattern calculation needs to be filled for this product, do you want to delete the product from the order lines?": 'Pattern calculation needs to be filled for this product, do you want to delete the product from the order lines?',
+      "Zipcode": "Zipcode",
+      "City": "City",
+      "StreetNo": "StreetNo",
+      "News": "News",
+      "Add News": "Add News",
+      "Subject Dutch": "Subject Dutch",
+      "Subject English": "Subject English",
+      "Subject German": "Subject German",
+      "Subject French": "Subject French",
+      "Text Dutch": "Text Dutch",
+      "Text English": "Text English",
+      "Text German": "Text German",
+      "Text French": "Text French"
     },
 
     Dutch: {
@@ -348,7 +361,20 @@ export const TRANSLATIONS = {
       "InvoiceDetail": 'Factuurgegevens',
       "DeiveryDetail": 'LeveringDetail',
       "NoPatternCalculation": 'Geen patroonberekening',
-      "Pattern calculation needs to be filled for this product, do you want to delete the product from the order lines?": "Patroonberekening moet worden ingevuld voor dit product, wilt u het product uit de orderregels verwijderen?"
+      "Pattern calculation needs to be filled for this product, do you want to delete the product from the order lines?": "Patroonberekening moet worden ingevuld voor dit product, wilt u het product uit de orderregels verwijderen?",
+      "Zipcode": "Zipcode",
+      "City": "Stad",
+      "StreetNo": 'StraatNr',
+      "News": "Nieuws",
+      "Add News": "Nieuws Toevoegen",
+      "Subject Dutch": "Onderwerpen Nederlands",
+      "Subject English": "Onderwerp Engels",
+      "Subject German": "Onderwerp Duits",
+      "Subject French": "Onderwerp Frans",
+      "Text Dutch": "Tekst Nederlands",
+      "Text English": "Tekst Engels",
+      "Text German": "Tekst Duits",
+      "Text French": 'Tekst Frans'
     }, 
     
     German: {
@@ -524,7 +550,20 @@ export const TRANSLATIONS = {
       "InvoiceDetail": 'Rechnungsdetail',
       "DeiveryDetail": 'Lieferdetail',
       "NoPatternCalculation": 'Keine Musterberechnung',
-      "Patroonberekening moet worden ingevuld voor dit product, wilt u het product uit de orderregels verwijderen?": "Die Musterberechnung muss für dieses Produkt ausgefüllt werden. Möchten Sie das Produkt aus den Bestellpositionen löschen?"
+      "Patroonberekening moet worden ingevuld voor dit product, wilt u het product uit de orderregels verwijderen?": "Die Musterberechnung muss für dieses Produkt ausgefüllt werden. Möchten Sie das Produkt aus den Bestellpositionen löschen?",
+      "Zipcode": "Zipcode",
+      "City": "Stadt",
+      "StreetNo": "StraßeNein",
+      "News": "Nachrichten",
+      "Add News": "Nachrichten Hinzufügen",
+      "Subject Dutch": 'Fach Niederländisch',
+      "Subject English": "Fach Englisch",
+      "Subject German": "Fach Deutsch",
+      "Subject French": "Fach Französisch",
+      "Text Dutch": "Text Nederlands",
+      "Text English": "Text Engels",
+      "Text German": "Text Duits",
+      "Text French": 'Text Frans'
     },
 
     French: {
@@ -700,6 +739,19 @@ export const TRANSLATIONS = {
       "InvoiceDetail": 'Détail de la facture',
       "DeiveryDetail": 'Détail de livraison',
       "NoPatternCalculation": 'Aucun calcul de modèle',
-      "Pattern calculation needs to be filled for this product, do you want to delete the product from the order lines?": "Le calcul du modèle doit être rempli pour ce produit, voulez-vous supprimer le produit des lignes de commande?"
+      "Pattern calculation needs to be filled for this product, do you want to delete the product from the order lines?": "Le calcul du modèle doit être rempli pour ce produit, voulez-vous supprimer le produit des lignes de commande?",
+      "Zipcode": "Zipcode",
+      "City": "Ville",
+      "StreetNo": "Rue non",
+      "News": "Nouvelles",
+      "Add News": "Ajouter des nouvelles",
+      "Subject Dutch": "MatièreNéerlandais",
+      "Subject English": "Sujet anglais",
+      "Subject German": "Sujet allemand",
+      "Subject French": "Sujet Française",
+      "Text Dutch": "Texte Nederlands",
+      "Text English": "Texte Engels",
+      "Text German": "Texte Duits",
+      "Text French": 'Texte Frans'
     }
   };

@@ -7,8 +7,10 @@ import * as Auth from '../factories/auth';
 import $ from 'jquery';
 import { Button } from 'react-bootstrap';
 import { trls } from '../factories/translate';
+import * as Common from '../factories/common';
 import ReactFlagsSelect from 'react-flags-select';
 import 'react-flags-select/css/react-flags-select.css';
+import Userprofile from '../pages/User/userprofile'
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -27,7 +29,8 @@ class Header extends Component {
             selectLangValue: window.localStorage.getItem('eijf_lang'),
             userInfo: Auth.getUserInfo(),
             userType: this.props.userType,
-            loggedUserInfo: Auth.getLoggedUserInfo()
+            loggedUserInfo: Auth.getLoggedUserInfo(),
+            userProfileSlide: false
         };
     }
 
@@ -56,7 +59,7 @@ class Header extends Component {
         if(mode==="resetPassword"){
             history.push('/forgot-password?loginUser=true');
         }else if(mode==="profile"){
-            history.push('/profile');
+            this.setUserProfile();
         }
         
     }
@@ -73,6 +76,16 @@ class Header extends Component {
         let lang = this.state.lang;
         lang = lang.filter((item, key)=>item.label===val);
         this.props.changeLan(lang[0]);
+    }
+
+    setUserProfile = () => {
+        this.setState({userProfileSlide: true})
+        Common.showSlideForm();
+    }
+
+    closeProfilePaga = () => {
+        this.setState({userProfileSlide: false})
+        Common.hideSlideForm();
     }
 
     render () {
@@ -120,6 +133,11 @@ class Header extends Component {
                     <img src={require("../assets/images/avatar.jpg")} alt="User avatar" className="header__user-img"/>
                 </div>
             </header>
+            {this.state.userProfileSlide ? (
+                <Userprofile
+                    onHide={() => this.closeProfilePaga()}
+                /> 
+            ): null}
         </div>
       )
     };

@@ -18,6 +18,7 @@ import Patterncalculateform from './patterncalculate_form';
 import Pageloadspiiner from '../../components/page_load_spinner';
 import history from '../../history';
 import Orderdetailform from './orderdetail_form';
+import Shippingaddressform from './shippingaddress_form';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -66,7 +67,6 @@ class Placemanage extends Component {
             orderDetailData: [],
             orderExpenses: [],
             showDetailModal: false,
-            showPrice: localStorage.getItem('eijf_showPrice')==="true",
             itemCodeList: [],
             patternCheckFlag: [],
             patternRowLengthCalcFlag: false,
@@ -293,7 +293,7 @@ class Placemanage extends Component {
         });
     }
 
-    changeProductCode = (itemCode, rowId, index) => {
+    changeProductCode = (itemCode, rowId, index, evt) => {
         let itemCodeList = this.state.itemCodeList;
         let rows = this.state.rows;
         rows[index].ItemCode = itemCode;
@@ -332,6 +332,7 @@ class Placemanage extends Component {
         let rowNum = this.state.rowNum;
         patternRowId.map((rowId, index)=>{
             rowsArr = rowsArr.filter((item, key) => item.rowId !== rowId);
+            return rowId;
         })
         this.setState({addRow: false, rowNum: rowNum, slidePatternFormFlag: false});
         Common.hideSlideForm();
@@ -391,6 +392,10 @@ class Placemanage extends Component {
         this.setState({itemData: itemData, itemCode: itemCode, patternRowId: patternRowId, slidePatternFormFlag: true, patternRowLengthCalcFlag: patternCheckFlag[rowId], editPatternCalcuRow: patternCalcuRowData[rowId] ? patternCalcuRowData[rowId] : []})
     }
 
+    editShippingAddree = () => {
+        this.setState({showShippingAddressModal: true}); 
+    }
+
     render(){   
         let totalAmount = 0;
         const { businessPartnerOption, 
@@ -407,9 +412,8 @@ class Placemanage extends Component {
             slideItemFormFlag,
             slidePatternFormFlag,
             docDueDate,
-            showPrice,
-            addRow,
         } = this.state; 
+        let showPrice = localStorage.getItem('eijf_showPrice')==="true";
         if(itemPriceData){
             rows.map((data, key)=>{
                 totalAmount +=  itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice*itemQuantityData[data.rowId] : 0;
@@ -476,13 +480,13 @@ class Placemanage extends Component {
                             <Col sm={6} className = "bill-shipping__address">
                                 <div className="place-order__address">
                                     <p className="address-header">{trls('Billing_Address')}</p>
-                                    <p>{billAddress.City ? billAddress.Street : '' }</p>
+                                    <p>{billAddress.City ? billAddress.Street + " " + billAddress.StreetNo : '' }</p>
                                     <p>{billAddress.City ? billAddress.ZipCode + " " + billAddress.City : ''}</p>
                                     <p>{billAddress.Country ? billAddress.Country : ''}</p>
                                 </div>
                                 <div className="place-order__address">
-                                    <p className="address-header">{trls('Shipping_Address')}</p>
-                                    <p>{setSippingAddress.City ? setSippingAddress.Street : '' }</p>
+                                    <p className="address-header">{trls('Shipping_Address')}<i className="fas fa-pen add-icon shipping-address_edit" onClick={()=>this.editShippingAddree()}></i></p>
+                                    <p>{setSippingAddress.City ? setSippingAddress.Street + " " + setSippingAddress.StreetNo : '' }</p>
                                     <p>{setSippingAddress.City ? setSippingAddress.ZipCode + " " + setSippingAddress.City : ''}</p>
                                     <p>{setSippingAddress.Country ? setSippingAddress.Country : ''}</p>
                                 </div>
@@ -515,7 +519,13 @@ class Placemanage extends Component {
                                 rows.map((data,index) =>(
                                 <tr id={index} key={index}>
                                     <td style={{display: "flex"}}>
-                                        <Form.Control id={"itemCode"+data.rowId} type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} value={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId, index)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}/>
+                                        <Form.Control id="itemCode" type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} value={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId, index)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)} 
+                                            onKeyPress={event => {
+                                                if (event.key === 'Enter') {
+                                                    this.getItemData(data.rowId, index+1, data.ItemCode)
+                                                }
+                                            }}
+                                        />
                                         <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.searchItemForm(data.ItemCode)}></i>
                                     </td>
                                     <td>
@@ -527,12 +537,24 @@ class Placemanage extends Component {
                                     <td>
                                         { data.ItemName && data.U_DBS_STUKSCONTR!=='Y' ? (
                                             <Row style={{justifyContent: "space-around"}}>
-                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity-y" readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : 0} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}/>
+                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity-y" readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : 0} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
+                                                    onKeyPress={event => {
+                                                        if (event.key === 'Enter') {
+                                                            this.getItemPriceData(data.rowId, data.ItemCode)
+                                                        }
+                                                    }}
+                                                />
                                                 <i className="fas fa-pen place-order__itemcode-icon" onClick={()=>this.calculatePattern(data, data.ItemCode, data.rowId)}></i>
                                             </Row>
                                         ): 
                                             <Row>
-                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity" readOnly={itemFlag[data.rowId]===true ? true : false} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : 0} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}/>
+                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity" readOnly={itemFlag[data.rowId]===true ? true : false} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : 0} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
+                                                    onKeyPress={event => {
+                                                        if (event.key === 'Enter') {
+                                                        this.getItemPriceData(data.rowId, index+1, data.ItemCode)
+                                                        }
+                                                    }}
+                                                />
                                             </Row>
                                         }
                                     </td>
@@ -617,6 +639,12 @@ class Placemanage extends Component {
                 onHide={() => this.setState({showDetailModal: false})}
                 orderDetailData={this.state.orderDetailData}
                 orderExpenses={this.state.orderExpenses}
+            />
+            <Shippingaddressform
+                show={this.state.showShippingAddressModal}
+                onHide={() => this.setState({showShippingAddressModal: false})}
+                shippingAddress={setSippingAddress}
+                setSippingAddress={(shippingAddress)=>{this.setState({setSippingAddress: shippingAddress})}}
             />
             <Pageloadspiiner loading = {pageLodingFlag}/>
         </div>

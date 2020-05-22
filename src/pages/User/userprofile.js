@@ -1,4 +1,5 @@
 import React from 'react';
+import * as authAction  from '../../actions/authAction';
 import { connect } from 'react-redux';
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import Message from '../../components/message';
@@ -13,7 +14,8 @@ import Select from 'react-select';
 const mapStateToProps = state => ({ ...state.auth });
 
 const mapDispatchToProps = dispatch => ({
-
+    blankdispatch: (blankFlag) =>
+        dispatch(authAction.blankdispatch(blankFlag)),
 });
 
 class Userprofile extends React.Component {
@@ -55,7 +57,8 @@ class Userprofile extends React.Component {
             localStorage.setItem('eijf_loggedUser', JSON.stringify(loggedinUserInfo));
             localStorage.setItem('eijf_lang',  data.language);
             localStorage.setItem('eijf_label',  data.language);
-            history.goBack();
+            this.props.onHide();
+            this.props.blankdispatch(this.props.blankFlag);
         })
         .catch(err => {
             if(err.response.status===401){
@@ -69,8 +72,12 @@ class Userprofile extends React.Component {
        
     }
 
-    gotoPreviousPage = () =>{
-        history.goBack();
+    // gotoPreviousPage = () =>{
+    //     history.goBack();
+    // }
+    
+    closeProfilePage = () =>{
+        this.props.onHide();
     }
 
     render() {
@@ -79,7 +86,7 @@ class Userprofile extends React.Component {
         let showPrice = localStorage.getItem('eijf_showPrice')==="true";
         let setUserLang = languageOption.filter((item, key)=>item.value===selectLang);
         return (
-            <div className="container">
+            <div className="slide-form__controls open user-profile">
                 <div className="col-xl-5 col-lg-7 col-md-12  vertical-center">
                     <Row>
                         <div className="login-side-div">
@@ -87,7 +94,7 @@ class Userprofile extends React.Component {
                         </div>
                         <Col>
                             <div className="profile-back__icon" style={{textAlign: "right"}}>
-                                <i className="fas fa-undo-alt add-icon" onClick={()=>this.gotoPreviousPage()}></i>
+                                <i className="fas fa-undo-alt add-icon" onClick={()=>this.closeProfilePage()}></i>
                             </div>
                             <Form className="container login-form" onSubmit = { this.handleSubmit }>
                                 <p className="profile-title">{trls('Profile')}</p>

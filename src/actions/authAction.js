@@ -74,16 +74,16 @@ export const fetchChangeLan = (value) => {
     }
 }
 
-export const blankdispatch = () => {
+export const blankdispatch = (flag) => {
     return (dispatch) => {
-        dispatch(fetchBlankData());
+        dispatch(fetchBlankData(flag));
     };
 }
 //error
-export const fetchBlankData = () => {
+export const fetchBlankData = (flag) => {
     return{
         type: types.FETCH_BlANK_DATA,
-        error:""
+        error: !flag ? true : false
     }
 }
 

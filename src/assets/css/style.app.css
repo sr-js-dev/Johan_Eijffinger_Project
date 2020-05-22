@@ -740,9 +740,13 @@ table.dataTable.no-footer {
   transition: right .3s linear;
 }
 .slide-form__controls.open {
+  height: 100%;
   right: 0;
   display: flex;
   z-index: 1050;
+}
+.user-profile {
+  width: 120%;
 }
 .add-product{
   padding-bottom: 40px;
@@ -963,6 +967,9 @@ table.dataTable.no-footer {
 .flag-select__btn:after {
   margin-top: 5px;
 }
+.flag-select {
+  margin-bottom: 7px;
+}
 .profile-title {
   font-style: normal;
   font-weight: 500;
@@ -981,4 +988,13 @@ table.dataTable.no-footer {
 }
 .place_an_orrder-quantity-y {
   width: 80%;
+}
+.shipping-address_edit{
+  float: right;
+}
+.header__controls button {
+  height: 30px;
+}
+.header__controls .dropdown-menu {
+  margin-left: -4px;
 }
