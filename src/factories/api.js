@@ -31,4 +31,9 @@ export default {
     GetReturnDetails: `${BASEURL}/api/Orders/GetReturnDetails/`,
     GetInvoiceDetails: `${BASEURL}/api/Orders/GetInvoiceDetails/`,
     GetDeliveryDetails: `${BASEURL}/api/Orders/GetDeliveryDetails/`,
+    GetNews: `${BASEURL}/api/News`,
+    Postnews: `${BASEURL}/api/News`,
+    GetNewsDataById: `${BASEURL}/api/News/`,
+    UpdateNews: `${BASEURL}/api/News/Update/`,
+    DeleteNews: `${BASEURL}/api/News/Delete/`,
   };

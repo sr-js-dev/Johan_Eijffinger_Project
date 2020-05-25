@@ -480,13 +480,13 @@ class Placemanage extends Component {
                             <Col sm={6} className = "bill-shipping__address">
                                 <div className="place-order__address">
                                     <p className="address-header">{trls('Billing_Address')}</p>
-                                    <p>{billAddress.City ? billAddress.Street + " " + billAddress.StreetNo : '' }</p>
+                                    <p>{billAddress.City ? billAddress.Street + " " + (billAddress.StreetNo ? billAddress.StreetNo : '') : '' }</p>
                                     <p>{billAddress.City ? billAddress.ZipCode + " " + billAddress.City : ''}</p>
                                     <p>{billAddress.Country ? billAddress.Country : ''}</p>
                                 </div>
                                 <div className="place-order__address">
                                     <p className="address-header">{trls('Shipping_Address')}<i className="fas fa-pen add-icon shipping-address_edit" onClick={()=>this.editShippingAddree()}></i></p>
-                                    <p>{setSippingAddress.City ? setSippingAddress.Street + " " + setSippingAddress.StreetNo : '' }</p>
+                                    <p>{setSippingAddress.City ? setSippingAddress.Street + " " + (setSippingAddress.StreetNo ? setSippingAddress.StreetNo : '') : '' }</p>
                                     <p>{setSippingAddress.City ? setSippingAddress.ZipCode + " " + setSippingAddress.City : ''}</p>
                                     <p>{setSippingAddress.Country ? setSippingAddress.Country : ''}</p>
                                 </div>
@@ -519,7 +519,8 @@ class Placemanage extends Component {
                                 rows.map((data,index) =>(
                                 <tr id={index} key={index}>
                                     <td style={{display: "flex"}}>
-                                        <Form.Control id="itemCode" type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} value={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId, index)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)} 
+                                    {/* onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode) */}
+                                        <Form.Control id="itemCode" type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} value={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId, index)} 
                                             onKeyPress={event => {
                                                 if (event.key === 'Enter') {
                                                     this.getItemData(data.rowId, index+1, data.ItemCode)

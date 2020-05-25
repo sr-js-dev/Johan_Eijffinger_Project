@@ -63,12 +63,8 @@ class Shippingaddressform extends Component {
                 <Form onSubmit = { this.handleSubmit }>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="street" defaultValue={shippingAddress ? shippingAddress.Street : ''} required placeholder={trls('Street')}/>
+                            <Form.Control type="text" name="street" defaultValue={shippingAddress ? shippingAddress.Street+' '+(shippingAddress.StreetNo ? shippingAddress.StreetNo: '') : ''} required placeholder={trls('Street')}/>
                             <label className="placeholder-label">{trls('Street')}</label>
-                        </Col>
-                        <Col className="product-text">
-                            <Form.Control type="text" name="streetno" defaultValue={shippingAddress ? shippingAddress.StreetNo : ''} placeholder={trls('StreetNo')}/>
-                            <label className="placeholder-label">{trls("StreetNo")}</label>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">

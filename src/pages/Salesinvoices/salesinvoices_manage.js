@@ -37,12 +37,14 @@ class Salesinvoicesmanage extends Component {
             deliveriesData: [],
             originFilterData: [],
             filterColunm: [
-                {"label": 'ItemCode', "value": "ItemCode", "type": 'text', "show": true},
-                {"label": 'ItemDescription', "value": "ItemDescription", "type": 'text', "show": true},
+                {"label": 'Order', "value": "DocNum", "type": 'text', "show": true},
+                {"label": 'Order_Date', "value": "DocDate", "type": 'date', "show": true},
+                {"label": 'Status', "value": "LineStatus", "type": 'text', "show": true},
+                {"label": 'Product', "value": "Product", "type": 'text', "show": true},
+                {"label": 'Collection', "value": "Collectie", "type": 'text', "show": true},
                 {"label": 'Quantity', "value": "Quantity", "type": 'text', "show": true},
-                {"label": 'DocDate', "value": "DocDate", "type": 'date', "show": true},
-                {"label": 'Price', "value": "Price", "type": 'text', "show": true},
-                {"label": 'Amount', "value": "Amount", "type": 'text', "show": true},
+                {"label": 'Batch', "value": "BatchNumbers", "type": 'text', "show": true},
+                {"label": 'Action', "value": "Action", "type": 'text', "show": true},
             ]
         };
     }
@@ -186,16 +188,37 @@ class Salesinvoicesmanage extends Component {
         }
     }
     // filter module
+    getFileDownLoad = (data) => {
+        this.setState({pageLodingFlag: true})
+        this._isMounted = true;
+        let params = {
+            objectId: "invoices",
+            keyValue: data.DocNum
+        }
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetDownloadFile, params, headers)
+        .then(result => {
+            if(result.data.pdf){
+                this.setState({pageLodingFlag: false})
+                this.downloadWithName("data:application/octet-stream;charset=utf-16le;base64,"+result.data.pdf, data.ItemCode+'.pdf');
+            }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        })
+    }
     
     render(){   
         const {filterColunm, deliveriesData} = this.state;
         let fitlerData = [
-            {"label": trls('ItemCode'), "value": "ItemCode", "type": 'text', "show": true},
-            {"label": trls('ItemDescription'), "value": "ItemDescription", "type": 'text', "show": true},
+            {"label": trls('Order'), "value": "DocNum", "type": 'text', "show": true},
+            {"label": trls('Order_Date'), "value": "DocDate", "type": 'date', "show": true},
+            {"label": trls('Product'), "value": "ItemDescription", "type": 'text', "show": true},
+            {"label": trls('Collection'), "value": "ItemCode", "type": 'text', "show": true},
             {"label": trls('Quantity'), "value": "Quantity", "type": 'text', "show": true},
-            {"label": trls('DocDate'), "value": "DocDate", "type": 'date', "show": true},
-            {"label": trls('Price'), "value": "Price", "type": 'text', "show": true},
-            {"label": trls('Amount'), "value": "Amount", "type": 'text', "show": true},
+            {"label": trls('Batch'), "value": "BatchNumbers", "type": 'text', "show": true},
         ]
         return (
             <div className="order_div">
@@ -247,12 +270,19 @@ class Salesinvoicesmanage extends Component {
                             {
                                 deliveriesData.map((data,i) =>(
                                     <tr id={i} key={i}>
-                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div className="action-div" onClick={()=>this.showDetail(data.DocNum)}>{data.ItemCode}</div></td>
-                                        <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{data.ItemDescription}</td>
-                                        <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
-                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
-                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.Price}</td>
-                                        <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Amount}</td>
+                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div id={data.id} className="action-div" onClick={()=>this.showPlaceOrder(data.DocNum)}>{data.DocNum}</div></td>
+                                        <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
+                                        <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenAmount > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenAmount > 0 ? "Open" : 'Send'}</div></td>
+                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemDescription}</td>
+                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.ItemCode}</td>
+                                        <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
+                                        <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
+                                        <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>
+                                            <Row style={{justifyContent: "space-around", width: 70}}>
+                                                <i className="far fa-file-pdf add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title"></span></i>
+                                                {/* <i className="fas fa-trash-alt add-icon"><span className="action-title"></span></i> */}
+                                            </Row>
+                                        </td>
                                     </tr>
                                 ))
                             }

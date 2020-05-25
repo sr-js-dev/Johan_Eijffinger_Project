@@ -117,7 +117,6 @@ class Header extends Component {
                     </Dropdown>
                     <ReactFlagsSelect
                         countries={["US", "NL", "DE", "FR"]}
-                        // placeholder="Select Language"
                         defaultCountry={selectLang[0].label}
                         showSelectedLabel={false}
                         showOptionLabel={false}

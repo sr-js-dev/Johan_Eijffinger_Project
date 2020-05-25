@@ -18,6 +18,7 @@ import Filtercomponent from '../../components/filtercomponent';
 // import history from '../../history';
 import * as authAction  from '../../actions/authAction';
 import history from '../../history';
+import Sweetalert from 'sweetalert';
 
 const mapStateToProps = state => ({ ...state.auth });
 
@@ -178,22 +179,19 @@ class Userregister extends Component {
 
     userDeleteConfirm = (id) => {
         this.setState({userId: id})
-        confirmAlert({
-            title: 'Confirm',
-            message: 'Are you sure to do this.',
-            buttons: [
-              {
-                label: 'Delete',
-                onClick: () => {
-                   this.userDelete()
-                }
-              },
-              {
-                label: 'Cancel',
-                onClick: () => {}
-              }
-            ]
-          });
+        Sweetalert({
+            title: "Are you sure?",
+            text: trls("Are you sure to do this?"),
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                this.userDelete();
+            } else {
+            }
+        });
     }
 
     userActiveConfirm = (id, mode) => {

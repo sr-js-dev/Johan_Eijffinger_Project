@@ -962,7 +962,7 @@ table.dataTable.no-footer {
   max-height: 100px;
 }
 .flag-select__options{
-  margin-left: 15px;
+  margin-left: 10px;
 }
 .flag-select__btn:after {
   margin-top: 5px;
@@ -997,4 +997,7 @@ table.dataTable.no-footer {
 }
 .header__controls .dropdown-menu {
   margin-left: -4px;
+}
+.flag-select__btn:focus{
+    outline: none !important
 }

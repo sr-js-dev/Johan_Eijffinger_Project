@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import { Row, Col, Form } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
-// import Adduserform from './adduserform';
+import Addnewsform from './addnewsform';
 import $ from 'jquery';
 import SessionManager from '../../factories/session_manage';
 import API from '../../factories/api'
@@ -15,8 +15,9 @@ import 'datatables.net';
 import * as Common from '../../factories/common';
 import * as Auth from '../../factories/auth';
 import Filtercomponent from '../../components/filtercomponent';
-// import history from '../../history';
 import history from '../../history';
+import Parser from 'html-react-parser';
+import Sweetalert from 'sweetalert';
 
 const mapStateToProps = state => ({ ...state.auth });
 
@@ -29,8 +30,6 @@ class Newsmanage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            userData:[],
-            userUpdateData:[],
             loading:true,
             slideFormFlag: false,
             originFilterData: [],
@@ -44,57 +43,55 @@ class Newsmanage extends Component {
                 {"label": 'Text English', "value": "textEnglish", "type": 'text', "show": true},
                 {"label": 'Text German', "value": "textGerman", "type": 'text', "show": true},
                 {"label": 'Text French', "value": "textFrench", "type": 'text', "show": true},
-               
+                {"label": 'Action', "value": "Action", "type": 'text', "show": true},
             ],
             userInfo: Auth.getUserInfo(), 
-            userType: '',
+            mode: 'add',
+            newsData: []
         };
     }
 
     componentDidMount() {
-        this.getUserData();
+        this.getNewsData();
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
     
-    getUserData (data) {    
+    getNewsData (data) {    
         this._isMounted = true;
         this.setState({loading: true})
         var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.get(API.GetUserData+1, headers)
+        Axios.get(API.GetNews, headers)
         .then(result => {
-            Axios.get(API.GetUserData+result.data.totalCount, headers)
-            .then(result => {
-                if(this._isMounted){
-                    if(!data){
-                        this.setState({userData: result.data.data, originFilterData: result.data.data});
-                    }else{
-                        this.setState({userData: data});
-                    }
-                    this.setState({loading:false})
-                    $('#news').dataTable().fnDestroy();
-                    $('#news').DataTable(
-                        {
-                            "language": {
-                                "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
-                                "zeroRecords": "Nothing found - sorry",
-                                "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
-                                "infoEmpty": "No records available",
-                                "infoFiltered": "(filtered from _MAX_ total records)",
-                                "search": trls('Search'),
-                                "paginate": {
-                                  "previous": trls('Previous'),
-                                  "next": trls('Next')
-                                }
-                            },
-                              "searching": false,
-                              "dom": 't<"bottom-datatable" lip>'
-                          }
-                      );
+            if(this._isMounted){
+                if(!data){
+                    this.setState({newsData: result.data, originFilterData: result.data});
+                }else{
+                    this.setState({newsData: data});
                 }
-            });
+                this.setState({loading:false})
+                $('#news').dataTable().fnDestroy();
+                $('#news').DataTable(
+                    {
+                        "language": {
+                            "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
+                            "zeroRecords": "Nothing found - sorry",
+                            "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
+                            "infoEmpty": "No records available",
+                            "infoFiltered": "(filtered from _MAX_ total records)",
+                            "search": trls('Search'),
+                            "paginate": {
+                                "previous": trls('Previous'),
+                                "next": trls('Next')
+                            }
+                        },
+                            "searching": false,
+                            "dom": 't<"bottom-datatable" lip>'
+                        }
+                    );
+            }
         })
         .catch(err => {
             if(err.response.status===401){
@@ -122,9 +119,9 @@ class Newsmanage extends Component {
         }
     }
     // filter module
-    userUpdate = (id) => {
+    newsUpdate = (id) => {
         var settings = {
-            "url": API.GetUserDataById+id,
+            "url": API.GetNewsDataById+id,
             "method": "GET",
             "headers": {
                 "Content-Type": "application/json",
@@ -134,7 +131,7 @@ class Newsmanage extends Component {
         $.ajax(settings).done(function (response) {
         })
         .then(response => {
-            this.setState({userUpdateData: response, mode:"update", slideFormFlag: true});
+            this.setState({newsUpdateData: response, mode:"update", slideFormFlag: true});
             Common.showSlideForm();
         })
         .catch(err => {
@@ -144,24 +141,20 @@ class Newsmanage extends Component {
         });
     }
 
-    viewUserData = (event) => {
-        this._isMounted = true;
-        var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.get(API.GetUserDataById+event.currentTarget.id, headers)
-        .then(result => {
-            if(this._isMounted){
-                this.setState({userUpdateData: result.data})
-                this.setState({modalShow:true, mode:"view", flag:true})
-            }
-        });
-    }
-
-    userDelete = () => {
-        var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.delete("https://cors-anywhere.herokuapp.com/"+API.DeleteUserData+this.state.userId, headers)
-        .then(result => {
-            this.setState({loading:true})
-            this.getUserData();               
+    newView = (id) => {
+        var settings = {
+            "url": API.GetNewsDataById+id,
+            "method": "GET",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+        }
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            this.setState({newsUpdateData: response, mode:"view", slideFormFlag: true});
+            Common.showSlideForm();
         })
         .catch(err => {
             if(err.response.status===401){
@@ -170,27 +163,47 @@ class Newsmanage extends Component {
         });
     }
 
-    userDeleteConfirm = (id) => {
-        this.setState({userId: id})
-        confirmAlert({
-            title: 'Confirm',
-            message: 'Are you sure to do this.',
-            buttons: [
-              {
-                label: 'Delete',
-                onClick: () => {
-                   this.userDelete()
-                }
-              },
-              {
-                label: 'Cancel',
-                onClick: () => {}
-              }
-            ]
-          });
+    newsDelete = (id) => {
+        var settings = {
+            "url": API.DeleteNews+id,
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+        }
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            Sweetalert("Success!", {
+                icon: "success",
+            });
+            this.getNewsData();     
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        });
     }
 
-    addUser = () => {
+    newsDeleteConfirm = (id) => {
+        Sweetalert({
+            title: "Are you sure?",
+            text: trls("Are you sure to do this?"),
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                this.newsDelete(id)
+            } else {
+            }
+        });
+    }
+
+    addNews = () => {
         this.setState({mode:"add", flag:false, slideFormFlag: true})
         Common.showSlideForm();
     }
@@ -213,7 +226,7 @@ class Newsmanage extends Component {
     }
 
     render () {
-        const {filterColunm, userData } = this.state;
+        const {filterColunm, newsData } = this.state;
         let filterData = [
             {"label": trls('Subject Dutch'), "value": "subjectDutch", "type": 'text'},
             {"label": trls('Subject English'), "value": "subjectEnglish", "type": 'text'},
@@ -233,8 +246,8 @@ class Newsmanage extends Component {
                     <Row>
                         <Col sm={6}>
                             {Auth.getRole()==="Administrator" || Auth.getRole()==="Customer" ?(
-                                <Button variant="primary" onClick={()=>this.addUser()}><i className="fas fa-plus add-icon"></i>{trls('Add News')}</Button> 
-                            ): <Button variant="primary" disabled onClick={()=>this.addUser()}><i className="fas fa-plus add-icon"></i>{trls('Add News')}</Button> }
+                                <Button variant="primary" onClick={()=>this.addNews()}><i className="fas fa-plus add-icon"></i>{trls('Add News')}</Button> 
+                            ): <Button variant="primary" disabled onClick={()=>this.addNews()}><i className="fas fa-plus add-icon"></i>{trls('Add News')}</Button> }
                             
                         </Col>
                         <Col sm={6} className="has-search">
@@ -272,49 +285,29 @@ class Newsmanage extends Component {
                                 )}
                             </tr>
                         </thead>
-                        {/* {userData && !this.state.loading &&(<tbody >
+                        {newsData && !this.state.loading &&(<tbody >
                             {
-                                userData.map((data,i) =>(
+                                newsData.map((data,i) =>(
                                     <tr id={i} key={i}>
-                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}>{data.userName}</td>
-                                        <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{data.email}</td>
-                                        <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}>{data.phoneNumber}</td>
-                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}>
-                                            {data.isActive ? (
-                                                <i className ="fas fa-check-circle active-icon"></i>
-                                            ):
-                                                <i className ="fas fa-check-circle inactive-icon"></i>
-                                            }
-                                        </td>
-                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 300}}>
-                                            <Row>
-												<i className="fas fa-trash-alt add-icon" onClick={()=>this.userDeleteConfirm(data.id)}><span className="action-title">{trls('Delete')}</span></i>
-												{userInfo.role==="Administrator" ? (
-                                                    <i className="fas fa-pen add-icon" onClick={()=>this.userUpdate(data.id)}><span className="action-title">{trls('Edit')}</span></i>
-                                                ):
-                                                    <i className="fas fa-pen add-icon__deactive"><span className="action-title">{trls('Edit')}</span></i>
-                                                }
-                                                
-                                                {!data.isActive ? (
-                                                    <i className="fas fa-check-circle add-icon" onClick={()=>this.userActiveConfirm(data.id, 'active')}><span className="action-title">{trls('Active')}</span></i>
-                                                ):
-                                                    <i className="fas fa-check-circle add-icon" onClick={()=>this.userActiveConfirm(data.id, 'deative')}><span className="action-title">{trls('Deactivate')}</span></i>
-                                                }
-											</Row>
-                                        </td>
-                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 200}}>
-                                            <Row>
-                                                {userInfo.role==="Administrator"? (
-                                                    <i className="fas fa-pen add-icon" onClick={()=>this.loginAsUser(data.userName)}><span className="action-title">{trls('LoginAsUser')}</span></i>
-                                                ):
-                                                    <i className="fas fa-pen add-icon__deactive"><span className="action-title">{trls('LoginAsUser')}</span></i>
-                                                }
-											</Row>
+                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}>{data.subjectDutch}</td>
+                                        <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{data.subjectEnglish}</td>
+                                        <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}>{data.subjectGerman}</td>
+                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}>{data.subjectFrench}</td>
+                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{Parser(data.textDutch)}</td>
+                                        <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{Parser(data.textEnglish)}</td>
+                                        <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{Parser(data.textGerman)}</td>
+                                        <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>{Parser(data.textFrench)}</td>
+                                        <td className={!this.showColumn(filterColunm[8].label) ? "filter-show__hide" : ''} style={{width: 200}}>
+                                            <Row style={{justifyContent:"space-around"}}>
+                                                <i className="fas fa-pen add-icon" onClick={()=>this.newsUpdate(data.id)}><span className="action-title">{trls('Edit')}</span></i>
+                                                <i className="fas fas fa-eye add-icon" onClick={()=>this.newView(data.id)}><span className="action-title">{trls('View')}</span></i>
+                                                <i className="fas fa-trash-alt add-icon" onClick={()=>this.newsDeleteConfirm(data.id)}><span className="action-title">{trls('Delete')}</span></i>
+                                            </Row>
                                         </td>
                                     </tr>
                             ))
                             }
-                        </tbody>)} */}
+                        </tbody>)}
                     </table>
                         { this.state.loading&& (
                             <div className="col-md-4 offset-md-4 col-xs-12 loading" style={{textAlign:"center"}}>
@@ -327,15 +320,15 @@ class Newsmanage extends Component {
                     </div>
                 </div>
                 
-                {/* {this.state.slideFormFlag ? (
-                    <Adduserform
+                {this.state.slideFormFlag ? (
+                    <Addnewsform
                         show={this.state.modalShow}
                         mode={this.state.mode}
-                        onHide={() => this.setState({slideFormFlag: false, userUpdateData: []})}
-                        onGetUser={() => this.getUserData()}
-                        userUpdateData={this.state.userUpdateData}
+                        onHide={() => this.setState({slideFormFlag: false, newsUpdateData: [], mode: 'add'})}
+                        onGetnewData={() => this.getNewsData()}
+                        newsUpdateData={this.state.newsUpdateData}
                     /> 
-                ): null} */}
+                ): null}
             </div>
         )
     };

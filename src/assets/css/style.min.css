@@ -189,7 +189,7 @@ table {
 
 @media (min-width:768px) {
 	.header {
-		padding: 8px 20px;
+		padding: 6px 20px;
 		-webkit-box-pack: start;
 		-ms-flex-pack: start;
 		justify-content: flex-start

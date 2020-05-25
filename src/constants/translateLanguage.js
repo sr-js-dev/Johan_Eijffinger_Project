@@ -185,7 +185,13 @@ export const TRANSLATIONS = {
       "Text Dutch": "Text Dutch",
       "Text English": "Text English",
       "Text German": "Text German",
-      "Text French": "Text French"
+      "Text French": "Text French",
+      "StartDate": "StartDate",
+      "EndDate": "EndDate",
+      "Are you sure to do this?": "Are you sure to do this?",
+      "View": "View",
+      "Edit News": "Edit News",
+      "View News": "View News"
     },
 
     Dutch: {
@@ -374,7 +380,13 @@ export const TRANSLATIONS = {
       "Text Dutch": "Tekst Nederlands",
       "Text English": "Tekst Engels",
       "Text German": "Tekst Duits",
-      "Text French": 'Tekst Frans'
+      "Text French": 'Tekst Frans',
+      "StartDate": "StartDatum",
+      "EndDate": "EindDatum",
+      "Are you sure to do this?": "Weet je het zeker?",
+      "View": "Visie",
+      "Edit News": "Nieuws Bewerken",
+      "View News": "Bekijk Nieuws"
     }, 
     
     German: {
@@ -563,7 +575,13 @@ export const TRANSLATIONS = {
       "Text Dutch": "Text Nederlands",
       "Text English": "Text Engels",
       "Text German": "Text Duits",
-      "Text French": 'Text Frans'
+      "Text French": 'Text Frans',
+      "StartDate": "AnfangsDatum",
+      "EndDate": "EndeDatum",
+      "Are you sure to do this?": "Bist du sicher das zu tun?",
+      "View": "Aussicht",
+      "Edit News": "Nachrichten Bearbeiten",
+      "View News": "Nachrichten Anzeigen"
     },
 
     French: {
@@ -752,6 +770,12 @@ export const TRANSLATIONS = {
       "Text Dutch": "Texte Nederlands",
       "Text English": "Texte Engels",
       "Text German": "Texte Duits",
-      "Text French": 'Texte Frans'
+      "Text French": 'Texte Frans',
+      "StartDate": "Date de début",
+      "EndDate": "Date de fin",
+      "Are you sure to do this?": "Êtes-vous sûr de faire cela?",
+      "View": "Vue",
+      "Edit News": "Éditer Nouvelles",
+      "View News": "Vue Nouvelles"
     }
   };
