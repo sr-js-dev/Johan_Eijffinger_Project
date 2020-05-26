@@ -11,6 +11,9 @@ import * as Common from '../../factories/common';
 import * as authAction  from '../../actions/authAction';
 import Pageloadspiiner from '../../components/page_load_spinner';
 import history from '../../history';
+import * as Auth from '../../factories/auth'
+import Parser from 'html-react-parser';
+import Pagination from '../../components/pagination'
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -34,7 +37,12 @@ class Dashboard extends Component {
             dashBoardFlag: false,
             lastOrdersFlag: false,
             lastDeleiversFlag: false,
-            lastOutstanding: false
+            lastOutstanding: false,
+            newFlag: false,
+            newsArrayData: [],
+            newsViewData: [],
+            loginUser: Auth.getLoggedUserInfo(),
+            newsDataPageSize: 0
         };
     }
 
@@ -47,6 +55,7 @@ class Dashboard extends Component {
         this.getLastOrdersData();
         this.getLastDeliveriesData();
         this.getLastOutstandingData();
+        this.getNewsData();
     }
 
     getDashBoardData = () => {
@@ -125,6 +134,44 @@ class Dashboard extends Component {
         })
     }
 
+    chunk = (array, size) => {
+        const chunked_arr = [];
+        for (let i = 0; i < array.length; i++) {
+          const last = chunked_arr[chunked_arr.length - 1];
+          if (!last || last.length === size) {
+            chunked_arr.push([array[i]]);
+          } else {
+            last.push(array[i]);
+          }
+        }
+        return chunked_arr;
+    }
+
+    getNewsData = () => {
+        this._isMounted = true;
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.get(API.GetNews, headers)
+        .then(result => {
+            if(this._isMounted){
+                let newsData = result.data;
+                newsData.sort(function(a, b){return new Date(b.startDate) - new Date(a.startDate)});
+                newsData = this.chunk(newsData, 3);
+                let newsDataPageSize = newsData.length;
+                this.setState({newsArrayData: newsData, newsViewData: newsData[0], newsDataPageSize: newsDataPageSize, newFlag: true});
+            }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        })
+    }
+
+    onChangeNewsPage = (page) => {
+        const { newsArrayData } = this.state;
+        this.setState({newsViewData: newsArrayData[page-1]});
+    }
+
     visitPlaceOrder = () => {
         this.props.blankdispatch()
     }
@@ -143,12 +190,30 @@ class Dashboard extends Component {
             dashBoardFlag,
             lastOrdersFlag,
             lastDeleiversFlag,
-            lastOutstanding } = this.state;
+            lastOutstanding ,
+            newsViewData,
+            loginUser,
+            newsDataPageSize,
+            newFlag
+        } = this.state;
         let lodingFlag = pageLodingFlag;
-        if(dashBoardFlag && lastOrdersFlag && lastDeleiversFlag && lastOutstanding){
+        if(dashBoardFlag && lastOrdersFlag && lastDeleiversFlag && lastOutstanding && newFlag){
             lodingFlag = false;
         }
-        console.log('1111');
+        let newsSubjectLang, newsTextLang = '';
+        if(loginUser.language==="English"){
+            newsSubjectLang = 'subjectEnglish';
+            newsTextLang = 'textEnglish';
+        }else if(loginUser.language==="Dutch"){
+            newsSubjectLang = 'subjectDutch';
+            newsTextLang = 'textDutch';
+        }else if(loginUser.language==="German"){
+            newsSubjectLang = 'subjectGerman';
+            newsTextLang = 'textGerman';
+        }else{
+            newsSubjectLang = 'subjectFrench';
+            newsTextLang = 'textFrench';
+        }
         return (
             <Container>
                 <div className="dashboard-header content__header content__header--with-line">
@@ -305,6 +370,30 @@ class Dashboard extends Component {
                         </div>
                     </Col>
                 </Row>
+                <Col className="dashboard-news">
+                    {newsViewData.length>0&&(
+                            newsViewData.map((data,i) =>(   
+                                <div id={i} key={i} style={{paddingBottom:20}} >
+                                    <div className="dashboard__bottom-item ">
+                                        <div className="dashboard__bottom-item-header news-header">
+                                            <h6 className="dashboard__bottom-item-title">{data[newsSubjectLang]}</h6>
+                                        </div>
+                                        <div className="dashboard-news_content">
+                                            {Parser(data[newsTextLang])}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )
+                    }
+                    {newsDataPageSize>1 && (
+                        <Pagination
+                            recordNum={newsDataPageSize}
+                            getPage={(page)=>this.onChangeNewsPage(page)}
+                        />
+                    )}
+                </Col>
+                
                 <Pageloadspiiner loading = {lodingFlag}/>
             </Container>
         );

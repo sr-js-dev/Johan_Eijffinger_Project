@@ -50,7 +50,6 @@ class Placemanage extends Component {
             billAddress: [],
             shippingAddress: [],
             setSippingAddress: [],
-            productSearch: [{'value': '7745-2', 'label': '7745-2'}, {'value': '7745-2', 'label': '7745-2'}],
             userInfo: Auth.getUserInfo(), 
             rowId: 0,
             patternRowId: [],
@@ -236,7 +235,7 @@ class Placemanage extends Component {
         itemCode = itemCodeList[rowId];
         this.setState({itemCode: itemCode, pageLodingFlag: true});
         var settings = {
-            "url": API.GetItemData+itemCode,
+            "url": API.GetItemDataByItemCode+itemCode,
             "method": "GET",
             "headers": {
                 "Content-Type": "application/json",
@@ -251,12 +250,13 @@ class Placemanage extends Component {
             response.rowId = rowId;
             let rowLength = rows.length;
             rows[rowLength-1] = response;
-            this.setState({itemData: response, orderLineNumber: lineNumber, pageLodingFlag: false, itemCode: itemCode, patternRowId: patternRowId, rows: rows, itemFlag: itemFlag, patternRowLengthCalcFlag: patternCheckFlag[rowId]}, function(){
+            this.setState({itemData: response, orderLineNumber: lineNumber, pageLodingFlag: false, itemCode: itemCode, patternRowId: patternRowId, rows: rows, itemFlag: itemFlag, patternRowLengthCalcFlag: patternCheckFlag[rowId], addRow: false}, function(){
             });
         })
         .catch(err => {
             itemFlag[rowId]=true;
             this.setState({pageLodingFlag: false, itemFlag: itemFlag});
+            this.searchItemForm(itemCode)
         });
     }
 
@@ -352,13 +352,15 @@ class Placemanage extends Component {
         let rows = this.state.rows;
         let rowLength = rows.length;
         let itemCodeList = this.state.itemCodeList;
+        let itemFlag = this.state.itemFlag;
         itemList.map((data, index) => {
             if(index===0){
                 data.rowId = rowNum-1;
                 let row_id = rowNum-1;
                 patternRowId.push(row_id);
                 rows[rowLength-1] = data;
-                itemCodeList[rowNum-1] = data.ItemCode
+                itemCodeList[rowNum-1] = data.ItemCode;
+                itemFlag[rowNum-1] = false;
             }else{
                 data.rowId = rowNum;
                 patternRowId.push(rowNum);
@@ -370,7 +372,7 @@ class Placemanage extends Component {
             return data
         })
         Common.showSlideForm();
-        this.setState({rows: rows, rowNum: rowNum, patternRowId: patternRowId, itemData: itemList[0], itemCode: itemList[0].ItemCode, itemCodeList: itemCodeList, slidePatternFormFlag: true, itemFlag: []});
+        this.setState({rows: rows, rowNum: rowNum, patternRowId: patternRowId, itemData: itemList[0], itemCode: itemList[0].ItemCode, itemCodeList: itemCodeList, slidePatternFormFlag: true, itemFlag: itemFlag});
     }
 
     setLenghQuantity = (length, patternRowId, calcuRowData) => {
@@ -527,7 +529,9 @@ class Placemanage extends Component {
                                                 }
                                             }}
                                         />
-                                        <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.searchItemForm(data.ItemCode)}></i>
+                                        {itemFlag[data.rowId]!==false && (
+                                            <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.searchItemForm(data.ItemCode)}></i>
+                                        )}
                                     </td>
                                     <td>
                                         <Form.Control type="text" name="description" readOnly required  defaultValue = {data.ItemName ? data.ItemName : ''} placeholder={trls('Description')} />

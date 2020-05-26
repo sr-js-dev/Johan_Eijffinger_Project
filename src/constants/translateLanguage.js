@@ -191,7 +191,8 @@ export const TRANSLATIONS = {
       "Are you sure to do this?": "Are you sure to do this?",
       "View": "View",
       "Edit News": "Edit News",
-      "View News": "View News"
+      "View News": "View News",
+      "Are you sure that you want to return this item?": "Are you sure that you want to return this item?"
     },
 
     Dutch: {
@@ -386,7 +387,8 @@ export const TRANSLATIONS = {
       "Are you sure to do this?": "Weet je het zeker?",
       "View": "Visie",
       "Edit News": "Nieuws Bewerken",
-      "View News": "Bekijk Nieuws"
+      "View News": "Bekijk Nieuws",
+      "Are you sure that you want to return this item?": "Weet u zeker dat u dit artikel wilt retourneren?"
     }, 
     
     German: {
@@ -581,7 +583,8 @@ export const TRANSLATIONS = {
       "Are you sure to do this?": "Bist du sicher das zu tun?",
       "View": "Aussicht",
       "Edit News": "Nachrichten Bearbeiten",
-      "View News": "Nachrichten Anzeigen"
+      "View News": "Nachrichten Anzeigen",
+      "Are you sure that you want to return this item?": "Sind Sie sicher, dass Sie diesen Artikel zurückgeben möchten?"
     },
 
     French: {
@@ -776,6 +779,7 @@ export const TRANSLATIONS = {
       "Are you sure to do this?": "Êtes-vous sûr de faire cela?",
       "View": "Vue",
       "Edit News": "Éditer Nouvelles",
-      "View News": "Vue Nouvelles"
+      "View News": "Vue Nouvelles",
+      "Are you sure that you want to return this item?": "Êtes-vous sûr de vouloir retourner cet article?"
     }
   };

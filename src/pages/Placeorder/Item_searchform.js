@@ -72,21 +72,13 @@ class Itemsearchform extends Component {
         itemData.map((data, index)=>{
             if(data.ItemCode===ItemCode){
                 if(data.checked){
-                    data.checked = false
+                    data.checked = false;
                 }else{
-                    data.checked = true
+                    data.checked = true;
                 }
+            }else{
+                data.checked = false;
             }
-            return data;
-        });
-        let itemDataList = itemData.filter((item, key)=>item.checked===true);
-        this.setState({itemData: itemData, itemDataList: itemDataList});
-    }
-
-    selectAllItemData = (val) =>{
-        const { itemData } = this.state;
-        itemData.map((data, index)=>{
-            data.checked =  val.target.checked
             return data;
         });
         let itemDataList = itemData.filter((item, key)=>item.checked===true);
@@ -145,10 +137,9 @@ class Itemsearchform extends Component {
                     </Form.Group>
                 </Form>
                 <div className="table-responsive place-order__search-itemtable">
-                    <table id="example" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
+                    <table id="example" className="place-and-orders__table table prurprice-dataTable" width="100%">
                         <thead>
                             <tr>
-                                <th><input type="checkbox" onChange={(val)=>this.selectAllItemData(val)}/></th>
                                 <th>{trls("ItemCode")}</th>
                                 <th>{trls("Item_Name")}</th>
                                 <th>{trls("Unit")}</th>
@@ -159,13 +150,12 @@ class Itemsearchform extends Component {
                         {itemData && !loading &&(<tbody >
                             {
                                 itemData.map((data,i) =>(
-                                    <tr id={i} key={i}>
-                                        <td><input type="checkbox" checked={data.checked ? data.checked : false} onChange={()=>this.selectItemData(data.ItemCode)}/></td>
-                                        <td>{data.ItemCode}</td>
-                                        <td>{data.ItemName}</td>
-                                        <td>{data.SalesUnit}</td>
-                                        <td>{data.U_DBS_COLLECTION}</td>
-                                        <td>
+                                    <tr id={i} key={i} onClick={()=>this.selectItemData(data.ItemCode)} className={data.checked ? "item-search__tr-active" : "item-search__tr"} >
+                                        <td className={data.checked ? "item-search__tr-active" : "item-search__tr"}>{data.ItemCode}</td>
+                                        <td className={data.checked ? "item-search__tr-active" : "item-search__tr"}>{data.ItemName}</td>
+                                        <td className={data.checked ? "item-search__tr-active" : "item-search__tr"}>{data.SalesUnit}</td>
+                                        <td className={data.checked ? "item-search__tr-active" : "item-search__tr"}>{data.U_DBS_COLLECTION}</td>
+                                        <td className={data.checked ? "item-search__tr-active" : "item-search__tr"}>
                                             {data.Image&&(
                                                 <img src={ data.Image ? "data:image/png;base64," + data.Image : ''} className = "image__zoom" alt={data.ItemName}></img>
                                             ) 

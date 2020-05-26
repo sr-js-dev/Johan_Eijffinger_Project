@@ -21,6 +21,7 @@ import * as Common from '../../factories/common';
 import Filtercomponent from '../../components/filtercomponent';
 import Pageloadspiiner from '../../components/page_load_spinner';
 // import * as Auth from '../../factories/auth';
+import Sweetalert from 'sweetalert';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -216,6 +217,57 @@ class Ordermanage extends Component {
         // });
         history.push('/order-detail/'+orderId);
     }
+
+    returnOrderConform = (data) => {
+        Sweetalert({
+            title: "Are you sure?",
+            text: trls("Are you sure that you want to return this item?"),
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                this.returnOrder(data);
+           
+            } else {
+            }
+        });
+    }
+
+    returnOrder = (data) => {
+        this._isMounted = true;
+        let params = {
+            "requestData": {
+            "CardCode": data.CardCode,
+            "DocumentLines": [
+            {
+            
+                       "ItemCode": data.CardCode,
+                       "Quantity": data.OpenQty,
+                        "TaxCode": null,
+                       "UnitPrice": data.Price
+            
+                    }
+                 ]
+            },
+            "parameters": {
+            
+            }
+        }
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.ReturnOrder, params, headers)
+        .then(result => {
+             Sweetalert("Success!", {
+                icon: "success",
+             });
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        })
+    }
     
     render(){   
         const {filterColunm, ordersData, pageLodingFlag} = this.state;
@@ -287,7 +339,7 @@ class Ordermanage extends Component {
                                         <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>
                                             <Row style={{justifyContent: "space-around", width: 70}}>
                                                 <i className="far fa-file-pdf add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title"></span></i>
-												{/* <i className="fas fa-trash-alt add-icon"><span className="action-title"></span></i> */}
+												<i className="fas fa-undo add-icon" onClick={()=>this.returnOrderConform(data)}><span className="action-title"></span></i>
 											</Row>
                                         </td>
                                     </tr>

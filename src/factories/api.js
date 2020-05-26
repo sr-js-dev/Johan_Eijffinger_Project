@@ -21,6 +21,7 @@ export default {
     PostLoginAsUser: `${BASEURL}/api/Token/LoginAs/`,
     GetCustomerData: `${BASEURL}/api/SapFactory/execute/get/GetCustomer`,
     GetItemData: `${BASEURL}/api/Items/StockItems/`,
+    GetItemDataByItemCode: `${BASEURL}/api/Items/`,
     GetDiscountPrice: `${BASEURL}/api/SapProxy/discountprice`,
     GetDashboardData: `${BASEURL}/api/Dashboard`,
     PostItems: `${BASEURL}/api/Items`,
@@ -36,4 +37,5 @@ export default {
     GetNewsDataById: `${BASEURL}/api/News/`,
     UpdateNews: `${BASEURL}/api/News/Update/`,
     DeleteNews: `${BASEURL}/api/News/Delete/`,
+    ReturnOrder: `${BASEURL}/api/SapFactory/execute/post/GoodsReturnRequest`,
   };
