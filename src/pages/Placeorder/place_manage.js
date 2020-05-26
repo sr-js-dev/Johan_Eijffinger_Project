@@ -250,7 +250,8 @@ class Placemanage extends Component {
             response.rowId = rowId;
             let rowLength = rows.length;
             rows[rowLength-1] = response;
-            this.setState({itemData: response, orderLineNumber: lineNumber, pageLodingFlag: false, itemCode: itemCode, patternRowId: patternRowId, rows: rows, itemFlag: itemFlag, patternRowLengthCalcFlag: patternCheckFlag[rowId], addRow: false}, function(){
+            this.setState({itemData: response, orderLineNumber: lineNumber,  itemCode: itemCode, patternRowId: patternRowId, rows: rows, itemFlag: itemFlag, patternRowLengthCalcFlag: patternCheckFlag[rowId], addRow: false}, ()=>{
+                this.checkPatternCalculate();
             });
         })
         .catch(err => {
@@ -371,8 +372,40 @@ class Placemanage extends Component {
             }
             return data
         })
-        Common.showSlideForm();
-        this.setState({rows: rows, rowNum: rowNum, patternRowId: patternRowId, itemData: itemList[0], itemCode: itemList[0].ItemCode, itemCodeList: itemCodeList, slidePatternFormFlag: true, itemFlag: itemFlag});
+      
+        this.setState({rows: rows, rowNum: rowNum, patternRowId: patternRowId, itemData: itemList[0], itemCode: itemList[0].ItemCode, itemCodeList: itemCodeList, itemFlag: itemFlag, pageLodingFlag: true}, ()=>{
+            this.checkPatternCalculate();
+        });
+    }
+
+    checkPatternCalculate = () => {
+        const { itemCode } = this.state;
+        this._isMounted = true;
+        var settings = {
+            "url": API.GetItemData+itemCode,
+            "method": "GET",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+        }
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            if(this._isMounted){
+                if(response.U_DBS_ONDERMATEN==="N"){
+                    Common.showSlideForm();
+                    this.setState({slidePatternFormFlag: true, pageLodingFlag: false});
+                }else{
+                    this.setState({pageLodingFlag: false});
+                }
+            }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        });
     }
 
     setLenghQuantity = (length, patternRowId, calcuRowData) => {
