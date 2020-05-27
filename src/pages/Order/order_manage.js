@@ -237,24 +237,74 @@ class Ordermanage extends Component {
 
     returnOrder = (data) => {
         this._isMounted = true;
+        // let params1 = {
+        //     "requestData": {
+        //     "CardCode": data.CardCode,
+        //     "DocumentLines": [
+        //     {
+            
+        //                "ItemCode": data.CardCode,
+        //                "Quantity": data.OpenQty,
+        //                 "TaxCode": null,
+        //                "UnitPrice": data.Price
+            
+        //             }
+        //          ]
+        //     },
+        //     "parameters": {
+            
+        //     }
+        // }
+        let documentLineArray = [];
+        let lineArray = [];
+
+        lineArray = {
+            ItemCode: data.ItemCode,
+            Quantity: data.Quantity,
+            Price: data.Price
+        }
+        documentLineArray.push(lineArray);
         let params = {
             "requestData": {
-            "CardCode": data.CardCode,
-            "DocumentLines": [
-            {
-            
-                       "ItemCode": data.CardCode,
-                       "Quantity": data.OpenQty,
-                        "TaxCode": null,
-                       "UnitPrice": data.Price
-            
-                    }
-                 ]
+                "CardCode": data.CardCode,
+                "DocDate": Common.formatDate1(data.DocDate),
+                "DocDueDate": Common.formatDate1(data.DocDueDate),
+                "Reference1": '',
+                 "BillingAddress": {
+                        "ShipToStreet": null,
+                        "ShipToStreetNo": null,
+                        "ShipToBlock": null,
+                        "ShipToBuilding": "",
+                        "ShipToCity": null,
+                        "ShipToZipCode": null,
+                        "ShipToCounty": null,
+                        "ShipToState": null,
+                        "ShipToCountry": null,
+                        "ShipToAddressType": null,
+                        "BillToStreet": null,
+                        "BillToStreetNo": null,
+                        "BillToBlock": null,
+                        "BillToBuilding": "",
+                        "BillToCity": null,
+                        "BillToZipCode": null,
+                        "BillToCounty": null,
+                        "BillToState": null,
+                        "BillToCountry": "NL",
+                        "BillToAddressType": null,
+                        "ShipToGlobalLocationNumber": null,
+                        "BillToGlobalLocationNumber": null,
+                        "ShipToAddress2": null,
+                        "ShipToAddress3": null,
+                        "BillToAddress2": null,
+                        "BillToAddress3": null,
+                        "PlaceOfSupply": null,
+                        "PurchasePlaceOfSupply": null
+                     },
+                     "DocumentLines": documentLineArray
             },
-            "parameters": {
-            
-            }
-        }
+              "parameters": {
+              }
+        }      
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.post(API.ReturnOrder, params, headers)
         .then(result => {

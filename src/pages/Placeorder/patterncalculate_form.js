@@ -34,7 +34,8 @@ class Patterncalculateform extends Component {
             calcRowLength: editPatternCalcuRow.calcRowLength ? editPatternCalcuRow.calcRowLength : [],
             totalLength: editPatternCalcuRow.totalLength ? editPatternCalcuRow.totalLength : 0,
             totalRowsLength: editPatternCalcuRow.totalRowsLength ? editPatternCalcuRow.totalRowsLength : 0,
-            pageLodingFlag: false
+            pageLodingFlag: false,
+            patternCheckFlag: []
         };
     }
     componentWillUnmount() {
@@ -68,15 +69,19 @@ class Patterncalculateform extends Component {
 
     handleAddRow = () => {
         let rowId = this.state.rowId;
+        let patternCheckFlag = this.state.patternCheckFlag;
         const item = {
           rowId: rowId
         };
         // if(!addRow){
+            patternCheckFlag[rowId]=false;
             rowId += 1;
             this.setState({
                 rowDatas: [...this.state.rowDatas, item],
-                rowId: rowId
+                rowId: rowId,
+                patternCheckFlag: patternCheckFlag
             });
+           
             // this.setState({addnum:true, addRow: true});
         // }
     };
@@ -100,9 +105,12 @@ class Patterncalculateform extends Component {
 
     getCalculateLength = (rowId) => {
         this._isMounted = true;
-        this.setState({pageLodingFlag: true});
         const { orderLineNumber, itemData } = this.props;
-        const { rowsVal, rowLength, rowDatas } = this.state;
+        const { rowsVal, rowLength, rowDatas, patternCheckFlag } = this.state;
+        if(patternCheckFlag[rowId]){
+            return;
+        }
+        this.setState({pageLodingFlag: true});
         let totalLength = 0;
         let calcRowLength = this.state.calcRowLength;
         let params = {
@@ -187,10 +195,21 @@ class Patterncalculateform extends Component {
 
     changeCaculateCheck = (evt, rowId) => {
         let patternCheckFlag = this.state.patternCheckFlag;
-        patternCheckFlag[0] = evt.target.checked;
-        this.setState({patternCheckFlag: patternCheckFlag})
+        patternCheckFlag[rowId] = evt.target.checked;
+        this.setState({patternCheckFlag: patternCheckFlag});
+        const { rowsVal, calcRowLength, rowLength, rowDatas } = this.state;
+        let totalLength = 0;
+        let totalRowsLength = 0;
+        rowDatas.map((data, index)=>{
+            if(!patternCheckFlag[data.rowId]){
+                totalLength += rowsVal[data.rowId]*calcRowLength[data.rowId];
+                totalRowsLength += parseFloat(rowLength[data.rowId])-1+1;
+            }
+            return data;
+        })
+        this.setState({totalLength: totalLength, totalRowsLength: totalRowsLength})
     }
-    
+
     render(){
         const { orderLineNumber, itemCode, itemData, patternRowLengthCalcFlag, editPatternCalcuRow } = this.props;
         const { rowId, rowDatas, calcRowLength, rowsVal, rowLength, totalLength, pageLodingFlag, totalRowsLength } = this.state;
@@ -203,23 +222,23 @@ class Patterncalculateform extends Component {
         editPatternCalcuData.totalLength = totalLength;
         editPatternCalcuData.totalRowsLength = totalRowsLength;
         return (
-            <div className = "slide-form__controls open" style={{height: "100%"}}>
+            <div className = "slide-form__controls open place-pattern_calculate" style={{height: "100%"}}>
                 <div style={{marginBottom:30}}>
                     <i className="fas fa-times slide-close" style={{ fontSize: 20, cursor: 'pointer'}} onClick={()=> editPatternCalcuRow.rowId ? this.onHide() : this.removeOrderLine()}></i>
                 </div>
                 <Row>
-                    <Col sm={12}>
-                        <Form className="container product-form" onSubmit = { this.handleSubmit }>
+                    <Col sm={9}>
+                        <Form className="container place-order-calc_form" onSubmit = { this.handleSubmit }>
                             <Form.Group as={Row} controlId="email">
-                                <Form.Label column sm="3">
-                                    {trls('Pattern_calculation')}   
+                                <Form.Label column sm="3" className="place-order-calc__label">
+                                    {trls('Orderline')}   
                                 </Form.Label>
                                 <Col sm="9" className="product-text place-pattern__form">
                                     <Form.Control type="text" name="role" className="input-text" disabled defaultValue={orderLineNumber} required placeholder={trls('OrderNumber')} />
                                 </Col>
                             </Form.Group>
                             <Form.Group as={Row} controlId="email">
-                                <Form.Label column sm="3">
+                                <Form.Label column sm="3" className="place-order-calc__label">
                                     {trls('ItemCode')}   
                                 </Form.Label>
                                 <Col sm="9" className="product-text place-pattern__form">
@@ -227,7 +246,7 @@ class Patterncalculateform extends Component {
                                 </Col>
                             </Form.Group>
                             <Form.Group as={Row} controlId="email">
-                                <Form.Label column sm="3">
+                                <Form.Label column sm="3" className="place-order-calc__label">
                                     {trls('Pattern')}   
                                 </Form.Label>
                                 <Col sm="9" className="product-text place-pattern__form">
@@ -235,73 +254,78 @@ class Patterncalculateform extends Component {
                                 </Col>
                             </Form.Group>
                             <Form.Group as={Row} controlId="email">
-                                <Col>
+                                <Col className="place-order-calc__label">
                                     <Form.Check type="checkbox" defaultChecked={itemData.U_DBS_VERSPRINGEND==="Y" ? true : false} label={trls('Staggered')} />
                                 </Col>
                             </Form.Group>
-                            <Form.Group as={Row} controlId="email">
-                                <Col>
-                                    <table id="example" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th>{trls("Rows")}</th>
-                                                <th>{trls("Row_length")}</th>
-                                                <th>{trls("Row_length_calculated")}</th>
-                                                <th>{trls("Total_row_length")}</th>
-                                                <th>{trls("NoPatternCalculation")}</th>
-                                                <th>{trls("Action")}</th>
-                                            </tr>
-                                        </thead>
-                                        {rowDatas &&(<tbody>
-                                            {
-                                                rowDatas.map((data,index) =>(
-                                                <tr id={index} key={index}>
-                                                    <td><Form.Control type="number" name="rows" required placeholder={trls('Rows')} value={rowsVal[data.rowId] ? rowsVal[data.rowId] : ''} onChange={(evt)=>this.changeRowsVal(evt.target.value, data.rowId)}/></td>
-                                                    <td>
-                                                        {!patternRowLengthCalcFlag ? (
-                                                            <Form.Control type="number" name="rows" step="0.01" required  placeholder={trls('Row_length')} value={rowLength[data.rowId] ? rowLength[data.rowId] : ''} onChange={(evt)=>this.changeRowLength(evt.target.value, data.rowId)} onBlur={()=>this.getCalculateLength(data.rowId)}/>
-                                                        ): 
-                                                            <Form.Control type="number" name="rows" step="0.01" required  placeholder={trls('Row_length')} value={rowLength[data.rowId] ? rowLength[data.rowId] : ''} onChange={(evt)=>this.changeRowLength(evt.target.value, data.rowId)}/>
-                                                        }
-                                                    </td>
-                                                    <td>{calcRowLength[data.rowId] ? Common.formatNumber(calcRowLength[data.rowId]) : 0}</td>
-                                                    <td>{calcRowLength[data.rowId] ? Common.formatNumber(rowsVal[data.rowId]*calcRowLength[data.rowId]) : 0}</td>
-                                                    <td>
-                                                        <Form.Check type="checkbox" onChange={(evt)=>this.changeCaculateCheck(evt, data.rowId)}/>
-                                                    </td>
-                                                    <td>
-                                                        <Row style={{justifyContent: "space-around"}}>
-                                                            <i className="fas fa-trash-alt add-icon" onClick = {()=>this.removeRow(data.rowId)}></i>
-                                                        </Row>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                            }
-                                        </tbody>)}
-                                    </table>
-                                </Col>
-                            </Form.Group>
-                            <Form.Group as={Row}>
-                                <Col sm="4" className="product-text input-div">
-                                    <Button variant="light" onClick={()=>this.handleAddRow()}><i className="fas fa-plus add-icon"></i>{trls('Add_to_row')}</Button>
-                                </Col>
-                                <Col sm={8} style={{float: 'right', paddingLeft: 0, paddingRight: 0}}>
-                                    <div className="info-block pattern-total__length">
-                                        <span className="txt-bold">{trls('Total_lengh')}</span>
-                                        {patternRowLengthCalcFlag ? (
-                                            <span>{totalRowsLength ? Common.formatNumber(totalRowsLength): 0.00}</span>
-                                        ):
-                                            <span>{totalLength ? Common.formatNumber(totalLength): 0.00}</span>
-                                        }
-                                    </div>
-                                    {patternRowLengthCalcFlag ? (
-                                        <Button type="button" className="place-submit__order" disabled={rowDatas.length===0 ? true : false} onClick={()=>this.submitTotalLength(totalRowsLength, editPatternCalcuData)}>Submit</Button>
-                                    ):
-                                        <Button type="button" className="place-submit__order" disabled={rowDatas.length===0 ? true : false} onClick={()=>this.submitTotalLength(totalLength, editPatternCalcuData)}>Submit</Button>
-                                    }
-                                </Col>
-                            </Form.Group>
                         </Form>
+                    </Col>
+                    <Col className="place-order-calc_pattern-div">
+                        <div className="place-order_pattern">2<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(2*itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0)}</div>
+                        <div className="place-order_pattern">3<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(3*itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0)}</div>
+                        <div className="place-order_pattern">4<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(4*itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0)}</div>
+                        <div className="place-order_pattern">5<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(5*itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0)}</div>
+                        <div>6<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(6*itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0)}</div>
+                    </Col>
+                </Row>
+                <Row className="place-order_patter-table">
+                    <table id="example" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
+                        <thead>
+                            <tr>
+                                <th>{trls("Rows")}</th>
+                                <th>{trls("Row_length")}</th>
+                                <th>{trls("Row_length_calculated")}</th>
+                                <th>{trls("Total_row_length")}</th>
+                                <th>{trls("NoPatternCalculation")}</th>
+                                <th>{trls("Action")}</th>
+                            </tr>
+                        </thead>
+                        {rowDatas &&(<tbody>
+                            {
+                                rowDatas.map((data,index) =>(
+                                <tr id={index} key={index}>
+                                    <td><Form.Control type="number" name="rows" required placeholder={trls('Rows')} value={rowsVal[data.rowId] ? rowsVal[data.rowId] : ''} onChange={(evt)=>this.changeRowsVal(evt.target.value, data.rowId)}/></td>
+                                    <td>
+                                        {!patternRowLengthCalcFlag ? (
+                                            <Form.Control type="number" name="rows" step="0.01" required  placeholder={trls('Row_length')} value={rowLength[data.rowId] ? rowLength[data.rowId] : ''} onChange={(evt)=>this.changeRowLength(evt.target.value, data.rowId)} onBlur={()=>this.getCalculateLength(data.rowId)}/>
+                                        ): 
+                                            <Form.Control type="number" name="rows" step="0.01" required  placeholder={trls('Row_length')} value={rowLength[data.rowId] ? rowLength[data.rowId] : ''} onChange={(evt)=>this.changeRowLength(evt.target.value, data.rowId)}/>
+                                        }
+                                    </td>
+                                    <td>{calcRowLength[data.rowId] ? Common.formatNumber(calcRowLength[data.rowId]) : 0}</td>
+                                    <td>{calcRowLength[data.rowId] ? Common.formatNumber(rowsVal[data.rowId]*calcRowLength[data.rowId]) : 0}</td>
+                                    <td>
+                                        <Form.Check type="checkbox" onChange={(evt)=>this.changeCaculateCheck(evt, data.rowId)}/>
+                                    </td>
+                                    <td>
+                                        <Row style={{justifyContent: "space-around"}}>
+                                            <i className="fas fa-trash-alt add-icon" onClick = {()=>this.removeRow(data.rowId)}></i>
+                                        </Row>
+                                    </td>
+                                </tr>
+                            ))
+                            }
+                        </tbody>)}
+                    </table>
+                </Row>
+                <Row>
+                    <Col sm="4" className="product-text input-div">
+                        <Button variant="light" onClick={()=>this.handleAddRow()}><i className="fas fa-plus add-icon"></i>{trls('Add_to_row')}</Button>
+                    </Col>
+                    <Col sm={8} style={{float: 'right', paddingLeft: 0}}>
+                        <div className="info-block pattern-total__length">
+                            <span className="txt-bold">{trls('Total_lengh')}</span>
+                            {patternRowLengthCalcFlag ? (
+                                <span>{totalRowsLength ? Common.formatNumber(totalRowsLength): 0.00}</span>
+                            ):
+                                <span>{totalLength ? Common.formatNumber(totalLength): 0.00}</span>
+                            }
+                        </div>
+                        {patternRowLengthCalcFlag ? (
+                            <Button type="button" className="place-submit__order" disabled={rowDatas.length===0 ? true : false} onClick={()=>this.submitTotalLength(totalRowsLength, editPatternCalcuData)}>Submit</Button>
+                        ):
+                            <Button type="button" className="place-submit__order" disabled={rowDatas.length===0 ? true : false} onClick={()=>this.submitTotalLength(totalLength, editPatternCalcuData)}>Submit</Button>
+                        }
                     </Col>
                 </Row>
                 <Pageloadspiiner loading = {pageLodingFlag}/>

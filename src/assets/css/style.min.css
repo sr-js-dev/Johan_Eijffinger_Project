@@ -158,13 +158,6 @@ table {
 	}
 }
 
-@media (min-width:1920px) {
-	.container {
-		margin: 0 60px;
-		padding-bottom: 60px
-	}
-}
-
 .txt-red {
 	color: #eb5757
 }

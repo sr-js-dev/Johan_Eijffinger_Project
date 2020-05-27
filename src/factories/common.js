@@ -63,10 +63,14 @@ export const formatPercent = (num) => {
 export const formatNumber = (num) => {
     num = parseFloat(num);
     if(num){
-        var value = num.toFixed(2);
-        return  value.toString();
+        return (
+            num
+              .toFixed(2) // always two decimal digits
+              .replace('.', ',') // replace decimal point character with ,
+              .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.') 
+          ) // use . as a separator
     }else{
-        return "0.00" 
+        return "0,00" 
     }
    
 };

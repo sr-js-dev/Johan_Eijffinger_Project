@@ -71,6 +71,9 @@ class Placemanage extends Component {
             patternRowLengthCalcFlag: false,
             patternCalcuRowData: [],
             editPatternCalcuRow: [],
+            stockItemData: [],
+            patternCalculateCheck:[],
+            orderSubmitFlag: false
         };
     }
 
@@ -124,6 +127,11 @@ class Placemanage extends Component {
     }
     
     handleAddRow = () => {
+        const { orderSubmitFlag } = this.state;
+        if(orderSubmitFlag){
+            this.onSubmitOrder();
+            return;
+        }
         let rowNum = this.state.rowNum;
         const { addRow } = this.state;
         const item = {
@@ -136,7 +144,7 @@ class Placemanage extends Component {
                 rows: [...this.state.rows, item],
                 rowId: rowNum,
             });
-            this.setState({rowNum: rowNum, addRow: true});
+            this.setState({rowNum: rowNum, addRow: true, orderSubmitFlag: true});
         }
     };
 
@@ -146,20 +154,30 @@ class Placemanage extends Component {
 
     onSubmitOrder = () => {
         this._isMounted = true;
-        this.setState({pageLodingFlag: true});
-        const { currentUserInfo, customer_reference, docDueDate, setSippingAddress, billAddress, rows, itemQuantityData } = this.state;
+        const { currentUserInfo, customer_reference, docDueDate, setSippingAddress, billAddress, rows, itemQuantityData, itemPriceData } = this.state;
         let documentLineArray = [];
         if(rows){
-            rows.map((data, index)=>{
-                let lineArray = [];
-                lineArray = {
-                    ItemCode: data.ItemCode,
-                    Quantity: itemQuantityData[data.rowId]
-                }
-                documentLineArray.push(lineArray);
-                return data;
-            })
+            // rows.map((data, index)=>{
+            //     let lineArray = [];
+            //     lineArray = {
+            //         ItemCode: data.ItemCode,
+            //         Quantity: itemQuantityData[data.rowId],
+            //         Price: itemPriceData[data.rowId]
+            //     }
+            //     documentLineArray.push(lineArray);
+            //     return data;
+            // })
+            let lineArray = [];
+            lineArray = {
+                ItemCode: rows[rows.length-1].ItemCode,
+                Quantity: itemQuantityData[rows[rows.length-1].rowId],
+                Price: itemPriceData[rows[rows.length-1].rowId]
+            }
+            documentLineArray.push(lineArray);
+        }else{
+            return;
         }
+        this.setState({pageLodingFlag: true});
         let params = {
             "requestData": {
                 "CardCode": currentUserInfo.SapCustomerCode,
@@ -213,16 +231,14 @@ class Placemanage extends Component {
                 Axios.post(API.GetOrderExpenses, param, headers)
                 .then(result => {
                     if(this._isMounted){
-                        this.setState({orderDetailData: orderDetailData, showDetailModal: true, orderExpenses: result.data, pageLodingFlag: false});
+                        this.setState({orderDetailData: orderDetailData, showDetailModal: true, orderExpenses: result.data, pageLodingFlag: false, orderSubmitFlag: false});
                     }
                 })
             }
         })
-        // .catch(err => {
-        //     if(err.response.status===401){
-        //         history.push('/login')
-        //     }
-        // });
+        .catch(err => {
+            this.setState({pageLodingFlag: false});
+        });
     }
 
     getItemData = (rowId, lineNumber, code) => {
@@ -296,10 +312,12 @@ class Placemanage extends Component {
 
     changeProductCode = (itemCode, rowId, index, evt) => {
         let itemCodeList = this.state.itemCodeList;
+        let itemFlag = this.state.itemFlag;
         let rows = this.state.rows;
         rows[index].ItemCode = itemCode;
         itemCodeList[rowId] = itemCode;
-        this.setState({itemCode: itemCode, itemCodeList: itemCodeList, rows: rows})
+        itemFlag[rowId] = true;
+        this.setState({itemCode: itemCode, itemCodeList: itemCodeList, rows: rows, itemFlag: itemFlag})
     }
 
     changeQuantityData = (quantity, rowId) => {
@@ -342,8 +360,8 @@ class Placemanage extends Component {
         });
     }
 
-    searchItemForm = (itemCode) => {
-        this.setState({slideItemFormFlag: true, itemCode: itemCode, editPatternCalcuRow: []})
+    searchItemForm = (itemCode, orderLineNumber) => {
+        this.setState({slideItemFormFlag: true, itemCode: itemCode, editPatternCalcuRow: [], orderLineNumber: orderLineNumber})
         Common.showSlideForm();
     }
 
@@ -379,7 +397,8 @@ class Placemanage extends Component {
     }
 
     checkPatternCalculate = () => {
-        const { itemCode } = this.state;
+        const { itemCode, itemData } = this.state;
+        let patternCalculateCheck = this.state.patternCalculateCheck;
         this._isMounted = true;
         var settings = {
             "url": API.GetItemData+itemCode,
@@ -394,11 +413,14 @@ class Placemanage extends Component {
         .then(response => {
             if(this._isMounted){
                 if(response.U_DBS_ONDERMATEN==="N"){
+                    patternCalculateCheck[itemData.rowId] = false;
                     Common.showSlideForm();
-                    this.setState({slidePatternFormFlag: true, pageLodingFlag: false});
+                    this.setState({slidePatternFormFlag: true, pageLodingFlag: false, stockItemData: response});
                 }else{
+                    patternCalculateCheck[itemData.rowId] = true;
                     this.setState({pageLodingFlag: false});
                 }
+                this.setState({patternCalculateCheck: patternCalculateCheck})
             }
         })
         .catch(err => {
@@ -447,7 +469,9 @@ class Placemanage extends Component {
             slideItemFormFlag,
             slidePatternFormFlag,
             docDueDate,
+            patternCalculateCheck
         } = this.state; 
+        console.log('222', itemQuantityData);
         let showPrice = localStorage.getItem('eijf_showPrice')==="true";
         if(itemPriceData){
             rows.map((data, key)=>{
@@ -554,16 +578,16 @@ class Placemanage extends Component {
                                 rows.map((data,index) =>(
                                 <tr id={index} key={index}>
                                     <td style={{display: "flex"}}>
-                                    {/* onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode) */}
-                                        <Form.Control id="itemCode" type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} value={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId, index)} 
-                                            onKeyPress={event => {
-                                                if (event.key === 'Enter') {
-                                                    this.getItemData(data.rowId, index+1, data.ItemCode)
-                                                }
-                                            }}
+                                    
+                                        <Form.Control id="itemCode" type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} value={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId, index)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}
+                                            // onKeyPress={event => {
+                                            //     if (event.key === 'Enter') {
+                                            //         this.getItemData(data.rowId, index+1, data.ItemCode)
+                                            //     }
+                                            // }}
                                         />
                                         {itemFlag[data.rowId]!==false && (
-                                            <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.searchItemForm(data.ItemCode)}></i>
+                                            <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.searchItemForm(data.ItemCode, index+1)}></i>
                                         )}
                                     </td>
                                     <td>
@@ -573,20 +597,20 @@ class Placemanage extends Component {
                                         {data.SalesUnit ? data.SalesUnit : ''}
                                     </td>
                                     <td>
-                                        { data.ItemName && data.U_DBS_STUKSCONTR!=='Y' ? (
+                                        { data.ItemName && !patternCalculateCheck[data.rowId] ? (
                                             <Row style={{justifyContent: "space-around"}}>
-                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity-y" readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : 0} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
-                                                    onKeyPress={event => {
-                                                        if (event.key === 'Enter') {
-                                                            this.getItemPriceData(data.rowId, data.ItemCode)
-                                                        }
-                                                    }}
+                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity-y" readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
+                                                    // onKeyPress={event => {
+                                                    //     if (event.key === 'Enter') {
+                                                    //         this.getItemPriceData(data.rowId, data.ItemCode)
+                                                    //     }
+                                                    // }}
                                                 />
                                                 <i className="fas fa-pen place-order__itemcode-icon" onClick={()=>this.calculatePattern(data, data.ItemCode, data.rowId)}></i>
                                             </Row>
                                         ): 
                                             <Row>
-                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity" readOnly={itemFlag[data.rowId]===true ? true : false} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : 0} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
+                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity" readOnly={itemFlag[data.rowId]===true ? true : false} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
                                                     onKeyPress={event => {
                                                         if (event.key === 'Enter') {
                                                         this.getItemPriceData(data.rowId, index+1, data.ItemCode)
@@ -664,7 +688,7 @@ class Placemanage extends Component {
                     onHide={() => this.setState({slidePatternFormFlag: false}) }
                     removeOrderLine={(patternRowId) => this.removeOredrLine(patternRowId)}
                     orderLineNumber={this.state.orderLineNumber}
-                    itemData={this.state.itemData}
+                    itemData={this.state.stockItemData}
                     itemCode={this.state.itemCode}
                     patternRowId={this.state.patternRowId}
                     editPatternCalcuRow={this.state.editPatternCalcuRow}

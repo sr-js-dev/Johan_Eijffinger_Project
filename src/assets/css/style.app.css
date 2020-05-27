@@ -1085,3 +1085,27 @@ border: 1px solid #E2E3E4;
   font-weight: bold;
   cursor: pointer;
 }
+.place-pattern_calculate{
+  padding: 25px;
+  width: 60%;
+}
+.place-pattern_calculate .place-order_patter-table{
+  padding: 0px 15px;
+}
+.place-pattern_calculate .place-order_pattern{
+  padding-bottom: 20px;
+}
+.place-pattern_calculate .pattern-calc_equal{
+  padding: 0px 15px;
+}
+.place-pattern_calculate .place-order-calc_form{
+  padding: 10px 0px;
+}
+.place-pattern_calculate .place-order-calc__label{
+  padding-left: 0px;
+  padding-right: 0px;
+}
+.place-pattern_calculate .place-order-calc_pattern-div{
+  text-align: right;
+  padding-top: 12px;
+}
