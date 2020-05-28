@@ -183,11 +183,6 @@ class Productpriceform extends Component {
                                             <td>
                                                 <DatePicker name="startdate" className="myDatePicker" disabled dateFormat="dd-MM-yyyy" selected={new Date(data.ShipDate)} />
                                             </td>
-                                            {/* <td>
-                                                <Row style={{justifyContent: "space-around"}}>
-                                                    <i className="fas fa-trash-alt add-icon" disabled></i>
-                                                </Row>
-                                            </td> */}
                                         </tr>
                                     ))
                                     }
@@ -228,17 +223,16 @@ class Productpriceform extends Component {
                                             <td>
                                                 <DatePicker name="startdate" className="myDatePicker" disabled dateFormat="dd-MM-yyyy" selected={new Date(orderDetailData.DocumentLines ? orderDetailData.DocumentLines[0].ShipDate : '')} />
                                             </td>
-                                            {/* <td>
-                                                <Row style={{justifyContent: "space-around"}}>
-                                                    <i className="fas fa-trash-alt add-icon" disabled></i>
-                                                </Row>
-                                            </td> */}
                                         </tr>
                                     )}
                                 </tbody>)}
                             </table>
                         </div>
                         <Col sm={4} style={{float: 'right', paddingLeft: 0, paddingRight: 0}}>
+                            <div className="info-block info-block--green">
+                                <span className="txt-bold">Expenses</span>
+                                <span>{Common.formatMoney(orderExpenses.expenses)}</span>
+                            </div>
                             <div className="info-block info-block--green">
                                 <span className="txt-bold">Order Total</span>
                                 <span>{Common.formatMoney(totalAmount)}</span>

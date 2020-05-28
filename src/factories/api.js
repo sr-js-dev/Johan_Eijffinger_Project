@@ -28,6 +28,7 @@ export default {
     GetOrderDetails: `${BASEURL}/api/Orders/GetOrderDetails/`,
     PostPatroonberekening: `${BASEURL}/api/SapProxy/patroonberekening`,
     PostOrder: `${BASEURL}/api/SapFactory/execute/post/PostOrder`,
+    PatchOrder: `${BASEURL}/api/SapFactory/execute/patch/PatchOrder`,
     GetOrderExpenses: `${BASEURL}/api/SapProxy/orderexpenses`,
     GetReturnDetails: `${BASEURL}/api/Orders/GetReturnDetails/`,
     GetInvoiceDetails: `${BASEURL}/api/Orders/GetInvoiceDetails/`,
@@ -38,4 +39,6 @@ export default {
     UpdateNews: `${BASEURL}/api/News/Update/`,
     DeleteNews: `${BASEURL}/api/News/Delete/`,
     ReturnOrder: `${BASEURL}/api/SapFactory/execute/post/GoodsReturnRequest`,
+    PostDeliveryDate: `${BASEURL}/api/SapProxy/deliverydate`,
   };
+  

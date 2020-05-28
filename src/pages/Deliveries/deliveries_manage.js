@@ -58,6 +58,7 @@ class Deliveriesmanage extends Component {
     }
 
     getDeliveriesData = (data) => {
+        
         this._isMounted = true;
         this.setState({loading:true})
         let params = {};

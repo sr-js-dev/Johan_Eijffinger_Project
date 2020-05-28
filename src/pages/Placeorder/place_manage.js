@@ -73,7 +73,9 @@ class Placemanage extends Component {
             editPatternCalcuRow: [],
             stockItemData: [],
             patternCalculateCheck:[],
-            orderSubmitFlag: false
+            orderSubmitFlag: false,
+            deliveryWeek: [],
+            mainOrderData: []
         };
     }
 
@@ -154,91 +156,166 @@ class Placemanage extends Component {
 
     onSubmitOrder = () => {
         this._isMounted = true;
-        const { currentUserInfo, customer_reference, docDueDate, setSippingAddress, billAddress, rows, itemQuantityData, itemPriceData } = this.state;
+        const { currentUserInfo, customer_reference, docDueDate, setSippingAddress, billAddress, rows, itemQuantityData, itemPriceData, mainOrderData } = this.state;
         let documentLineArray = [];
+        let params = [];
         if(rows){
-            // rows.map((data, index)=>{
-            //     let lineArray = [];
-            //     lineArray = {
-            //         ItemCode: data.ItemCode,
-            //         Quantity: itemQuantityData[data.rowId],
-            //         Price: itemPriceData[data.rowId]
-            //     }
-            //     documentLineArray.push(lineArray);
-            //     return data;
-            // })
+           
             let lineArray = [];
-            lineArray = {
-                ItemCode: rows[rows.length-1].ItemCode,
-                Quantity: itemQuantityData[rows[rows.length-1].rowId],
-                Price: itemPriceData[rows[rows.length-1].rowId]
+            if(mainOrderData.length===0){
+                lineArray = {
+                    ItemCode: rows[rows.length-1].ItemCode,
+                    Quantity: itemQuantityData[rows[rows.length-1].rowId],
+                    Price: itemPriceData[rows[rows.length-1].rowId] ? itemPriceData[rows[rows.length-1].rowId] .UnitPrice : ''
+                }
+            }else{
+                lineArray = {
+                    LineNum: 0,
+                    ItemCode: rows[rows.length-1].ItemCode,
+                    Quantity: itemQuantityData[rows[rows.length-1].rowId],
+                    Price: itemPriceData[rows[rows.length-1].rowId] ? itemPriceData[rows[rows.length-1].rowId] .UnitPrice : ''
+                }
             }
+            
             documentLineArray.push(lineArray);
         }else{
             return;
         }
         this.setState({pageLodingFlag: true});
-        let params = {
-            "requestData": {
-                "CardCode": currentUserInfo.SapCustomerCode,
-                "DocDate": Common.formatDate1(new Date()),
-                "DocDueDate": Common.formatDate1(docDueDate),
-                "Reference1": customer_reference,
-                 "BillingAddress": {
-                        "ShipToStreet": setSippingAddress.Street,
-                        "ShipToStreetNo": null,
-                        "ShipToBlock": null,
-                        "ShipToBuilding": "",
-                        "ShipToCity": setSippingAddress.City,
-                        "ShipToZipCode": setSippingAddress.ZipCode,
-                        "ShipToCounty": null,
-                        "ShipToState": null,
-                        "ShipToCountry": setSippingAddress.Country,
-                        "ShipToAddressType": null,
-                        "BillToStreet": billAddress.Street,
-                        "BillToStreetNo": null,
-                        "BillToBlock": null,
-                        "BillToBuilding": "",
-                        "BillToCity": billAddress.City,
-                        "BillToZipCode": billAddress.ZipCode,
-                        "BillToCounty": null,
-                        "BillToState": null,
-                        "BillToCountry": "NL",
-                        "BillToAddressType": null,
-                        "ShipToGlobalLocationNumber": null,
-                        "BillToGlobalLocationNumber": null,
-                        "ShipToAddress2": null,
-                        "ShipToAddress3": null,
-                        "BillToAddress2": null,
-                        "BillToAddress3": null,
-                        "PlaceOfSupply": null,
-                        "PurchasePlaceOfSupply": null
-                     },
-                     "DocumentLines": documentLineArray
-            },
-              "parameters": {
-              }
-        }
         var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.post(API.PostOrder, params, headers)
-        .then(result => {
-            if(this._isMounted){
-                let param = {
-                    "docEntry": result.data.DocEntry
-                }
-                result.data.customerReference = customer_reference;
-                let orderDetailData = result.data;
-                Axios.post(API.GetOrderExpenses, param, headers)
-                .then(result => {
-                    if(this._isMounted){
-                        this.setState({orderDetailData: orderDetailData, showDetailModal: true, orderExpenses: result.data, pageLodingFlag: false, orderSubmitFlag: false});
+        if(mainOrderData.length===0){
+            params = {
+                "requestData": {
+                    "CardCode": currentUserInfo.SapCustomerCode,
+                    "DocDate": Common.formatDate1(new Date()),
+                    "DocDueDate": Common.formatDate1(docDueDate),
+                    "Reference1": customer_reference,
+                    "AddressExtension": {
+                        "ShipToStreet": setSippingAddress.Street, 
+                        "ShipToCity": setSippingAddress.City, 
+                        "ShipToZipCode": setSippingAddress.ZipCode,
+                        "ShipToCountry": setSippingAddress.Country
+                    },
+                    "DocumentLines": documentLineArray
+                    },
+                    "parameters": {
                     }
-                })
+                }
+            Axios.post(API.PostOrder, params, headers)
+            .then(result => {
+                if(this._isMounted){
+                    let orderResult = result.data;
+                    let param = {
+                        "docEntry": orderResult.DocEntry
+                    }
+                    this.setState({mainOrderData: orderResult})
+                    Axios.post(API.PostDeliveryDate, param, headers)
+                    .then(result => {
+                        var settings = {
+                            "url": API.GetOrderDetails+orderResult.DocNum,
+                            "method": "GET",
+                            "headers": {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer "+Auth.getUserToken(),
+                        }
+                        }
+                        $.ajax(settings).done(function (response) {
+                        })
+                        .then(response => {
+                            let deliveryWeek = this.state.deliveryWeek;
+                            let orderLineData = this.setOrderLineData(response.value);
+                            deliveryWeek[rows[rows.length-1].rowId] = orderLineData[0].DocumentLines[0].ShipDate;
+                            Axios.post(API.GetOrderExpenses, param, headers)
+                            .then(result => {
+                                this.setState({ orderDetailData: orderLineData[0], orderExpenses: result.data,  showDetailModal: true, pageLodingFlag: false, deliveryWeek: deliveryWeek, orderSubmitFlag: false});
+                            })
+                        })
+                    })
+                    // result.data.customerReference = customer_reference;
+                    // let orderDetailData = result.data;
+                    
+                }
+            })
+            .catch(err => {
+                this.setState({pageLodingFlag: false});
+            });
+        }else{
+            params = {
+                "requestData": {
+                    "CardCode": currentUserInfo.SapCustomerCode,
+                    "DocDate": Common.formatDate1(new Date()),
+                    "DocDueDate": Common.formatDate1(docDueDate),
+                    "Reference1": customer_reference,
+                    "AddressExtension": {
+                        "ShipToStreet": setSippingAddress.Street, 
+                        "ShipToCity": setSippingAddress.City, 
+                        "ShipToZipCode": setSippingAddress.ZipCode,
+                        "ShipToCountry": setSippingAddress.Country
+                    },
+                    "DocumentLines": documentLineArray
+                },
+                  "parameters": {
+                    "p_DocEntry": mainOrderData.DocEntry,
+                  }
             }
-        })
-        .catch(err => {
-            this.setState({pageLodingFlag: false});
+            Axios.patch(API.PatchOrder, params, headers)
+            .then(result => {
+                if(this._isMounted){
+                    let param = {
+                        "docEntry": mainOrderData.DocEntry
+                    }
+                    Axios.post(API.PostDeliveryDate, param, headers)
+                    .then(result => {
+                        var settings = {
+                            "url": API.GetOrderDetails+mainOrderData.DocNum,
+                            "method": "GET",
+                            "headers": {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer "+Auth.getUserToken(),
+                        }
+                        }
+                        $.ajax(settings).done(function (response) {
+                        })
+                        .then(response => {
+                            let deliveryWeek = this.state.deliveryWeek;
+                            let orderLineData = this.setOrderLineData(response.value);
+                            deliveryWeek[rows[rows.length-1].rowId] = orderLineData[0].DocumentLines[0].ShipDate;
+                            Axios.post(API.GetOrderExpenses, param, headers)
+                            .then(result => {
+                                this.setState({ orderDetailData: orderLineData[0], orderExpenses: result.data,  showDetailModal: true, pageLodingFlag: false, deliveryWeek: deliveryWeek, orderSubmitFlag: false});
+                            })
+                        })
+                    })
+                    // result.data.customerReference = customer_reference;
+                    // let orderDetailData = result.data;
+                    // Axios.post(API.GetOrderExpenses, param, headers)
+                    // .then(result => {
+                    //     if(this._isMounted){
+                    //         this.setState({orderDetailData: orderDetailData, showDetailModal: true, orderExpenses: result.data, pageLodingFlag: false, orderSubmitFlag: false});
+                    //     }
+                    // })
+                }
+            })
+            .catch(err => {
+                this.setState({pageLodingFlag: false});
+            });
+        }
+        
+    }
+
+    setOrderLineData = (deliveriesData) => {
+        let documentLineData = [];
+        deliveriesData.map((data, index)=>{
+            data.DocumentLines.map((documentLine, key)=>{
+                if(documentLine.TreeType==="iSalesTree"){
+                    documentLineData.push(documentLine);
+                }
+                return documentLine;
+            })
+            data.DocumentLines = documentLineData;
+            return data;
         });
+        return deliveriesData;
     }
 
     getItemData = (rowId, lineNumber, code) => {
@@ -412,7 +489,7 @@ class Placemanage extends Component {
         })
         .then(response => {
             if(this._isMounted){
-                if(response.U_DBS_ONDERMATEN==="N"){
+                if(response.U_DBS_ONDERMATEN==="Y"){
                     patternCalculateCheck[itemData.rowId] = false;
                     Common.showSlideForm();
                     this.setState({slidePatternFormFlag: true, pageLodingFlag: false, stockItemData: response});
@@ -469,9 +546,9 @@ class Placemanage extends Component {
             slideItemFormFlag,
             slidePatternFormFlag,
             docDueDate,
-            patternCalculateCheck
+            patternCalculateCheck,
+            deliveryWeek
         } = this.state; 
-        console.log('222', itemQuantityData);
         let showPrice = localStorage.getItem('eijf_showPrice')==="true";
         if(itemPriceData){
             rows.map((data, key)=>{
@@ -640,8 +717,8 @@ class Placemanage extends Component {
                                         <Form.Control type="text" name="customerReference" required placeholder={trls('Customer_reference')} onChange={(evt)=>this.setState({quantity: evt.target.value})} />
                                     </td>
                                     <td>
-                                        {this.state.productDesription&&(
-                                            <DatePicker name="startdate" className="myDatePicker" dateFormat="dd-MM-yyyy" selected={new Date()} onChange={date =>this.setState({startdate:date})} />
+                                        {deliveryWeek[data.rowId] &&(
+                                            <DatePicker name="startdate" className="myDatePicker" disabled dateFormat="dd-MM-yyyy" selected={new Date(deliveryWeek[data.rowId])} />
                                         )}
                                     </td>
                                     <td>
