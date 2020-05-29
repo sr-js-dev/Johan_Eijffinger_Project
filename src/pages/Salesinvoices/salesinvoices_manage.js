@@ -116,22 +116,26 @@ class Salesinvoicesmanage extends Component {
         let documentLineData = [];
         invoiceData.map((data, index)=>{
             data.DocumentLines.map((documentLine, key)=>{
-                documentLineData = documentLine;
-                documentLineData.DocDate = data.DocDate;
-                documentLineData.CardName = data.CardName;
-                documentLineData.DocNum = data.DocNum;
-                returnDeliveriesData.push(documentLineData);
+                if(documentLine.TreeType==="iSalesTree"){
+                    documentLineData = documentLine;
+                    documentLineData.DocDate = data.DocDate;
+                    documentLineData.CardName = data.CardName;
+                    documentLineData.DocNum = data.DocNum;
+                    returnDeliveriesData.push(documentLineData);
+                }
                 return documentLine;
             })
             return data;
         });
         creditData.map((data, index)=>{
             data.DocumentLines.map((documentLine, key)=>{
-                documentLineData = documentLine;
-                documentLineData.DocDate = data.DocDate;
-                documentLineData.CardName = data.CardName;
-                documentLineData.DocNum = data.DocNum;
-                returnDeliveriesData.push(documentLineData);
+                if(documentLine.TreeType==="iSalesTree"){
+                    documentLineData = documentLine;
+                    documentLineData.DocDate = data.DocDate;
+                    documentLineData.CardName = data.CardName;
+                    documentLineData.DocNum = data.DocNum;
+                    returnDeliveriesData.push(documentLineData);
+                }
                 return documentLine;
             })
             return data;
