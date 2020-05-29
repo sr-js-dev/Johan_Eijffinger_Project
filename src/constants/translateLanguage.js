@@ -192,7 +192,10 @@ export const TRANSLATIONS = {
       "View": "View",
       "Edit News": "Edit News",
       "View News": "View News",
-      "Are you sure that you want to return this item?": "Are you sure that you want to return this item?"
+      "Are you sure that you want to return this item?": "Are you sure that you want to return this item?",
+      "Approve order": "Approve order",
+      "I agree with the Terms and Conditions": "I agree with the Terms and Conditions",
+      "No partial deliveries": "No partial deliveries"
     },
 
     Dutch: {
@@ -388,7 +391,10 @@ export const TRANSLATIONS = {
       "View": "Visie",
       "Edit News": "Nieuws Bewerken",
       "View News": "Bekijk Nieuws",
-      "Are you sure that you want to return this item?": "Weet u zeker dat u dit artikel wilt retourneren?"
+      "Are you sure that you want to return this item?": "Weet u zeker dat u dit artikel wilt retourneren?",
+      "Approve order": "Bestelling goedkeuren",
+      "I agree with the Terms and Conditions": "Ik ga akkoord met de algemene voorwaarden",
+      "No partial deliveries": "Geen deelleveringen"
     }, 
     
     German: {
@@ -584,7 +590,10 @@ export const TRANSLATIONS = {
       "View": "Aussicht",
       "Edit News": "Nachrichten Bearbeiten",
       "View News": "Nachrichten Anzeigen",
-      "Are you sure that you want to return this item?": "Sind Sie sicher, dass Sie diesen Artikel zurückgeben möchten?"
+      "Are you sure that you want to return this item?": "Sind Sie sicher, dass Sie diesen Artikel zurückgeben möchten?",
+      "Approve order": "Bestellung genehmigen",
+      "I agree with the Terms and Conditions": "Ich stimme den Nutzungsbedingungen zu",
+      "No partial deliveries": "Keine Teillieferungen"
     },
 
     French: {
@@ -780,6 +789,9 @@ export const TRANSLATIONS = {
       "View": "Vue",
       "Edit News": "Éditer Nouvelles",
       "View News": "Vue Nouvelles",
-      "Are you sure that you want to return this item?": "Êtes-vous sûr de vouloir retourner cet article?"
+      "Are you sure that you want to return this item?": "Êtes-vous sûr de vouloir retourner cet article?",
+      "Approve order": "Approuver la commande",
+      "I agree with the Terms and Conditions": "J'accepte les termes et conditions",
+      "No partial deliveries": "Pas de livraisons partielles"
     }
   };

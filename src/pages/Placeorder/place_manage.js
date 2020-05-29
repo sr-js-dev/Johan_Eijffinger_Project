@@ -19,6 +19,8 @@ import Pageloadspiiner from '../../components/page_load_spinner';
 import history from '../../history';
 import Orderdetailform from './orderdetail_form';
 import Shippingaddressform from './shippingaddress_form';
+import currentWeekNumber from 'current-week-number';
+import Sweetalert from 'sweetalert';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -29,6 +31,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 class Placemanage extends Component {
+    
     _isMounted = false;
     constructor(props) {
         super(props);
@@ -75,7 +78,8 @@ class Placemanage extends Component {
             patternCalculateCheck:[],
             orderSubmitFlag: false,
             deliveryWeek: [],
-            mainOrderData: []
+            mainOrderData: [],
+            orderApproveFlag: false
         };
     }
 
@@ -129,8 +133,9 @@ class Placemanage extends Component {
     }
     
     handleAddRow = () => {
-        const { orderSubmitFlag } = this.state;
-        if(orderSubmitFlag){
+        
+        const { orderSubmitFlag, rows } = this.state;
+        if(orderSubmitFlag && rows.length>0){
             this.onSubmitOrder();
             return;
         }
@@ -154,9 +159,9 @@ class Placemanage extends Component {
         this.setState({productDesription: evt.target.value, itemPrice: 120, unit: 'unit'})
     }
 
-    onSubmitOrder = () => {
+    onSubmitOrder = ( approve ) => {
         this._isMounted = true;
-        const { currentUserInfo, customer_reference, docDueDate, setSippingAddress, billAddress, rows, itemQuantityData, itemPriceData, mainOrderData } = this.state;
+        const { currentUserInfo, customer_reference, docDueDate, setSippingAddress, rows, itemQuantityData, itemPriceData, mainOrderData } = this.state;
         let documentLineArray = [];
         let params = [];
         if(rows){
@@ -166,14 +171,14 @@ class Placemanage extends Component {
                 lineArray = {
                     ItemCode: rows[rows.length-1].ItemCode,
                     Quantity: itemQuantityData[rows[rows.length-1].rowId],
-                    Price: itemPriceData[rows[rows.length-1].rowId] ? itemPriceData[rows[rows.length-1].rowId] .UnitPrice : ''
+                    Price: itemPriceData[rows[rows.length-1].rowId] ? itemPriceData[rows[rows.length-1].rowId].UnitPrice : ''
                 }
             }else{
                 lineArray = {
                     LineNum: 0,
                     ItemCode: rows[rows.length-1].ItemCode,
                     Quantity: itemQuantityData[rows[rows.length-1].rowId],
-                    Price: itemPriceData[rows[rows.length-1].rowId] ? itemPriceData[rows[rows.length-1].rowId] .UnitPrice : ''
+                    Price: itemPriceData[rows[rows.length-1].rowId] ? itemPriceData[rows[rows.length-1].rowId].UnitPrice : ''
                 }
             }
             
@@ -240,26 +245,56 @@ class Placemanage extends Component {
                 this.setState({pageLodingFlag: false});
             });
         }else{
-            params = {
-                "requestData": {
-                    "CardCode": currentUserInfo.SapCustomerCode,
-                    "DocDate": Common.formatDate1(new Date()),
-                    "DocDueDate": Common.formatDate1(docDueDate),
-                    "Reference1": customer_reference,
-                    "AddressExtension": {
-                        "ShipToStreet": setSippingAddress.Street, 
-                        "ShipToCity": setSippingAddress.City, 
-                        "ShipToZipCode": setSippingAddress.ZipCode,
-                        "ShipToCountry": setSippingAddress.Country
+            if(!approve){
+                params = {
+                    "requestData": {
+                        "CardCode": currentUserInfo.SapCustomerCode,
+                        "DocDate": Common.formatDate1(new Date()),
+                        "DocDueDate": Common.formatDate1(docDueDate),
+                        "Reference1": customer_reference,
+                        "AddressExtension": {
+                            "ShipToStreet": setSippingAddress.Street, 
+                            "ShipToCity": setSippingAddress.City, 
+                            "ShipToZipCode": setSippingAddress.ZipCode,
+                            "ShipToCountry": setSippingAddress.Country
+                        },
+                        "DocumentLines": documentLineArray
                     },
-                    "DocumentLines": documentLineArray
-                },
-                  "parameters": {
-                    "p_DocEntry": mainOrderData.DocEntry,
-                  }
+                      "parameters": {
+                        "p_DocEntry": mainOrderData.DocEntry,
+                      }
+                }
+            }else{
+                params = {
+                    "requestData": {
+                        "CardCode": currentUserInfo.SapCustomerCode,
+                        "DocDate": Common.formatDate1(new Date()),
+                        "DocDueDate": Common.formatDate1(docDueDate),
+                        "Reference1": customer_reference,
+                        "AddressExtension": {
+                            "ShipToStreet": setSippingAddress.Street, 
+                            "ShipToCity": setSippingAddress.City, 
+                            "ShipToZipCode": setSippingAddress.ZipCode,
+                            "ShipToCountry": setSippingAddress.Country
+                        },
+                        "DocumentLines": documentLineArray
+                    },
+                      "parameters": {
+                        "p_DocEntry": mainOrderData.DocEntry,
+                        "NTSApproved": "tYES"
+                      }
+                }
             }
+            
             Axios.patch(API.PatchOrder, params, headers)
             .then(result => {
+                if(approve){
+                    Sweetalert("Success!", {
+                        icon: "success",
+                    });
+                    this.setState({orderApproveFlag: true})
+                    return;
+                }
                 if(this._isMounted){
                     let param = {
                         "docEntry": mainOrderData.DocEntry
@@ -319,6 +354,7 @@ class Placemanage extends Component {
     }
 
     getItemData = (rowId, lineNumber, code) => {
+        
         this._isMounted = true;
         const { itemCodeList, patternCheckFlag } = this.state;
         let itemFlag = this.state.itemFlag;
@@ -326,7 +362,7 @@ class Placemanage extends Component {
         let patternRowId = this.state.patternRowId;
         let rows = this.state.rows;
         itemCode = itemCodeList[rowId];
-        this.setState({itemCode: itemCode, pageLodingFlag: true});
+        this.setState({itemCode: itemCode, pageLodingFlag: true, orderLineNumber: lineNumber });
         var settings = {
             "url": API.GetItemDataByItemCode+itemCode,
             "method": "GET",
@@ -338,6 +374,7 @@ class Placemanage extends Component {
         $.ajax(settings).done(function (response) {
         })
         .then(response => {
+            
             itemFlag[rowId]=false;
             patternRowId.push(rowId);
             response.rowId = rowId;
@@ -364,9 +401,10 @@ class Placemanage extends Component {
         }
         this.setState({pageLodingFlag: true});
         itemPriceData[rowId] = '';
+        let itemQuantity = parseFloat(itemQuantityData[rowId]);
         let params = {
             "itemCode": itemCode ? itemCode : '' ,
-            "quantity": itemQuantityData[rowId] ? itemQuantityData[rowId] : 0,
+            "quantity": itemQuantity ? itemQuantity.toFixed(0) : 0,
             "date": Common.formatDate1(new Date()),
             "orderType": "B2B"
         };
@@ -438,7 +476,8 @@ class Placemanage extends Component {
     }
 
     searchItemForm = (itemCode, orderLineNumber) => {
-        this.setState({slideItemFormFlag: true, itemCode: itemCode, editPatternCalcuRow: [], orderLineNumber: orderLineNumber})
+        let orderLineNum  = this.state.orderLineNumber;
+        this.setState({slideItemFormFlag: true, itemCode: itemCode, editPatternCalcuRow: [], orderLineNumber: orderLineNumber ? orderLineNumber : orderLineNum})
         Common.showSlideForm();
     }
 
@@ -687,7 +726,7 @@ class Placemanage extends Component {
                                             </Row>
                                         ): 
                                             <Row>
-                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity" readOnly={itemFlag[data.rowId]===true ? true : false} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
+                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity" readOnly={itemFlag[data.rowId]===true ? true : false} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId]  : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
                                                     onKeyPress={event => {
                                                         if (event.key === 'Enter') {
                                                         this.getItemPriceData(data.rowId, index+1, data.ItemCode)
@@ -718,7 +757,7 @@ class Placemanage extends Component {
                                     </td>
                                     <td>
                                         {deliveryWeek[data.rowId] &&(
-                                            <DatePicker name="startdate" className="myDatePicker" disabled dateFormat="dd-MM-yyyy" selected={new Date(deliveryWeek[data.rowId])} />
+                                            currentWeekNumber(new Date(deliveryWeek[data.rowId]))
                                         )}
                                     </td>
                                     <td>
@@ -778,6 +817,8 @@ class Placemanage extends Component {
                 onHide={() => this.setState({showDetailModal: false})}
                 orderDetailData={this.state.orderDetailData}
                 orderExpenses={this.state.orderExpenses}
+                approveOrder={()=>this.onSubmitOrder(true)}
+                orderApproveFlag={this.state.orderApproveFlag}
             />
             <Shippingaddressform
                 show={this.state.showShippingAddressModal}

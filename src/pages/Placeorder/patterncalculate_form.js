@@ -32,7 +32,6 @@ class Patterncalculateform extends Component {
             rowsVal: editPatternCalcuRow.rowsVal ? editPatternCalcuRow.rowsVal : [],
             rowLength: editPatternCalcuRow.rowLength ? editPatternCalcuRow.rowLength : [],
             calcRowLength: editPatternCalcuRow.calcRowLength ? editPatternCalcuRow.calcRowLength : [],
-            totalLength: editPatternCalcuRow.totalLength ? editPatternCalcuRow.totalLength : 0,
             totalRowsLength: editPatternCalcuRow.totalRowsLength ? editPatternCalcuRow.totalRowsLength : 0,
             pageLodingFlag: false,
             patternCheckFlag: []
@@ -162,7 +161,7 @@ class Patterncalculateform extends Component {
     submitTotalLength = (totalLength, patternCalcuRowData) => {
         let lengthVal = [];
         const{ patternRowId } = this.props;
-        lengthVal = parseInt(totalLength);
+        lengthVal = parseFloat(totalLength);
         this.props.onHide();
         this.props.onSetQuantity(lengthVal, patternRowId, patternCalcuRowData);
         Common.hideSlideForm();
@@ -198,28 +197,27 @@ class Patterncalculateform extends Component {
         patternCheckFlag[rowId] = evt.target.checked;
         this.setState({patternCheckFlag: patternCheckFlag});
         const { rowsVal, calcRowLength, rowLength, rowDatas } = this.state;
-        let totalLength = 0;
         let totalRowsLength = 0;
         rowDatas.map((data, index)=>{
             if(!patternCheckFlag[data.rowId]){
-                totalLength += rowsVal[data.rowId]*calcRowLength[data.rowId];
-                totalRowsLength += parseFloat(rowLength[data.rowId])-1+1;
+                totalRowsLength += rowsVal[data.rowId]*calcRowLength[data.rowId];
+            }else{
+                totalRowsLength += rowsVal[data.rowId]*rowLength[data.rowId];
             }
             return data;
         })
-        this.setState({totalLength: totalLength, totalRowsLength: totalRowsLength})
+        this.setState({ totalRowsLength: totalRowsLength})
     }
 
     render(){
         const { orderLineNumber, itemCode, itemData, patternRowLengthCalcFlag, editPatternCalcuRow } = this.props;
-        const { rowId, rowDatas, calcRowLength, rowsVal, rowLength, totalLength, pageLodingFlag, totalRowsLength } = this.state;
+        const { rowId, rowDatas, calcRowLength, rowsVal, rowLength, pageLodingFlag, totalRowsLength, patternCheckFlag } = this.state;
         let editPatternCalcuData = [];
         editPatternCalcuData.rowId = rowId;
         editPatternCalcuData.rowDatas = rowDatas;
         editPatternCalcuData.calcRowLength = calcRowLength;
         editPatternCalcuData.rowLength = rowLength;
         editPatternCalcuData.rowsVal = rowsVal;
-        editPatternCalcuData.totalLength = totalLength;
         editPatternCalcuData.totalRowsLength = totalRowsLength;
         return (
             <div className = "slide-form__controls open place-pattern_calculate" style={{height: "100%"}}>
@@ -255,7 +253,7 @@ class Patterncalculateform extends Component {
                             </Form.Group>
                             <Form.Group as={Row} controlId="email">
                                 <Col className="place-order-calc__label">
-                                    <Form.Check type="checkbox" defaultChecked={itemData.U_DBS_VERSPRINGEND==="Y" ? true : false} label={trls('Staggered')} />
+                                    <Form.Check type="checkbox" disabled defaultChecked={itemData.U_DBS_VERSPRINGEND==="Y" ? true : false} label={trls('Staggered')} />
                                 </Col>
                             </Form.Group>
                         </Form>
@@ -292,8 +290,16 @@ class Patterncalculateform extends Component {
                                             <Form.Control type="number" name="rows" step="0.01" required  placeholder={trls('Row_length')} value={rowLength[data.rowId] ? rowLength[data.rowId] : ''} onChange={(evt)=>this.changeRowLength(evt.target.value, data.rowId)}/>
                                         }
                                     </td>
-                                    <td>{calcRowLength[data.rowId] ? Common.formatNumber(calcRowLength[data.rowId]) : 0}</td>
-                                    <td>{calcRowLength[data.rowId] ? Common.formatNumber(rowsVal[data.rowId]*calcRowLength[data.rowId]) : 0}</td>
+                                    {!patternCheckFlag[data.rowId] ? (
+                                        <td>{calcRowLength[data.rowId] ? Common.formatNumber(calcRowLength[data.rowId]) : 0}</td>
+                                    ): 
+                                        <td>{rowLength[data.rowId] ? Common.formatNumber(rowLength[data.rowId]) : 0}</td>
+                                    }
+                                    {!patternCheckFlag[data.rowId] ? (
+                                        <td>{calcRowLength[data.rowId] ? Common.formatNumber(rowsVal[data.rowId]*calcRowLength[data.rowId]) : 0}</td>
+                                    ):
+                                        <td>{calcRowLength[data.rowId] ? Common.formatNumber(rowsVal[data.rowId]*rowLength[data.rowId]) : 0}</td>
+                                    }
                                     <td>
                                         <Form.Check type="checkbox" onChange={(evt)=>this.changeCaculateCheck(evt, data.rowId)}/>
                                     </td>
@@ -315,17 +321,9 @@ class Patterncalculateform extends Component {
                     <Col sm={8} style={{float: 'right', paddingLeft: 0}}>
                         <div className="info-block pattern-total__length">
                             <span className="txt-bold">{trls('Total_lengh')}</span>
-                            {patternRowLengthCalcFlag ? (
-                                <span>{totalRowsLength ? Common.formatNumber(totalRowsLength): 0.00}</span>
-                            ):
-                                <span>{totalLength ? Common.formatNumber(totalLength): 0.00}</span>
-                            }
+                            <span>{totalRowsLength ? Common.formatNumber(totalRowsLength): 0.00}</span>
                         </div>
-                        {patternRowLengthCalcFlag ? (
-                            <Button type="button" className="place-submit__order" disabled={rowDatas.length===0 ? true : false} onClick={()=>this.submitTotalLength(totalRowsLength, editPatternCalcuData)}>Submit</Button>
-                        ):
-                            <Button type="button" className="place-submit__order" disabled={rowDatas.length===0 ? true : false} onClick={()=>this.submitTotalLength(totalLength, editPatternCalcuData)}>Submit</Button>
-                        }
+                        <Button type="button" className="place-submit__order" disabled={rowDatas.length===0 ? true : false} onClick={()=>this.submitTotalLength(totalRowsLength, editPatternCalcuData)}>Submit</Button>
                     </Col>
                 </Row>
                 <Pageloadspiiner loading = {pageLodingFlag}/>

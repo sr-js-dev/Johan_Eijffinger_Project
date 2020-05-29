@@ -9,7 +9,6 @@ import API from '../../factories/api'
 import Axios from 'axios';
 import { BallBeat } from 'react-pure-loaders';
 import { trls } from '../../factories/translate';
-import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import 'datatables.net';
 import * as Common from '../../factories/common';

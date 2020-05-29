@@ -2,12 +2,13 @@ import React, {Component} from 'react'
 import { trls } from '../../factories/translate';
 import { Container } from 'react-bootstrap';
 import { Modal } from 'react-bootstrap';
-import { Form, Row, Col} from 'react-bootstrap';
-import DatePicker from "react-datepicker";
+import { Form, Row, Col, Button} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import "react-datepicker/dist/react-datepicker.css";
 import * as Common from '../../factories/common';
-import * as Auth from '../../factories/auth'
+import * as Auth from '../../factories/auth';
+import currentWeekNumber from 'current-week-number';
+import Sweetalert from 'sweetalert';
 
 const mapStateToProps = state => ({});
 
@@ -18,7 +19,8 @@ class Productpriceform extends Component {
         super(props);
         this.state = {  
             userInfo: Auth.getLoggedUserInfo(),
-            showPrice: localStorage.getItem('eijf_showPrice')==="true"
+            showPrice: localStorage.getItem('eijf_showPrice')==="true",
+            approveActive: false
         };
     }
     componentWillUnmount() {
@@ -26,8 +28,8 @@ class Productpriceform extends Component {
     }
 
     render(){
-        const { userInfo, showPrice } = this.state;
-        const { orderDetailData, orderExpenses } = this.props;
+        const { userInfo, showPrice, approveActive } = this.state;
+        const { orderDetailData, orderExpenses, orderApproveFlag } = this.props;
         let totalAmount = 0;
         if(orderDetailData.DocumentLines){
             orderDetailData.DocumentLines.map((data, index)=>{
@@ -38,7 +40,6 @@ class Productpriceform extends Component {
         if(orderExpenses.expenses){
             totalAmount += orderExpenses.expenses;
         }
-        
         return (
             <Modal
                 show={this.props.show}
@@ -123,6 +124,7 @@ class Productpriceform extends Component {
                                     </Col>
                                 </Row>                   
                             </Form>
+                            
                             <div className="table-responsive">
                                 <table id="example" className="place-and-orders__table table table--striped prurprice-dataTable order_detail-table" width="100%">
                                 <thead>
@@ -148,7 +150,7 @@ class Productpriceform extends Component {
                                         orderDetailData.DocumentLines.map((data,index) =>(
                                         <tr id={index} key={index}>
                                             <td style={{display: "flex"}}>
-                                                <Form.Control id={"itemCode"+data.rowId} type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''}/>
+                                                <Form.Control id={"itemCode"+data.rowId} type="text" name="productcode" disabled autoComplete="off" required style={{width: '80%'}} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''}/>
                                                 <i className="fas fa-search place-order__itemcode-icon"></i>
                                             </td>
                                             <td>
@@ -164,12 +166,13 @@ class Productpriceform extends Component {
                                             </td>
                                             {showPrice ? (
                                                 <td>
-                                                </td>
+                                                    {data.Price ? Common.formatMoney(data.Price) : ''}
+                                                </td> 
                                             ): null}
                                             {showPrice ? (
                                                 <td>
-                                                    {data.OpenAmount ? Common.formatMoney(data.OpenAmount) : ''}
-                                                </td> 
+                                                     {data.OpenAmount ? Common.formatMoney(data.OpenAmount) : ''}
+                                                </td>
                                             ): null}
                                             <td>
                                                 {/* {data.picture&&(
@@ -181,7 +184,7 @@ class Productpriceform extends Component {
                                                 <Form.Control type="text" name="customerReference" disabled required placeholder={trls('Customer_reference')} defaultValue={orderDetailData ? orderDetailData.customerReference : ''} />
                                             </td>
                                             <td>
-                                                <DatePicker name="startdate" className="myDatePicker" disabled dateFormat="dd-MM-yyyy" selected={new Date(data.ShipDate)} />
+                                                {currentWeekNumber(orderDetailData.DocumentLines[0].ShipDate )}
                                             </td>
                                         </tr>
                                     ))
@@ -221,23 +224,30 @@ class Productpriceform extends Component {
                                                 <Form.Control type="text" name="customerReference" disabled required placeholder={trls('Customer_reference')} defaultValue={orderDetailData ? orderDetailData.customerReference : ''} />
                                             </td>
                                             <td>
-                                                <DatePicker name="startdate" className="myDatePicker" disabled dateFormat="dd-MM-yyyy" selected={new Date(orderDetailData.DocumentLines ? orderDetailData.DocumentLines[0].ShipDate : '')} />
+                                                {currentWeekNumber(orderDetailData.DocumentLines[0].ShipDate )}
                                             </td>
                                         </tr>
                                     )}
                                 </tbody>)}
                             </table>
                         </div>
-                        <Col sm={4} style={{float: 'right', paddingLeft: 0, paddingRight: 0}}>
-                            <div className="info-block info-block--green">
-                                <span className="txt-bold">Expenses</span>
-                                <span>{Common.formatMoney(orderExpenses.expenses)}</span>
-                            </div>
-                            <div className="info-block info-block--green">
-                                <span className="txt-bold">Order Total</span>
-                                <span>{Common.formatMoney(totalAmount)}</span>
-                            </div>
-                        </Col>
+                        <Row>
+                            <Col className="place-order_summary-check-div">
+                                <Form.Check type="checkbox" label={trls("No partial deliveries")} className="place-order_summary-check"/>
+                                <Form.Check type="checkbox" label={trls("I agree with the Terms and Conditions")} className="place-order_summary-check" onChange={(evt)=>this.setState({approveActive: evt.target.checked})}/>
+                            </Col>
+                            <Col sm={4} style={{float: 'right', paddingLeft: 0, paddingRight: 0}}>
+                                <div className="info-block info-block--green">
+                                    <span className="txt-bold">Expenses</span>
+                                    <span>{Common.formatMoney(orderExpenses.expenses)}</span>
+                                </div>
+                                <div className="info-block info-block--green">
+                                    <span className="txt-bold">Order Total</span>
+                                    <span>{Common.formatMoney(totalAmount)}</span>
+                                </div>
+                                <Button type="button" className="place-submit__order summary-submit" disabled={!approveActive ? true : false} onClick={()=>this.props.approveOrder()}>{trls("Approve order")}</Button>
+                            </Col>
+                        </Row>
                     </Container>
                 </div>
             </Modal.Body>

@@ -489,7 +489,6 @@ table.dataTable, table.dataTable th, table.dataTable td {
 }
 .order__info-bill{
   padding-top: 20px;
-  padding-bottom: 40px; 
 }
 .sort-style {
   background : none !important;
@@ -1108,4 +1107,13 @@ border: 1px solid #E2E3E4;
 .place-pattern_calculate .place-order-calc_pattern-div{
   text-align: right;
   padding-top: 12px;
+}
+.place-order_summary-check{
+  padding-bottom: 10px;
+}
+.summary-submit{
+  margin-top: 5px;
+}
+.place-order_summary-check-div{
+  padding-left: 0px;
 }

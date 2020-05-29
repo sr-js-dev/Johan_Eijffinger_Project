@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
 import { Form, Button, Row, Col } from 'react-bootstrap';
-import Select from 'react-select';
 import { connect } from 'react-redux';
-import * as authAction  from '../../actions/authAction';
 import SessionManager from '../../factories/session_manage';
 import API from '../../factories/api'
 import Axios from 'axios';
@@ -116,7 +114,7 @@ class Addnewform extends Component {
     }
 
     render(){   
-        const { userUpdateData, mode, startdate } = this.props;
+        const { mode } = this.props;
         const { textDutch, textEnglish, textGerman, textFrench, subjectDutch, subjectEnglish, subjectGerman, subjectFrench } = this.state;
         return (
             <div className = "slide-form__controls open" style={{height: "100%"}}>
