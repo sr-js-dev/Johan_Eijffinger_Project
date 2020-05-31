@@ -160,11 +160,11 @@ class Dashboard extends Component {
                 this.setState({newsArrayData: newsData, newsViewData: newsData[0], newsDataPageSize: newsDataPageSize, newFlag: true});
             }
         })
-        .catch(err => {
-            if(err.response.status===401){
-                history.push('/login')
-            }
-        })
+        // .catch(err => {
+        //     if(err.response.status===401){
+        //         history.push('/login')
+        //     }
+        // })
     }
 
     onChangeNewsPage = (page) => {
@@ -371,7 +371,7 @@ class Dashboard extends Component {
                     </Col>
                 </Row>
                 <Col className="dashboard-news">
-                    {newsViewData.length>0&&(
+                    {newsViewData &&(
                             newsViewData.map((data,i) =>(   
                                 <div id={i} key={i} style={{paddingBottom:20}} >
                                     <div className="dashboard__bottom-item ">

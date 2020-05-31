@@ -292,7 +292,7 @@ class Placemanage extends Component {
                     Sweetalert("Success!", {
                         icon: "success",
                     });
-                    this.setState({orderApproveFlag: true})
+                    this.setState({orderApproveFlag: true, pageLodingFlag: false})
                     return;
                 }
                 if(this._isMounted){
