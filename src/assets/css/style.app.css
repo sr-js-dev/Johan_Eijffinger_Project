@@ -893,9 +893,12 @@ table.dataTable.no-footer {
   padding-top: 10px;
   padding: 13px;
 }
-.place-order__product-code{
+.place-order__product-code .active{
   background-color: #f76060;
   color: #fff
+}
+.place-order__product-code{
+  width: 150px;
 }
 .place-order__itemcode-icon{
   margin-left: 10px;
@@ -982,11 +985,11 @@ table.dataTable.no-footer {
   font-size: 20px;
 }
 .place_an_orrder-quantity {
-  width: 80%;
+  width: 150px;
   margin-left: 7px;
 }
 .place_an_orrder-quantity-y {
-  width: 80%;
+  width: 150px;
 }
 .shipping-address_edit{
   float: right;
@@ -1116,4 +1119,30 @@ border: 1px solid #E2E3E4;
 }
 .place-order_summary-check-div{
   padding-left: 0px;
+}
+@media (max-width: 768px){
+  .place-pattern_calculate{
+    width: 100%;
+  }
+}
+.calculate-deliveryWeek{
+  margin-top: 2px;
+  float: right;
+}
+.calculate-deliveryWeek_active{
+  margin-top: 2px;
+  cursor: pointer;
+  float: right;
+}
+/* .place-an-order_quantity{
+  width: 60px;
+} */
+.place-order-product-code{
+  width: 100px;
+}
+.place-order_description{
+  width: 150px;
+}
+.place-order_Customer-reference{
+  width: 150px;
 }

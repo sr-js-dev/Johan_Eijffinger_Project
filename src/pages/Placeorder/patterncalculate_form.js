@@ -99,18 +99,23 @@ class Patterncalculateform extends Component {
             totalRowsLength += data;
             return data;
         })
-        this.setState({rowLength: rowLength, totalRowsLength: totalRowsLength})
+        this.setState({rowLength: rowLength})
     }
 
     getCalculateLength = (rowId) => {
         this._isMounted = true;
         const { orderLineNumber, itemData } = this.props;
         const { rowsVal, rowLength, rowDatas, patternCheckFlag } = this.state;
+        let totalRowsLength = 0;
         if(patternCheckFlag[rowId]){
+            rowDatas.map((data, index)=>{
+                totalRowsLength += rowsVal[data.rowId]*rowLength[data.rowId]*1;
+                return data;
+            })
+            this.setState({totalRowsLength: totalRowsLength});
             return;
         }
         this.setState({pageLodingFlag: true});
-        let totalLength = 0;
         let calcRowLength = this.state.calcRowLength;
         let params = {
             "data": [
@@ -130,10 +135,10 @@ class Patterncalculateform extends Component {
                 if(result.data.data[0]){
                     calcRowLength[rowId] = result.data.data[0].BenodigdeBaanLengte;
                     rowDatas.map((data, index)=>{
-                        totalLength += rowsVal[data.rowId]*calcRowLength[data.rowId];
+                        totalRowsLength += rowsVal[data.rowId]*calcRowLength[data.rowId]*1;
                         return data;
                     })
-                    this.setState({calcRowLength: calcRowLength, totalLength: totalLength, pageLodingFlag: false})
+                    this.setState({calcRowLength: calcRowLength, totalRowsLength: totalRowsLength, pageLodingFlag: false})
                 }
             }
         })
@@ -146,13 +151,16 @@ class Patterncalculateform extends Component {
 
     removeRow = (rowId) => {
         let rowDatas = this.state.rowDatas;
-        const { rowsVal, calcRowLength, rowLength } = this.state;
+        const { rowsVal, calcRowLength, rowLength, patternCheckFlag } = this.state;
         let totalLength = 0;
         let totalRowsLength = 0;
         rowDatas = rowDatas.filter((item, key)=>item.rowId!==rowId);
         rowDatas.map((data, index)=>{
-            totalLength += rowsVal[data.rowId]*calcRowLength[data.rowId];
-            totalRowsLength += parseFloat(rowLength[data.rowId])-1+1;
+            if(!patternCheckFlag[data.rowId]){
+                totalRowsLength += rowsVal[data.rowId]*calcRowLength[data.rowId]*1;
+            }else{
+                totalRowsLength += rowsVal[data.rowId]*rowLength[data.rowId]*1;
+            }
             return data;
         })
         this.setState({rowDatas: rowDatas, totalLength: totalLength, totalRowsLength: totalRowsLength})
@@ -198,11 +206,13 @@ class Patterncalculateform extends Component {
         this.setState({patternCheckFlag: patternCheckFlag});
         const { rowsVal, calcRowLength, rowLength, rowDatas } = this.state;
         let totalRowsLength = 0;
+        
         rowDatas.map((data, index)=>{
+            
             if(!patternCheckFlag[data.rowId]){
-                totalRowsLength += rowsVal[data.rowId]*calcRowLength[data.rowId];
+                totalRowsLength += rowsVal[data.rowId] ? rowsVal[data.rowId]*calcRowLength[data.rowId]*1 : 0;
             }else{
-                totalRowsLength += rowsVal[data.rowId]*rowLength[data.rowId];
+                totalRowsLength += rowsVal[data.rowId] ? rowsVal[data.rowId]*rowLength[data.rowId]*1 : 0;
             }
             return data;
         })
@@ -225,7 +235,7 @@ class Patterncalculateform extends Component {
                     <i className="fas fa-times slide-close" style={{ fontSize: 20, cursor: 'pointer'}} onClick={()=> editPatternCalcuRow.rowId ? this.onHide() : this.removeOrderLine()}></i>
                 </div>
                 <Row>
-                    <Col sm={9}>
+                    <Col sm={8}>
                         <Form className="container place-order-calc_form" onSubmit = { this.handleSubmit }>
                             <Form.Group as={Row} controlId="email">
                                 <Form.Label column sm="3" className="place-order-calc__label">
@@ -301,7 +311,7 @@ class Patterncalculateform extends Component {
                                         <td>{calcRowLength[data.rowId] ? Common.formatNumber(rowsVal[data.rowId]*rowLength[data.rowId]) : 0}</td>
                                     }
                                     <td>
-                                        <Form.Check type="checkbox" onChange={(evt)=>this.changeCaculateCheck(evt, data.rowId)}/>
+                                        <Form.Check type="checkbox" disabled={calcRowLength[data.rowId] ? false : true} onChange={(evt)=>this.changeCaculateCheck(evt, data.rowId)}/>
                                     </td>
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>

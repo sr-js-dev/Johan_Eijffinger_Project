@@ -39,17 +39,36 @@ class Layout extends Component {
             <Router history={history}>
               <Switch>
                 <Route path="/dashboard" component={Dashboard}/>
-                <Route path="/user" component={User}/>
-                <Route path="/orders" component={Order}/>
-                <Route path="/order-detail" component={Orderdetail}/>
-                <Route path="/deliveries" component={Deliveries}/>
-                <Route path="/delivery-detail" component={Deliverydetail}/>
-                <Route path="/salesinvoices" component={Salesinvoices}/>
-                <Route path="/salesinvoice-deail" component={Salesinvoicedetail}/>
-                <Route path="/returns" component={Returns}/> 
-                <Route path="/return-detail" component={Returndetail}/> 
-                <Route path="/placemanage" component={Placemanage}/>
-                <Route path="/news" component={Newsmanage}/>
+                {userInfo.role==="Administrator" && (
+                  <Route path="/user" component={User}/>
+                )}
+                {userInfo.role!=="Administrator" && (
+                  <Route path="/orders" component={Order}/>
+                )}
+                {userInfo.role!=="Administrator" && (
+                  <Route path="/order-detail" component={Orderdetail}/>
+                )}
+                {userInfo.role!=="Administrator" && (
+                  <Route path="/deliveries" component={Deliveries}/>
+                )}
+                {userInfo.role!=="Administrator" && (
+                  <Route path="/delivery-detail" component={Deliverydetail}/>
+                )}
+                {userInfo.role!=="Administrator" && (
+                  <Route path="/salesinvoices" component={Salesinvoices}/>
+                )}
+                {userInfo.role!=="Administrator" && (
+                  <Route path="/salesinvoice-deail" component={Salesinvoicedetail}/>
+                )}
+                {userInfo.role!=="Administrator" && (
+                  <Route path="/returns" component={Returns}/> 
+                )}
+                {userInfo.role!=="Administrator" && (
+                  <Route path="/return-detail" component={Returndetail}/> 
+                )}
+                {userInfo.role!=="Administrator" && (
+                  <Route path="/placemanage" component={Placemanage}/>
+                )} 
                 {userInfo.role==="Administrator" && (
                   <Switch>
                       <Route path="/news" component={Newsmanage}/>

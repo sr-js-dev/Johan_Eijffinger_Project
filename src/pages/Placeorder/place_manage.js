@@ -569,6 +569,13 @@ class Placemanage extends Component {
         this.setState({showShippingAddressModal: true}); 
     }
 
+    calculateDeliveryWeek = (rowId) => {
+        const { docDueDate } = this.state;
+        let deliveryWeek = this.state.deliveryWeek;
+        deliveryWeek[rowId] = docDueDate;
+        this.setState({deliveryWeek: deliveryWeek})
+    }
+
     render(){   
         let totalAmount = 0;
         const { businessPartnerOption, 
@@ -694,55 +701,42 @@ class Placemanage extends Component {
                                 rows.map((data,index) =>(
                                 <tr id={index} key={index}>
                                     <td style={{display: "flex"}}>
-                                    
-                                        <Form.Control id="itemCode" type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} className={itemFlag[data.rowId] ? "place-order__product-code" : ''} placeholder={trls('Product_code')} value={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId, index)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}
-                                            // onKeyPress={event => {
-                                            //     if (event.key === 'Enter') {
-                                            //         this.getItemData(data.rowId, index+1, data.ItemCode)
-                                            //     }
-                                            // }}
+                                        <Form.Control id="itemCode" type="text" name="productcode" autoComplete="off" required className={itemFlag[data.rowId] ? "place-order__product-code active" : 'place-order__product-code'} placeholder={trls('Product_code')} value={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value, data.rowId, index)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}
                                         />
                                         {itemFlag[data.rowId]!==false && (
                                             <i className="fas fa-search place-order__itemcode-icon" onClick={()=>this.searchItemForm(data.ItemCode, index+1)}></i>
                                         )}
                                     </td>
                                     <td>
-                                        <Form.Control type="text" name="description" readOnly required  defaultValue = {data.ItemName ? data.ItemName : ''} placeholder={trls('Description')} />
+                                        <Form.Control type="text" name="description" className="place-order_description" readOnly required  defaultValue = {data.ItemName ? data.ItemName : ''} placeholder={trls('Description')} />
                                     </td>
                                     <td>
                                         {data.SalesUnit ? data.SalesUnit : ''}
                                     </td>
-                                    <td>
-                                        { data.ItemName && !patternCalculateCheck[data.rowId] ? (
-                                            <Row style={{justifyContent: "space-around"}}>
-                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity-y" readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
-                                                    // onKeyPress={event => {
-                                                    //     if (event.key === 'Enter') {
-                                                    //         this.getItemPriceData(data.rowId, data.ItemCode)
-                                                    //     }
-                                                    // }}
-                                                />
-                                                <i className="fas fa-pen place-order__itemcode-icon" onClick={()=>this.calculatePattern(data, data.ItemCode, data.rowId)}></i>
-                                            </Row>
-                                        ): 
-                                            <Row>
-                                                <Form.Control type="text" name="quantity" className="place_an_orrder-quantity" readOnly={itemFlag[data.rowId]===true ? true : false} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId]  : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
-                                                    onKeyPress={event => {
-                                                        if (event.key === 'Enter') {
-                                                        this.getItemPriceData(data.rowId, index+1, data.ItemCode)
-                                                        }
-                                                    }}
-                                                />
-                                            </Row>
-                                        }
-                                    </td>
+                                    { data.ItemName && !patternCalculateCheck[data.rowId] ? (
+                                        <td style={{display: "flex"}}>
+                                            <Form.Control type="text" name="quantity" className="place_an_orrder-quantity-y" readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
+                                            />
+                                            <i className="fas fa-pen place-order__itemcode-icon" onClick={()=>this.calculatePattern(data, data.ItemCode, data.rowId)}></i>
+                                        </td>
+                                    ): 
+                                        <td style={{display: "flex"}}>
+                                            <Form.Control type="text" name="quantity" className="place_an_orrder-quantity" readOnly={itemFlag[data.rowId]===true ? true : false} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId]  : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
+                                                onKeyPress={event => {
+                                                    if (event.key === 'Enter') {
+                                                    this.getItemPriceData(data.rowId, index+1, data.ItemCode)
+                                                    }
+                                                }}
+                                            />
+                                        </td>
+                                    }
                                     {showPrice ? (
-                                        <td>
-                                            {Common.formatMoney(itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice : '')}
+                                        <td >
+                                            <div style={{width:80}}>{Common.formatMoney(itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice : '')}</div>
                                         </td>
                                     ): null}
                                     {showPrice ? (
-                                        <td>
+                                        <td style={{width:100}}>
                                             {Common.formatMoney(itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice*itemQuantityData[data.rowId] : '')}
                                         </td> 
                                     ): null}
@@ -753,12 +747,18 @@ class Placemanage extends Component {
                                         }
                                     </td>
                                     <td>
-                                        <Form.Control type="text" name="customerReference" required placeholder={trls('Customer_reference')} onChange={(evt)=>this.setState({quantity: evt.target.value})} />
+                                        <Form.Control type="text" name="customerReference" className="place-order_Customer-reference" required placeholder={trls('Customer_reference')} onChange={(evt)=>this.setState({quantity: evt.target.value})} />
                                     </td>
                                     <td>
                                         {deliveryWeek[data.rowId] &&(
                                             currentWeekNumber(new Date(deliveryWeek[data.rowId]))
                                         )}
+                                        {data.ItemCode && itemQuantityData[data.rowId] ? (
+                                            <i className="fas fa-calculator calculate-deliveryWeek_active" onClick={()=>this.calculateDeliveryWeek(data.rowId)}></i>
+                                        ):
+                                            <i className="fas fa-calculator calculate-deliveryWeek"></i>
+                                        }
+                                        
                                     </td>
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>

@@ -25,7 +25,7 @@ class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lang:  [{"value":"English","label":"US"},{"value":"Dutch","label":"NL"},{"value":"German","label":"DE"},{"value":"French","label":"FR"}],
+            lang:  [{"value":"English","label":"GB"},{"value":"Dutch","label":"NL"},{"value":"German","label":"DE"},{"value":"French","label":"FR"}],
             selectLangValue: window.localStorage.getItem('eijf_lang'),
             userInfo: Auth.getUserInfo(),
             userType: this.props.userType,
@@ -91,6 +91,7 @@ class Header extends Component {
     render () {
         const { loggedUserInfo, lang, selectLangValue } = this.state;
         let selectLang = lang.filter((item, key)=>item.value===selectLangValue);
+        console.log('123', selectLang)
       return (
         <div>
             <header className="header">
@@ -116,7 +117,7 @@ class Header extends Component {
                         </Dropdown.Menu>
                     </Dropdown>
                     <ReactFlagsSelect
-                        countries={["US", "NL", "DE", "FR"]}
+                        countries={["GB", "NL", "DE", "FR"]}
                         defaultCountry={selectLang[0].label}
                         showSelectedLabel={false}
                         showOptionLabel={false}
