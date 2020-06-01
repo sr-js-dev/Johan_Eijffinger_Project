@@ -39,41 +39,41 @@ class Layout extends Component {
             <Router history={history}>
               <Switch>
                 <Route path="/dashboard" component={Dashboard}/>
-                {userInfo.role==="Administrator" && (
+                {/* {userInfo.role==="Administrator" && ( */}
                   <Route path="/user" component={User}/>
-                )}
-                {userInfo.role!=="Administrator" && (
+                {/* )} */}
+                {/* {userInfo.role!=="Administrator" && ( */}
                   <Route path="/orders" component={Order}/>
-                )}
-                {userInfo.role!=="Administrator" && (
+                {/* )} */}
+                {/* {userInfo.role!=="Administrator" && ( */}
                   <Route path="/order-detail" component={Orderdetail}/>
-                )}
-                {userInfo.role!=="Administrator" && (
+                {/* )} */}
+                {/* {userInfo.role!=="Administrator" && ( */}
                   <Route path="/deliveries" component={Deliveries}/>
-                )}
-                {userInfo.role!=="Administrator" && (
+                {/* )} */}
+                {/* {userInfo.role!=="Administrator" && ( */}
                   <Route path="/delivery-detail" component={Deliverydetail}/>
-                )}
-                {userInfo.role!=="Administrator" && (
+                {/* )} */}
+                {/* {userInfo.role!=="Administrator" && ( */}
                   <Route path="/salesinvoices" component={Salesinvoices}/>
-                )}
-                {userInfo.role!=="Administrator" && (
+                {/* )} */}
+                {/* {userInfo.role!=="Administrator" && ( */}
                   <Route path="/salesinvoice-deail" component={Salesinvoicedetail}/>
-                )}
-                {userInfo.role!=="Administrator" && (
+                {/* )} */}
+                {/* {userInfo.role!=="Administrator" && ( */}
                   <Route path="/returns" component={Returns}/> 
-                )}
-                {userInfo.role!=="Administrator" && (
+                {/* )} */}
+                {/* {userInfo.role!=="Administrator" && ( */}
                   <Route path="/return-detail" component={Returndetail}/> 
-                )}
-                {userInfo.role!=="Administrator" && (
+                {/* )} */}
+                {/* {userInfo.role!=="Administrator" && ( */}
                   <Route path="/placemanage" component={Placemanage}/>
-                )} 
-                {userInfo.role==="Administrator" && (
+                {/* )}  */}
+                {/* {userInfo.role==="Administrator" && ( */}
                   <Switch>
                       <Route path="/news" component={Newsmanage}/>
                   </Switch>
-                )}
+                {/* )} */}
               </Switch>
             </Router>
           </Col>
