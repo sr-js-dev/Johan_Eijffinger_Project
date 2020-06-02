@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import * as Common from '../../factories/common';
 import * as Auth from '../../factories/auth';
 import currentWeekNumber from 'current-week-number';
+import Pageloadspiiner from '../../components/page_load_spinner';
 
 const mapStateToProps = state => ({});
 
@@ -19,16 +20,23 @@ class Productpriceform extends Component {
         this.state = {  
             userInfo: Auth.getLoggedUserInfo(),
             showPrice: localStorage.getItem('eijf_showPrice')==="true",
-            approveActive: false
+            approveActive: false,
+            approveLoading: false
         };
     }
     componentWillUnmount() {
         this._isMounted = false;
     }
 
+    approveOrder = () => {
+        this.setState({approveLoading: true});
+        this.props.approveOrder();
+    }
+
     render(){
         const { userInfo, showPrice, approveActive } = this.state;
-        const { orderDetailData, orderExpenses } = this.props;
+        const { orderDetailData, orderExpenses, orderApproveFlag } = this.props;
+        let approveLoading = this.state.approveLoading;
         let totalAmount = 0;
         if(orderDetailData.DocumentLines){
             orderDetailData.DocumentLines.map((data, index)=>{
@@ -38,6 +46,9 @@ class Productpriceform extends Component {
         }
         if(orderExpenses.expenses){
             totalAmount += orderExpenses.expenses;
+        }
+        if(orderApproveFlag){
+            approveLoading = false;
         }
         return (
             <Modal
@@ -244,12 +255,13 @@ class Productpriceform extends Component {
                                     <span className="txt-bold">Order Total</span>
                                     <span>{Common.formatMoney(totalAmount)}</span>
                                 </div>
-                                <Button type="button" className="place-submit__order summary-submit" disabled={!approveActive ? true : false} onClick={()=>this.props.approveOrder()}>{trls("Approve order")}</Button>
+                                <Button type="button" className="place-submit__order summary-submit" disabled={!approveActive ? true : false} onClick={()=>this.approveOrder()}>{trls("Approve order")}</Button>
                             </Col>
                         </Row>
                     </Container>
                 </div>
             </Modal.Body>
+            <Pageloadspiiner loading = {approveLoading}/>
         </Modal>
         );
     }
