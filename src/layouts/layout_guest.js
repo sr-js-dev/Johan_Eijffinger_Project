@@ -66,9 +66,9 @@ class Layout extends Component {
                 {userInfo.role!=="Administrator" && (
                   <Route path="/return-detail" component={Returndetail}/> 
                 )}
-                {/* {userInfo.role!=="Administrator" && ( */}
+                {userInfo.role!=="Administrator" && (
                   <Route path="/placemanage" component={Placemanage}/>
-                {/* )}  */}
+                )} 
                 {userInfo.role==="Administrator" && (
                   <Switch>
                       <Route path="/news" component={Newsmanage}/>

@@ -130,13 +130,13 @@ class Adduserform extends Component {
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="number" name="userCode" required placeholder={trls('UserCode')}/>
+                            <Form.Control type="number" name="userCode" defaultValue={mode==="update" ? userUpdateData.userCode : ''} required placeholder={trls('UserCode')}/>
                             <label className="placeholder-label">{trls('UserCode')}</label>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="number" name="customerCode" required placeholder={trls('CustomerCode')}/>
+                            <Form.Control type="number" name="customerCode" defaultValue={mode==="update" ? userUpdateData.customerCode : ''} required placeholder={trls('CustomerCode')}/>
                             <label className="placeholder-label">{trls('CustomerCode')}</label>
                         </Col>
                     </Form.Group>
