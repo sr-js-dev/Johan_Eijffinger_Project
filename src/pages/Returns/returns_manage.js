@@ -65,14 +65,14 @@ class Deliveriesmanage extends Component {
         Axios.post(API.GetReturnsData, params, headers)
         .then(result => {
             if(this._isMounted){
-                if(result.data.value.length){
+                this.setState({loading:false});
+                // if(result.data.value.length){
                     let deliveriesDataList = this.setDeliveriesData(result.data.value);
                     if(!data){
                         this.setState({deliveriesData: deliveriesDataList, originFilterData: deliveriesDataList});
                     }else{
                         this.setState({deliveriesData: data});
                     }
-                    this.setState({loading:false});
                     $('.fitler').on( 'keyup', function () {
                         table.search( this.value ).draw();
                     } );
@@ -95,7 +95,7 @@ class Deliveriesmanage extends Component {
                           }
                       );
                 }
-            }
+            // }
         })
         .catch(err => {
             if(err.response.status===401){

@@ -8,7 +8,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import * as Common from '../../factories/common';
 import * as Auth from '../../factories/auth';
 import currentWeekNumber from 'current-week-number';
-import Sweetalert from 'sweetalert';
 
 const mapStateToProps = state => ({});
 
@@ -29,7 +28,7 @@ class Productpriceform extends Component {
 
     render(){
         const { userInfo, showPrice, approveActive } = this.state;
-        const { orderDetailData, orderExpenses, orderApproveFlag } = this.props;
+        const { orderDetailData, orderExpenses } = this.props;
         let totalAmount = 0;
         if(orderDetailData.DocumentLines){
             orderDetailData.DocumentLines.map((data, index)=>{

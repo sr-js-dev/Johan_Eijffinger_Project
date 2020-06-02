@@ -46,7 +46,7 @@ class Sidebar extends Component {
                                     <span>{trls("Dashboard")}</span>
                                 </Link>
                             </li>
-                            {/* {userInfo.role==="Administrator" && ( */}
+                            {userInfo.role==="Administrator" && (
                                 <li id="0" className="menu__item" onClick={this.changeItem}>
                                     <Link to={'/user'} className={window.location.pathname === "/user" ? 'menu__link menu__link--active' : 'menu__link menu__link'}>
                                         <span className="menu__link-img-wrap">
@@ -58,8 +58,8 @@ class Sidebar extends Component {
                                         <span>{trls("User")}</span>
                                     </Link>
                                 </li>
-                            {/* )} */}
-                            {/* {userInfo.role!=="Administrator" && ( */}
+                            )}
+                            {userInfo.role!=="Administrator" && (
                                 <li id="0" className="menu__item" onClick={this.changeItem}>
                                     <Link to={'/orders'} className={window.location.pathname === "/orders" || window.location.pathname === "/order-detail" ? 'menu__link menu__link--active' : 'menu__link menu__link'}>
                                         <span className="menu__link-img-wrap">
@@ -70,8 +70,8 @@ class Sidebar extends Component {
                                         <span>{trls("Orders")}</span>
                                     </Link>
                                 </li>
-                            {/* )} */}
-                            {/* {userInfo.role!=="Administrator" && ( */}
+                            )}
+                            {userInfo.role!=="Administrator" && (
                                 <li id="0" className="menu__item" onClick={this.changeItem}>
                                     <Link to={'/deliveries'} className={window.location.pathname === "/deliveries" ? 'menu__link menu__link--active' : 'menu__link menu__link'}>
                                         <span className="menu__link-img-wrap">
@@ -82,8 +82,8 @@ class Sidebar extends Component {
                                         <span>{trls("Deliveries")}</span>
                                     </Link>
                                 </li>
-                            {/* )} */}
-                            {/* {userInfo.role!=="Administrator" && ( */}
+                            )}
+                            {userInfo.role!=="Administrator" && (
                                 <li id="0" className="menu__item" onClick={this.changeItem}>
                                     <Link to={'/placemanage'} className={window.location.pathname === "/placemanage" ? 'menu__link menu__link--active' : 'menu__link menu__link'}>
                                         <span className="menu__link-img-wrap">
@@ -95,8 +95,8 @@ class Sidebar extends Component {
                                         <span>{trls("Place_an_order")}</span>
                                     </Link>
                                 </li>
-                            {/* )} */}
-                            {/* {userInfo.role!=="Administrator" && ( */}
+                            )}
+                            {userInfo.role!=="Administrator" && (
                                 <li id="0" className="menu__item" onClick={this.changeItem}>
                                     <Link to={'/salesinvoices'} className={window.location.pathname === "/salesinvoices"? 'menu__link menu__link--active' : 'menu__link menu__link'}>
                                         <span className="menu__link-img-wrap">
@@ -109,8 +109,8 @@ class Sidebar extends Component {
                                         <span>{trls("Salesinvoices")}</span>
                                     </Link>
                                 </li>
-                            {/* )} */}
-                            {/* {userInfo.role!=="Administrator" && ( */}
+                            )}
+                            {userInfo.role!=="Administrator" && (
                                 <li id="0" className="menu__item" onClick={this.changeItem}>
                                     <Link to={'/returns'} className={window.location.pathname === "/returns"? 'menu__link menu__link--active' : 'menu__link menu__link'}>
                                         <span className="menu__link-img-wrap">
@@ -121,7 +121,8 @@ class Sidebar extends Component {
                                         <span>{trls("Returns")}</span>
                                     </Link>
                                 </li>
-                            {/* )} */}
+                            )}
+                            
                             {userInfo.role==="Administrator" && (
                                 <li id="0" className="menu__item" onClick={this.changeItem}>
                                     <Link to={'/news'} className={window.location.pathname === "/news"? 'menu__link menu__link--active' : 'menu__link menu__link'}>

@@ -73,13 +73,13 @@ class Ordermanage extends Component {
         Axios.get(API.GetOrdersData+"?top=" + resultCount, headers)
         .then(result => {
             if(this._isMounted){
-                if(result.data.value.length){
+                this.setState({loading:false});
+                // if(result.data.value.length){
                     if(!data){
                         this.setState({ordersData: result.data.value, originFilterData: result.data.value});
                     }else{
                         this.setState({ordersData: data});
                     }
-                    this.setState({loading:false});
                     $('.fitler').on( 'keyup', function () {
                         table.search( this.value ).draw();
                     } );
@@ -109,7 +109,7 @@ class Ordermanage extends Component {
                     );
                     $('[name=order-table_length]').val( resultCount );
                 }
-            }
+            // }
         })
         .catch(err => {
             if(err.response.status===401){

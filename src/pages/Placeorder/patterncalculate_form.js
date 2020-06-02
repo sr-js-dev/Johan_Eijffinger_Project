@@ -72,17 +72,13 @@ class Patterncalculateform extends Component {
         const item = {
           rowId: rowId
         };
-        // if(!addRow){
-            patternCheckFlag[rowId]=false;
-            rowId += 1;
-            this.setState({
-                rowDatas: [...this.state.rowDatas, item],
-                rowId: rowId,
-                patternCheckFlag: patternCheckFlag
-            });
-           
-            // this.setState({addnum:true, addRow: true});
-        // }
+        patternCheckFlag[rowId]=false;
+        rowId += 1;
+        this.setState({
+            rowDatas: [...this.state.rowDatas, item],
+            rowId: rowId,
+            patternCheckFlag: patternCheckFlag
+        });
     };
 
     changeRowsVal = (val, rowId) => {
@@ -93,12 +89,12 @@ class Patterncalculateform extends Component {
 
     changeRowLength = (val, rowId) => {
         let rowLength = this.state.rowLength;
-        let totalRowsLength = 0;
+        // let totalRowsLength = 0;
         rowLength[rowId] = val;
-        rowLength.map((data, index)=>{
-            totalRowsLength += data;
-            return data;
-        })
+        // rowLength.map((data, index)=>{
+        //     totalRowsLength += data;
+        //     return data;
+        // })
         this.setState({rowLength: rowLength})
     }
 
