@@ -813,7 +813,7 @@ class Placemanage extends Component {
             ): null}
             <Orderdetailform
                 show={this.state.showDetailModal}
-                onHide={() => this.setState({showDetailModal: false})}
+                onHide={() => this.setState({showDetailModal: false, orderApproveFlag: false})}
                 orderDetailData={this.state.orderDetailData}
                 orderExpenses={this.state.orderExpenses}
                 approveOrder={()=>this.onSubmitOrder(true)}

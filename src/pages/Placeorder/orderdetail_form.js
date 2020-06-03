@@ -255,7 +255,7 @@ class Productpriceform extends Component {
                                     <span className="txt-bold">Order Total</span>
                                     <span>{Common.formatMoney(totalAmount)}</span>
                                 </div>
-                                <Button type="button" className="place-submit__order summary-submit" disabled={!approveActive ? true : false} onClick={()=>this.approveOrder()}>{trls("Approve order")}</Button>
+                                <Button type="button" className="place-submit__order summary-submit" disabled={!approveActive || orderApproveFlag? true : false} onClick={()=>this.approveOrder()}>{trls("Approve order")}</Button>
                             </Col>
                         </Row>
                     </Container>
