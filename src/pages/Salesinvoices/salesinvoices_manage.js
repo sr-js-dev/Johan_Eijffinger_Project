@@ -167,7 +167,7 @@ class Salesinvoicesmanage extends Component {
         return filterColum[0].show;
     }
 
-    showDetail = (docNumber) => {
+    showPlaceOrder = (docNumber) => {
         history.push({
             pathname: '/salesinvoice-deail/'+docNumber,
             state: { id: docNumber, newSubmit:true }

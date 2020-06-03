@@ -148,7 +148,7 @@ class Deliveriesmanage extends Component {
         return filterColum[0].show;
     }
 
-    showDetail = (docNumber) => {
+    showPlaceOrder = (docNumber) => {
         history.push({
             pathname: '/delivery-detail/'+docNumber,
             state: { id: docNumber, newSubmit:true }

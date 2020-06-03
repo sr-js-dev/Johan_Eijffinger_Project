@@ -25,7 +25,8 @@ class Userprofile extends React.Component {
         super(props);
         this.state = {
             languageOption: [{"value":"English","label":"English"},{"value":"Dutch","label":"Dutch"},{"value":"German","label":"German"},{"value":"French","label":"French"}],
-            loggedinUserInfo: Auth.getLoggedUserInfo()
+            loggedinUserInfo: Auth.getLoggedUserInfo(),
+            showPrice: localStorage.getItem('eijf_showPrice')
         };
     }
 
@@ -47,7 +48,8 @@ class Userprofile extends React.Component {
             language: data.language,
             userCode: loggedinUserInfo.UserCode,
             customerCode: loggedinUserInfo.SapCustomerCode,
-            roles: [loggedinUserInfo.Role]
+            roles: [loggedinUserInfo.Role],
+            showPrice: this.state.showPrice==="true" ? true : false
           }
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.put(API.PostUserUpdate+loggedinUserInfo.UserId, params, headers)
@@ -69,7 +71,6 @@ class Userprofile extends React.Component {
 
     changeShowPrice = (evt) => {
         localStorage.setItem('eijf_showPrice', evt.target.checked);
-       
     }
 
     // gotoPreviousPage = () =>{

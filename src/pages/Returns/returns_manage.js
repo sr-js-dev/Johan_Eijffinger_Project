@@ -123,7 +123,7 @@ class Deliveriesmanage extends Component {
         return returnDeliveriesData;
     }
 
-    showDetail = (docNumber) => {
+    showPlaceOrder = (docNumber) => {
         history.push({
             pathname: '/return-detail/'+docNumber,
             state: { id: docNumber, newSubmit:true }

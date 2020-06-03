@@ -15,13 +15,13 @@ import * as Auth from '../../factories/auth'
 import SessionManager from '../../factories/session_manage';
 import $ from 'jquery';
 import { BallBeat } from 'react-pure-loaders';
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'datatables.net';
 // import history from '../../history';
 import Pageloadspiiner from '../../components/page_load_spinner';
 // import { add } from 'date-fns';
 import history from '../../history';
+import currentWeekNumber from 'current-week-number';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -273,7 +273,7 @@ class Deliverydetail extends Component {
                                         <Form.Control type="text" name="customerReference" disabled required placeholder={trls('Customer_reference')} onChange={(evt)=>this.setState({quantity: evt.target.value})} />
                                     </td>
                                     <td>
-                                        <DatePicker name="startdate" className="myDatePicker" disabled dateFormat="dd-MM-yyyy" selected={new Date(data.docDate)} onChange={date =>this.setState({startdate:date})} />
+                                        {currentWeekNumber(data.docDate)}
                                     </td>
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>

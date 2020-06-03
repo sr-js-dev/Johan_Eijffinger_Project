@@ -15,13 +15,13 @@ import * as Auth from '../../factories/auth'
 import SessionManager from '../../factories/session_manage';
 import $ from 'jquery';
 import { BallBeat } from 'react-pure-loaders';
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'datatables.net';
 // import history from '../../history';
 import Pageloadspiiner from '../../components/page_load_spinner';
 // import { add } from 'date-fns';
 import history from '../../history';
+import currentWeekNumber from 'current-week-number';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -119,7 +119,8 @@ class Placemanage extends Component {
         .then(response => {
             if(this._isMounted){
                 if(response){
-                    this.setState({orderData: response})
+                    let orderLineData = this.setOrderLineData(response.value);
+                    this.setState({orderData: orderLineData[0]})
                 }
                 this.setState({pageLodingFlag: false})
             }
@@ -129,6 +130,21 @@ class Placemanage extends Component {
                 history.push('/login')
             }
         });
+    }
+
+    setOrderLineData = (deliveriesData) => {
+        let documentLineData = [];
+        deliveriesData.map((data, index)=>{
+            data.DocumentLines.map((documentLine, key)=>{
+                if(documentLine.TreeType==="iSalesTree"){
+                    documentLineData.push(documentLine);
+                }
+                return documentLine;
+            })
+            data.DocumentLines = documentLineData;
+            return data;
+        });
+        return deliveriesData;
     }
 
     render(){   
@@ -141,12 +157,14 @@ class Placemanage extends Component {
             setSippingAddress,
             orderData,
             selectShippingAddress,
-            showPrice
         } = this.state;
-        orderData.map((data, key)=>{
-            totalAmount +=  data.OpenAmount ? data.OpenAmount : 0;
-            return data
-        })
+        if(orderData.DocumentLines){
+            orderData.DocumentLines.map((data, index)=>{
+                totalAmount += data.OpenAmount;
+                return data;
+            })
+        }
+        let showPrice = localStorage.getItem('eijf_showPrice')==="true";
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
@@ -233,29 +251,28 @@ class Placemanage extends Component {
                                 <th>{trls("Action")}</th>
                             </tr>
                         </thead>
-                        {orderData &&(<tbody>
+                        {orderData.DocumentLines &&(<tbody>
                             {
-                                orderData.map((data,index) =>(
+                                orderData.DocumentLines.map((data,index) =>(
                                 <tr id={index} key={index}>
                                     <td style={{display: "flex"}}>
-                                        <Form.Control id={"itemCode"+data.rowId} disabled type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''} onChange={(evt)=>this.changeProductCode(evt.target.value)} onBlur={()=>this.getItemData(data.rowId, index+1, data.ItemCode)}/>
+                                        <Form.Control id={"itemCode"+data.rowId} disabled type="text" name="productcode" autoComplete="off" required style={{width: '80%'}} placeholder={trls('Product_code')} defaultValue={data.ItemCode ? data.ItemCode : ''}/>
                                         <i className="fas fa-search place-order__itemcode-icon"></i>
                                     </td>
                                     <td>
                                         <Form.Control type="text" name="description" disabled readOnly required defaultValue = {data.ItemDescription ? data.ItemDescription : ''} placeholder={trls('Description')} />
                                     </td>
                                     <td>
-                                        {/* {data.SalesUnit ? data.SalesUnit : ''} */}
+                                        {data.MeasureUnit ? data.MeasureUnit : ''}
                                     </td>
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>
-                                            <Form.Control type="text" name="quantity" style={{width: '80%'}} disabled required placeholder={trls('Quantity')} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)}/>
+                                            <Form.Control type="text" name="quantity" style={{width: '80%'}} disabled required placeholder={trls('Quantity')} defaultValue = {data.InventoryQuantity ? data.InventoryQuantity : ''}/>
                                         </Row>
                                     </td>
                                     {showPrice ? (
                                         <td>
-                                        {/* {Common.formatMoney(itemPriceData[data.rowId] ? itemPriceData[data.rowId].NewUnitPrice : '')} */}
-                                        {/* {Common.formatMoney()} */}
+                                            {data.Price ? Common.formatMoney(data.Price) : ''}
                                         </td>
                                     ): null}
                                     {showPrice ? (
@@ -273,7 +290,7 @@ class Placemanage extends Component {
                                         <Form.Control type="text" name="customerReference" disabled required placeholder={trls('Customer_reference')} onChange={(evt)=>this.setState({quantity: evt.target.value})} />
                                     </td>
                                     <td>
-                                        <DatePicker name="startdate" className="myDatePicker" disabled dateFormat="dd-MM-yyyy" selected={new Date(data.docDate)} onChange={date =>this.setState({startdate:date})} />
+                                        {currentWeekNumber(orderData.DocumentLines[0].ShipDate )}
                                     </td>
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>
