@@ -721,7 +721,7 @@ class Placemanage extends Component {
                                         </td>
                                     ): 
                                         <td style={{display: "flex"}}>
-                                            <Form.Control type="text" name="quantity" className="place_an_orrder-quantity" readOnly={itemFlag[data.rowId]===true ? true : false} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? Common.formatNumber(itemQuantityData[data.rowId]) : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
+                                            <Form.Control type="text" name="quantity" className="place_an_orrder-quantity" readOnly={itemFlag[data.rowId]===true ? true : false} required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? itemQuantityData[data.rowId] : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}
                                                 onKeyPress={event => {
                                                     if (event.key === 'Enter') {
                                                     this.getItemPriceData(data.rowId, index+1, data.ItemCode)
