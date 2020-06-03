@@ -22,13 +22,15 @@ import Filtercomponent from '../../components/filtercomponent';
 import Pageloadspiiner from '../../components/page_load_spinner';
 // import * as Auth from '../../factories/auth';
 import Sweetalert from 'sweetalert';
+import * as authAction  from '../../actions/authAction';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-
+    blankdispatch: (blankFlag) =>
+        dispatch(authAction.blankdispatch(blankFlag)),
 });
 
 class Ordermanage extends Component {
@@ -191,6 +193,7 @@ class Ordermanage extends Component {
 
     openPlaceOrder = () => {
         history.push('/placemanage');
+        this.props.blankdispatch(this.props.blankFlag);
     }
 
     showPlaceOrder = (orderId) => {

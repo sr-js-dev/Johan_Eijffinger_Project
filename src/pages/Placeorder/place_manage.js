@@ -21,13 +21,15 @@ import Orderdetailform from './orderdetail_form';
 import Shippingaddressform from './shippingaddress_form';
 import currentWeekNumber from 'current-week-number';
 import Sweetalert from 'sweetalert';
+import * as authAction  from '../../actions/authAction';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-
+    blankdispatch: (blankFlag) =>
+        dispatch(authAction.blankdispatch(blankFlag)),
 });
 
 class Placemanage extends Component {
@@ -132,11 +134,12 @@ class Placemanage extends Component {
         return returnOptionData;
     }
     
-    handleAddRow = () => {
-        
+    handleAddRow = (totalAmount) => {
         const { orderSubmitFlag, rows } = this.state;
         if(orderSubmitFlag && rows.length>0){
-            this.onSubmitOrder();
+            if(totalAmount){
+                this.onSubmitOrder();
+            }
             return;
         }
         let rowNum = this.state.rowNum;
@@ -169,15 +172,15 @@ class Placemanage extends Component {
             if(mainOrderData.length===0){
                 lineArray = {
                     ItemCode: rows[rows.length-1].ItemCode,
-                    Quantity: parseFloat(itemQuantityData[rows[rows.length-1].rowId]),
-                    Price: itemPriceData[rows[rows.length-1].rowId] ? parseFloat(itemPriceData[rows[rows.length-1].rowId].UnitPrice) : ''
+                    Quantity: itemQuantityData[rows[rows.length-1].rowId] ? parseFloat(itemQuantityData[rows[rows.length-1].rowId]) : 0,
+                    Price: itemPriceData[rows[rows.length-1].rowId] ? parseFloat(itemPriceData[rows[rows.length-1].rowId].UnitPrice) : 0
                 }
             }else{
                 lineArray = {
                     LineNum: 0,
                     ItemCode: rows[rows.length-1].ItemCode,
-                    Quantity: parseFloat(itemQuantityData[rows[rows.length-1].rowId]),
-                    Price: itemPriceData[rows[rows.length-1].rowId] ? parseFloat(itemPriceData[rows[rows.length-1].rowId].UnitPrice) : ''
+                    Quantity: itemQuantityData[rows[rows.length-1].rowId] ? parseFloat(itemQuantityData[rows[rows.length-1].rowId]) : 0,
+                    Price: itemPriceData[rows[rows.length-1].rowId] ? parseFloat(itemPriceData[rows[rows.length-1].rowId].UnitPrice) : 0
                 }
             }
             
@@ -290,7 +293,11 @@ class Placemanage extends Component {
                 if(approve){
                     Sweetalert("Success!", {
                         icon: "success",
-                    });
+                    })
+                    .then((value) => {
+                        history.push('/orders')
+                        this.props.blankdispatch(this.props.blankFlag);
+                    });;
                     this.setState({orderApproveFlag: true, pageLodingFlag: false})
                     return;
                 }
@@ -779,7 +786,7 @@ class Placemanage extends Component {
                     )}
                 </div>
                 <div>
-                    <Button variant="light" onClick={()=>this.handleAddRow()}><i className="fas fa-plus add-icon"></i>{trls('Click_to_make_new_row')}</Button> 
+                    <Button variant="light" onClick={()=>this.handleAddRow(totalAmount)}><i className="fas fa-plus add-icon"></i>{trls('Click_to_make_new_row')}</Button> 
                 </div>
                 <Col sm={4} style={{float: 'right', paddingLeft: 0, paddingRight: 0}}>
                     <div className="info-block info-block--green">
@@ -788,7 +795,7 @@ class Placemanage extends Component {
                             <span>{Common.formatMoney(totalAmount)}</span>
                         ): null}
                     </div>
-                    <Button type="button" className="place-submit__order" onClick={()=>this.onSubmitOrder()}>Submit order</Button>
+                    <Button type="button" className="place-submit__order" disabled={!totalAmount ? true : false} onClick={()=>this.onSubmitOrder()}>Submit order</Button>
                 </Col>
             </Container>
             {slideItemFormFlag ? (
