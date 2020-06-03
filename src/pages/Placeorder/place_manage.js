@@ -165,20 +165,19 @@ class Placemanage extends Component {
         let documentLineArray = [];
         let params = [];
         if(rows){
-           
             let lineArray = [];
             if(mainOrderData.length===0){
                 lineArray = {
                     ItemCode: rows[rows.length-1].ItemCode,
-                    Quantity: itemQuantityData[rows[rows.length-1].rowId],
-                    Price: itemPriceData[rows[rows.length-1].rowId] ? itemPriceData[rows[rows.length-1].rowId].UnitPrice : ''
+                    Quantity: parseFloat(itemQuantityData[rows[rows.length-1].rowId]),
+                    Price: itemPriceData[rows[rows.length-1].rowId] ? parseFloat(itemPriceData[rows[rows.length-1].rowId].UnitPrice) : ''
                 }
             }else{
                 lineArray = {
                     LineNum: 0,
                     ItemCode: rows[rows.length-1].ItemCode,
-                    Quantity: itemQuantityData[rows[rows.length-1].rowId],
-                    Price: itemPriceData[rows[rows.length-1].rowId] ? itemPriceData[rows[rows.length-1].rowId].UnitPrice : ''
+                    Quantity: parseFloat(itemQuantityData[rows[rows.length-1].rowId]),
+                    Price: itemPriceData[rows[rows.length-1].rowId] ? parseFloat(itemPriceData[rows[rows.length-1].rowId].UnitPrice) : ''
                 }
             }
             
