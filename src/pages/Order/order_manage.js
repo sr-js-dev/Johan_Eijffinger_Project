@@ -23,6 +23,8 @@ import Pageloadspiiner from '../../components/page_load_spinner';
 // import * as Auth from '../../factories/auth';
 import Sweetalert from 'sweetalert';
 import * as authAction  from '../../actions/authAction';
+import Pagination from '../../components/pagination_order';
+import * as Auth from '../../factories/auth';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -53,7 +55,10 @@ class Ordermanage extends Component {
             ],
             pageLodingFlag: false,
             pages:[{"value":"all","label":"all"}, {"value":5,"label":5}, {"value":10,"label":10}, {"value":20,"label":20}, {"value":30,"label":30}, {"value":40,"label":40}],
-            obj: this
+            obj: this,
+            recordNum: 0,
+            filterDataFlag: false
+            
         };
     }
 
@@ -62,60 +67,77 @@ class Ordermanage extends Component {
     }
 
     componentDidMount() {
-        this.getOrdersData(null, null);
+        this.getRecordNum(null);
+        this.getOrdersData(5, 1);
        
     }
 
-    getOrdersData = (data, count) => {
+    getRecordNum = () => {
         this._isMounted = true;
-        let resultCount = count ? count : 5;
-        let obj = this.state.obj;
-        this.setState({loading:true})
-        var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.get(API.GetOrdersData+"?top=" + resultCount, headers)
-        .then(result => {
-            if(this._isMounted){
-                this.setState({loading:false});
-                // if(result.data.value.length){
-                    if(!data){
-                        this.setState({ordersData: result.data.value, originFilterData: result.data.value});
-                    }else{
-                        this.setState({ordersData: data});
-                    }
-                    $('.fitler').on( 'keyup', function () {
-                        table.search( this.value ).draw();
-                    } );
-                    $('#order-table').on( 'length.dt', function ( e, settings, len ) {
-                        // table.page.len( 10 ).draw();
-                        obj.getOrdersData(null, len);
-                    } )
-                    $('#order-table').dataTable().fnDestroy();
-                    var table = $('#order-table').DataTable(
-                    {
-                        "language": {
-                            "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
-                            "zeroRecords": "Nothing found - sorry",
-                            "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
-                            "infoEmpty": "No records available",
-                            "infoFiltered": "(filtered from _MAX_ total records)",
-                            "search": trls('Search'),
-                            "paginate": {
-                                "previous": trls('Previous'),
-                                "next": trls('Next')
-                            }
-                        },
-                        "lengthMenu": [ 5, 10, 20, 25, 30, 35 ],
-                        "pageLength": 10,
-                        "dom": 't<"bottom-datatable" lip>',
-                        }
-                    );
-                    $('[name=order-table_length]').val( resultCount );
-                }
-            // }
+        var settings = {
+            "url": API.GetOrdersData+"?top=5",
+            "method": "GET",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+        }
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            this.setState({recordNum: response['@odata.count']})
         })
         .catch(err => {
             if(err.response.status===401){
                 history.push('/login')
+            }
+        });
+    }
+
+    getOrdersData (pageSize, page, data, search) {
+        this._isMounted = true;
+        this.setState({loading: true});
+        var settings = {
+            "url": API.GetOrdersData+"?top="+pageSize+"&skip="+page,
+            "method": "GET",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+        }
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            if(this._isMounted){
+                if(!data){
+                    this.setState({ordersData: response.value, originFilterData: response.value});
+                }else{
+                    this.setState({ordersData: data});
+                }
+                this.setState({loading:false})
+                $('#order-table').dataTable().fnDestroy();
+                if(this.state.filterDataFlag){
+                    $('#order-table').dataTable().fnDestroy();
+                    $('#order-table').DataTable(
+                        {
+                            "language": {
+                                "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
+                                "zeroRecords": "Nothing found - sorry",
+                                "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
+                                "infoEmpty": "No records available",
+                                "infoFiltered": "(filtered from _MAX_ total records)",
+                                "search": trls('Search'),
+                                "paginate": {
+                                  "previous": trls('Previous'),
+                                  "next": trls('Next')
+                                }
+                            },
+                            "searching": false,
+                            "dom": 't<"bottom-datatable" lip>',
+                            "ordering": false
+                        }
+                    );
+                }
             }
         });
     }
@@ -149,7 +171,10 @@ class Ordermanage extends Component {
         let dataA = []
         dataA = Common.filterData(filterOption, this.state.originFilterData);
         if(!filterOption.length){
+            this.setState({filterDataFlag: false});
             dataA=null;
+        }else{
+            this.setState({filterDataFlag: true});
         }
         this.getOrdersData(dataA);
     }
@@ -343,7 +368,7 @@ class Ordermanage extends Component {
                         <Col sm={6}>
                             <Button variant="primary" onClick = {()=>this.openPlaceOrder()}><i className="fas fa-plus add-icon"></i>{trls('Add_order')}</Button> 
                         </Col>
-                        <Col sm={6} className="has-search">
+                        {/* <Col sm={6} className="has-search">
                             <div style={{display: 'flex', float: 'right'}}>
                                 <Button variant="light" onClick={()=>this.changeFilter()}><i className="fas fa-filter add-icon"></i>{trls('Filter')}</Button>
                                 <div style={{marginLeft: 20}}>
@@ -351,15 +376,15 @@ class Ordermanage extends Component {
                                     <Form.Control className="form-control fitler" type="text" name="number"placeholder={trls("Quick_search")}/>
                                 </div>
                             </div>
-                        </Col>
-                        {filterColunm.length&&(
+                        </Col> */}
+                        {/* {filterColunm.length&&(
                             <Filtercomponent
                                 onHide={()=>this.setState({filterFlag: false})}
                                 filterData={filterData}
                                 onFilterData={(filterOption)=>this.filterOptionData(filterOption)}
                                 showFlag={this.state.filterFlag}
                             />
-                        )}
+                        )} */}
                     </Row>
                     <div className="table-responsive credit-history">
                         <table id="order-table" className="place-and-orders__table table" width="100%">
@@ -400,6 +425,12 @@ class Ordermanage extends Component {
                             }
                         </tbody>)}
                     </table>
+                        {!this.state.filterDataFlag&&(
+                            <Pagination
+                                recordNum={this.state.recordNum}
+                                getData={(pageSize, page)=>this.getOrdersData(pageSize, page)}
+                            />
+                        )}
                         { this.state.loading&& (
                             <div className="col-md-4 offset-md-4 col-xs-12 loading" style={{textAlign:"center"}}>
                                 <BallBeat
