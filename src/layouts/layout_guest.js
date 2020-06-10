@@ -15,13 +15,17 @@ import Returns from '../pages/Returns/returns_manage';
 import Returndetail from '../pages/Returns/return_detail';
 import Placemanage from '../pages/Placeorder/place_manage';
 import Newsmanage from '../pages/News/news_manage';
-// import Paymentmanage from '../pages/Makepayment/payment_manage';
-// import Invoices from '../pages/Invoice/invoice_manage';
+import { connect } from 'react-redux';
 import { Switch,Router, Route } from 'react-router-dom';
 import history from '../history';
 import * as Auth from '../factories/auth';
 
 window.localStorage.setItem('AWT', true);
+
+const mapStateToProps = state => ({ 
+  ...state.auth,
+});
+
 class Layout extends Component {
   constructor(props){
     super(props);
@@ -30,7 +34,7 @@ class Layout extends Component {
     }
   }
   render () {
-    const { userInfo } = this.state;
+    let userInfo = Auth.getUserInfo();
     return (
         <Row style={{height:"100%", display: "flex"}}>
           <Sidebar/>
@@ -82,4 +86,4 @@ class Layout extends Component {
     )
   };
 }
-export default Layout;
+export default connect(mapStateToProps)(Layout);

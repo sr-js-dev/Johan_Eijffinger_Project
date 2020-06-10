@@ -164,7 +164,7 @@ class Placemanage extends Component {
 
     onSubmitOrder = ( approve, summary ) => {
         this._isMounted = true;
-        const { currentUserInfo, customer_reference, docDueDate, setSippingAddress, rows, itemQuantityData, itemPriceData, mainOrderData, orderSubmitFlag, orderLineNum } = this.state;
+        const { currentUserInfo, customer_reference, docDueDate, setSippingAddress, rows, itemQuantityData, mainOrderData, orderSubmitFlag, orderLineNum } = this.state;
         let documentLineArray = [];
         let patchdocumentLineArray  =[];
         let params = [];
@@ -620,7 +620,7 @@ class Placemanage extends Component {
                 return data
             })
         }
-        
+
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">

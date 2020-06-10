@@ -3,14 +3,15 @@ export const getUserToken = () => {
 };
 
 export const removeAuth = () => {
-    window.localStorage.setItem('eijf_token', '')
-    window.localStorage.setItem('eijf_userName', '')
-    window.localStorage.setItem('eijf_role', '')
-    window.localStorage.setItem('eijf_loggedUser', '')
-    window.localStorage.setItem('admin_role', '')
-    window.localStorage.setItem('admin_userName', '')
-    window.localStorage.setItem('admin_token', '')
-    window.localStorage.setItem('eijf_showPrice', '')
+    window.localStorage.setItem('eijf_token', '');
+    window.localStorage.setItem('eijf_userName', '');
+    window.localStorage.setItem('eijf_role', '');
+    window.localStorage.setItem('eijf_loggedUser', '');
+    window.localStorage.setItem('admin_role', '');
+    window.localStorage.setItem('admin_userName', '');
+    window.localStorage.setItem('admin_token', '');
+    window.localStorage.setItem('eijf_showPrice', '');
+    window.localStorage.setItem('userType', '');
     return true
 };
 
@@ -41,5 +42,9 @@ export const getAdminInfo = () => {
     adminInfo.userName = window.localStorage.getItem('admin_userName');
     adminInfo.userToken = window.localStorage.getItem('admin_token');
     return adminInfo;
+}
+
+export const getUsetType = () => {
+    return window.localStorage.getItem('userType');
 }
 

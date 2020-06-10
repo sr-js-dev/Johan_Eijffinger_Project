@@ -46,7 +46,7 @@ class Userregister extends Component {
                 {"label": 'PhoneNumber', "value": "PhoneNumber", "type": 'text', "show": true},
                 {"label": 'Active', "value": "active", "type": 'text', "show": true},
                 {"label": 'Action', "value": "action", "type": 'text', "show": true},
-                {"label": 'LoginAsUser', "value": "loginAsUser", "type": 'text', "show": true},
+                {"label": 'Login As', "value": "Login As", "type": 'text', "show": true},
             ],
             userInfo: Auth.getUserInfo(), 
             userType: '',
@@ -286,9 +286,9 @@ class Userregister extends Component {
     loginAsUser = (userName) => {
         var adminInfo = Auth.getUserInfo();
         this.props.setUserType("user");
-        window.localStorage.setItem('admin_token', adminInfo.userToken);
-        window.localStorage.setItem('admin_userName', adminInfo.userName);
-        window.localStorage.setItem('admin_role', adminInfo.role);
+        localStorage.setItem('admin_token', adminInfo.userToken);
+        localStorage.setItem('admin_userName', adminInfo.userName);
+        localStorage.setItem('admin_role', adminInfo.role);
         console.log("auth", this.props);
         var settings = {
             "url": API.PostLoginAsUser+userName,
@@ -301,15 +301,17 @@ class Userregister extends Component {
         $.ajax(settings).done(function (response) {
         })
         .then(response => {
-            window.localStorage.setItem('eijf_token', response.token);
-            window.localStorage.setItem('eijf_userName', response.claims.UserName);
-            window.localStorage.setItem('eijf_role', response.claims.Role);
+            localStorage.setItem('eijf_token', response.token);
+            localStorage.setItem('eijf_userName', response.claims.UserName);
+            localStorage.setItem('eijf_role', response.claims.Role);
+            localStorage.setItem('userType', 'user');
             this.setState({userInfo : Auth.getUserInfo()});
             this.props.blankdispatch(this.props.blankFlag)
+            history.push('/dashboard');
         })
         .catch(err => {
             if(err.response.status===401){
-                history.push('/login')
+                history.push('/login');
             }
         });
     }
@@ -399,12 +401,12 @@ class Userregister extends Component {
                                                 }
 											</Row>
                                         </td>
-                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 200}}>
+                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 150}}>
                                             <Row>
                                                 {userInfo.role==="Administrator"? (
-                                                    <i className="fas fa-pen add-icon" onClick={()=>this.loginAsUser(data.userName)}><span className="action-title">{trls('LoginAsUser')}</span></i>
+                                                    <i className="fas fa-eye add-icon" onClick={()=>this.loginAsUser(data.userName)}><span className="action-title">{trls('Login As')}</span></i>
                                                 ):
-                                                    <i className="fas fa-pen add-icon__deactive"><span className="action-title">{trls('LoginAsUser')}</span></i>
+                                                    <i className="fas fa-eye add-icon__deactive"><span className="action-title">{trls('Login As')}</span></i>
                                                 }
 											</Row>
                                         </td>

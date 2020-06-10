@@ -20,6 +20,8 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(authAction.changeLan(params)),
     setUserType: (param) =>
         dispatch(authAction.userType(param)),
+    blankdispatch: (blankFlag) =>
+        dispatch(authAction.blankdispatch(blankFlag)),
 });
 class Header extends Component {
     constructor(props) {
@@ -69,7 +71,8 @@ class Header extends Component {
         window.localStorage.setItem('eijf_userName', info.userName);
         window.localStorage.setItem('eijf_role', info.role);
         this.setState({userInfo : Auth.getUserInfo()});
-        this.props.setUserType("admin");
+        this.props.blankdispatch(this.props.blankFlag);
+        localStorage.setItem('userType', '');
     }
 
     changeLangauge = (val) => {
@@ -91,7 +94,7 @@ class Header extends Component {
     render () {
         const { loggedUserInfo, lang, selectLangValue } = this.state;
         let selectLang = lang.filter((item, key)=>item.value===selectLangValue);
-        console.log('123', selectLang)
+        let userType = localStorage.getItem('userType');
       return (
         <div>
             <header className="header">
@@ -104,7 +107,7 @@ class Header extends Component {
                     <img title="" className="Logo--mobile" alt="Eijffinger Nederland" src="https://www.eijffinger.com/Themes/Eijffinger/Content/images/logo--mobile.svg"/>
                 </a>
                 <div className="header__controls">
-                    {this.state.userType === "user" ? <Button variant="primary" onClick={()=>this.goBackAdmin()}>{trls('Go_Back_Admin')}</Button>
+                    {userType === "user" ? <Button variant="primary" onClick={()=>this.goBackAdmin()}>{trls('Go_Back_Admin')}</Button>
                     : '' }
                     <Dropdown>
                         <Dropdown.Toggle variant="success" id="dropdown-basic" style={{color:"#000000"}}>

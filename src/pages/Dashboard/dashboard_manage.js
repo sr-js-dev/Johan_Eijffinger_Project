@@ -43,19 +43,12 @@ class Dashboard extends Component {
             newsViewData: [],
             loginUser: Auth.getLoggedUserInfo(),
             newsDataPageSize: 0,
-            userInfo: Auth.getUserInfo()
         };
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
-
-    componentWillReceiveProps = nextProps => {
-        this.setState({
-            userInfo: Auth.getUserInfo()
-        });
-    };
 
     componentDidMount() {
         this.getDashBoardData();
@@ -202,8 +195,8 @@ class Dashboard extends Component {
             loginUser,
             newsDataPageSize,
             newFlag,
-            userInfo
         } = this.state;
+        let userInfo = Auth.getUserInfo();
         let lodingFlag = pageLodingFlag;
         if(newFlag && userInfo.role==="Administrator"){
             lodingFlag = false;
