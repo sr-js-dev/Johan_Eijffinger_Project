@@ -73,6 +73,7 @@ class Header extends Component {
         this.setState({userInfo : Auth.getUserInfo()});
         this.props.blankdispatch(this.props.blankFlag);
         localStorage.setItem('userType', '');
+        history.push('/user')
     }
 
     changeLangauge = (val) => {

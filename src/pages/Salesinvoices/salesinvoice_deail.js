@@ -151,7 +151,7 @@ class Salesinvoicedetail extends Component {
             <div className="order_div">
                 <div className="content__header content__header--with-line">
                     <div id="google_translate_element"></div>
-                    <h2 className="title">{trls("InvoiceDetail")}</h2>
+                    <h2 className="title">{trls("Salesinvoice details")}</h2>
                 </div>
                 <Container>
                     <Form className="container product-form" onSubmit = { this.handleSubmit }>

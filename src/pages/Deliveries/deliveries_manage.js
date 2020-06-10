@@ -37,8 +37,8 @@ class Deliveriesmanage extends Component {
             deliveriesData: [],
             originFilterData: [],
             filterColunm: [
-                {"label": 'Order', "value": "DocNum", "type": 'text', "show": true},
-                {"label": 'Order_Date', "value": "DocDate", "type": 'date', "show": true},
+                {"label": 'Delivery', "value": "DocNum", "type": 'text', "show": true},
+                {"label": 'DeliveryDate', "value": "DocDate", "type": 'date', "show": true},
                 {"label": 'Status', "value": "LineStatus", "type": 'text', "show": true},
                 {"label": 'Product', "value": "Product", "type": 'text', "show": true},
                 {"label": 'Collection', "value": "Collectie", "type": 'text', "show": true},
