@@ -205,13 +205,14 @@ class Dashboard extends Component {
             lodingFlag = false;
         }
         let newsSubjectLang, newsTextLang = '';
-        if(loginUser.language==="English"){
+        
+        if(loginUser.Language==="English"){
             newsSubjectLang = 'subjectEnglish';
             newsTextLang = 'textEnglish';
-        }else if(loginUser.language==="Dutch"){
+        }else if(loginUser.Language==="Dutch"){
             newsSubjectLang = 'subjectDutch';
             newsTextLang = 'textDutch';
-        }else if(loginUser.language==="German"){
+        }else if(loginUser.Language==="German"){
             newsSubjectLang = 'subjectGerman';
             newsTextLang = 'textGerman';
         }else{

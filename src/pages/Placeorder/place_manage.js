@@ -164,7 +164,7 @@ class Placemanage extends Component {
 
     onSubmitOrder = ( approve, summary ) => {
         this._isMounted = true;
-        const { currentUserInfo, customer_reference, docDueDate, setSippingAddress, rows, itemQuantityData, mainOrderData, orderSubmitFlag, orderLineNum } = this.state;
+        const { currentUserInfo, customer_reference, setSippingAddress, rows, itemQuantityData, mainOrderData, orderSubmitFlag, orderLineNum } = this.state;
         let documentLineArray = [];
         let patchdocumentLineArray  =[];
         let params = [];
@@ -212,7 +212,7 @@ class Placemanage extends Component {
                 "requestData": {
                     "CardCode": currentUserInfo.SapCustomerCode,
                     "DocDate": Common.formatDate1(new Date()),
-                    "DocDueDate": Common.formatDate1(docDueDate),
+                    "DocDueDate": Common.formatDate1(new Date()),
                     "Reference1": customer_reference,
                     "AddressExtension": {
                         "ShipToStreet": setSippingAddress.Street, 
@@ -669,14 +669,14 @@ class Placemanage extends Component {
                                         />
                                     </Col>
                                 </Form.Group>
-                                <Form.Group as={Row} controlId="formPlaintextPassword">
+                                {/* <Form.Group as={Row} controlId="formPlaintextPassword">
                                     <Form.Label column sm="4">
                                         {trls("DocDueDate")}  
                                     </Form.Label>
                                     <Col sm="8" className="product-text">
-                                        <DatePicker name="docDueDate" className="myDatePicker order-docdue__datepicker" dateFormat="dd-MM-yyyy" selected={new Date(docDueDate)} onChange={date =>this.setState({docDueDate:date})} />
+                                        <DatePicker name="docDueDate" className="myDatePicker order-docdue__datepicker" isClearable={true} dateFormat="dd-MM-yyyy" selected={new Date(docDueDate)} onChange={date =>this.setState({docDueDate:date})} />
                                     </Col>
-                                </Form.Group>
+                                </Form.Group> */}
                             </Col>
                             <Col sm={6} className = "bill-shipping__address">
                                 <div className="place-order__address">
@@ -772,8 +772,8 @@ class Placemanage extends Component {
                                         {deliveryWeek[data.rowId] &&(
                                             currentWeekNumber(new Date(deliveryWeek[data.rowId]))
                                         )}
-                                        {data.ItemCode && itemQuantityData[data.rowId] ? (
-                                            <i className="fas fa-calculator calculate-deliveryWeek_active" onClick={()=>this.calculateDeliveryWeek(data.rowId)}></i>
+                                        {data.ItemCode && itemQuantityData[data.rowId] && !deliveryWeek[data.rowId] ? (
+                                            <i className="fas fa-calculator calculate-deliveryWeek_active" onClick={()=>this.onSubmitOrder()}></i>
                                         ):
                                             <i className="fas fa-calculator calculate-deliveryWeek"></i>
                                         }
