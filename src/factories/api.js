@@ -40,5 +40,6 @@ export default {
     DeleteNews: `${BASEURL}/api/News/Delete/`,
     ReturnOrder: `${BASEURL}/api/SapFactory/execute/post/GoodsReturnRequest`,
     PostDeliveryDate: `${BASEURL}/api/SapProxy/deliverydate`,
+    LoggedUserProfileUpdate: `${BASEURL}/api/Account/UpdateProfile`,
   };
   

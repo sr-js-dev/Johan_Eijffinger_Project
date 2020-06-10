@@ -265,11 +265,11 @@ class Patterncalculateform extends Component {
                         </Form>
                     </Col>
                     <Col className="place-order-calc_pattern-div">
-                        <div className="place-order_pattern">2<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(2*itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0)}</div>
-                        <div className="place-order_pattern">3<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(3*itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0)}</div>
-                        <div className="place-order_pattern">4<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(4*itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0)}</div>
-                        <div className="place-order_pattern">5<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(5*itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0)}</div>
-                        <div>6<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(6*itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0)}</div>
+                        <div className="place-order_pattern">2<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(2*itemData.U_DBS_PATROON ? 2*itemData.U_DBS_PATROON : 0)}</div>
+                        <div className="place-order_pattern">3<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(3*itemData.U_DBS_PATROON ? 3*itemData.U_DBS_PATROON : 0)}</div>
+                        <div className="place-order_pattern">4<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(4*itemData.U_DBS_PATROON ? 4*itemData.U_DBS_PATROON : 0)}</div>
+                        <div className="place-order_pattern">5<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(5*itemData.U_DBS_PATROON ? 5*itemData.U_DBS_PATROON : 0)}</div>
+                        <div>6<i className="fas fa-times pattern-calc_equal"></i>{itemData.U_DBS_PATROON ? itemData.U_DBS_PATROON : 0}<i className="fas fa-equals pattern-calc_equal"></i>{Common.formatNumber(6*itemData.U_DBS_PATROON ? 6*itemData.U_DBS_PATROON : 0)}</div>
                     </Col>
                 </Row>
                 <Row className="place-order_patter-table">

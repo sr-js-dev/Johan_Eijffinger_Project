@@ -49,10 +49,10 @@ class Userprofile extends React.Component {
             userCode: loggedinUserInfo.UserCode,
             customerCode: loggedinUserInfo.SapCustomerCode,
             roles: [loggedinUserInfo.Role],
-            showPrice: this.state.showPrice==="true" ? true : false
+            showPrice: localStorage.getItem('eijf_showPrice')==="true" ? true : false
           }
         var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.put(API.PostUserUpdate+loggedinUserInfo.UserId, params, headers)
+        Axios.put(API.LoggedUserProfileUpdate, params, headers)
         .then(result => {
             loggedinUserInfo.FirstName = data.firstName;
             loggedinUserInfo.LastName = data.lastName;
@@ -71,6 +71,7 @@ class Userprofile extends React.Component {
 
     changeShowPrice = (evt) => {
         localStorage.setItem('eijf_showPrice', evt.target.checked);
+        // this.props.blankdispatch(this.props.blankFlag);
     }
 
     // gotoPreviousPage = () =>{
