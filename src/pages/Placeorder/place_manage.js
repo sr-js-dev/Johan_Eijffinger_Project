@@ -564,8 +564,10 @@ class Placemanage extends Component {
     setLenghQuantity = (length, patternRowId, calcuRowData) => {
         let itemQuantityData = this.state.itemQuantityData;
         let patternCalcuRowData = this.state.patternCalcuRowData;
+        let itemCode = this.state.itemCode;
         patternRowId.map((rowId, index)=>{
             itemQuantityData[rowId] = length ? length.toFixed(2) : 0;
+            this.getItemPriceData(rowId, itemCode)
             patternCalcuRowData[rowId] = calcuRowData;
             return rowId;
         })

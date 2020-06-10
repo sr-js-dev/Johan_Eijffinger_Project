@@ -25,6 +25,8 @@ const mapStateToProps = state => ({ ...state.auth });
 const mapDispatchToProps = dispatch => ({
     setUserType: (param) =>
             dispatch(authAction.userType(param)),
+    blankdispatch: (blankFlag) =>
+        dispatch(authAction.blankdispatch(blankFlag)),
 });
 
 class Userregister extends Component {
@@ -303,6 +305,7 @@ class Userregister extends Component {
             window.localStorage.setItem('eijf_userName', response.claims.UserName);
             window.localStorage.setItem('eijf_role', response.claims.Role);
             this.setState({userInfo : Auth.getUserInfo()});
+            this.props.blankdispatch(this.props.blankFlag)
         })
         .catch(err => {
             if(err.response.status===401){

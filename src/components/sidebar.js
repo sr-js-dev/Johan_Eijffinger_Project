@@ -25,6 +25,7 @@ class Sidebar extends Component {
 
     render () {
         const { userInfo } = this.state;
+        console.log('userInfo', userInfo)
         return (
             <div>
                 <aside className="sidebar">

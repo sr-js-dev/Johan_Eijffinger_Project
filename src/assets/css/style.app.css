@@ -909,7 +909,7 @@ table.dataTable.no-footer {
   padding-bottom: 20px;
 }
 .place-order__search-itemtable{
-  max-height: 400px;
+  max-height: 300px;
   overflow-y: auto !important;
   padding: 0px 30px;
   margin-bottom: 20px;
