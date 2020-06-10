@@ -620,6 +620,7 @@ class Placemanage extends Component {
                 return data
             })
         }
+        
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">
