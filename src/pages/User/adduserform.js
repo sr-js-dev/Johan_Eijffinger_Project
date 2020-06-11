@@ -54,7 +54,8 @@ class Adduserform extends Component {
             lastName: data.lastName,
             userCode: data.userCode,
             customerCode: data.customerCode,
-            roles:[data.roles]
+            roles:[data.roles],
+            showPrice: true
         }     
         if(this.props.mode==="add"){
             Axios.post(API.PostUserData, params, headers)
@@ -74,7 +75,8 @@ class Adduserform extends Component {
                 language: data.language,
                 userCode: data.userCode,
                 customerCode: data.customerCode,
-                roles: [data.roles]
+                roles: [data.roles],
+                showPrice: true
               }
             headers = SessionManager.shared().getAuthorizationHeader();
             Axios.put(API.PostUserUpdate+this.props.userUpdateData.id, params, headers)
