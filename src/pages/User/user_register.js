@@ -243,6 +243,7 @@ class Userregister extends Component {
     }
 
     activeUser = (id) => {
+        console.log('2222', id);
         var settings = {
             "url": API.PostActivateUser+id,
             "method": "post",

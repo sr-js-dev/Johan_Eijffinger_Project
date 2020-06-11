@@ -8,6 +8,7 @@ export default {
     GetUserDataById: `${BASEURL}/api/users/GetById/`,
     PostUserUpdate: `${BASEURL}/api/users/Update/`,
     PostDeaActivateUser: `${BASEURL}/api/users/DeactivateUser/`,
+    PostActivateUser: `${BASEURL}/api/users/ActivateUser/`,
     PostForgotPassEmail: `${BASEURL}/api/Account/ForgotPassword/`,
     GetDeliveriesData: `${BASEURL}/api/SapFactory/execute/get/GetDeliveries`,
     GetReturnsData: `${BASEURL}/api/SapFactory/execute/get/GetReturns`,
