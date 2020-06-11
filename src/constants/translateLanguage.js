@@ -199,7 +199,8 @@ export const TRANSLATIONS = {
       "I agree with the Terms and Conditions": "I agree with the Terms and Conditions",
       "No partial deliveries": "No partial deliveries",
       "Return #": 'Return #',
-      "ReturnDate": 'ReturnDate'
+      "ReturnDate": 'ReturnDate',
+      "Show All Users": 'Show All Users'
     },
 
     Dutch: {
@@ -402,7 +403,8 @@ export const TRANSLATIONS = {
       "I agree with the Terms and Conditions": "Ik ga akkoord met de algemene voorwaarden",
       "No partial deliveries": "Geen deelleveringen",
       "Return #": 'Return #',
-      "ReturnDate": 'ReturnDate'
+      "ReturnDate": 'ReturnDate',
+      "Show All Users": 'Alle gebruikers weergeven'
     }, 
     
     German: {
@@ -605,7 +607,8 @@ export const TRANSLATIONS = {
       "I agree with the Terms and Conditions": "Ich stimme den Nutzungsbedingungen zu",
       "No partial deliveries": "Keine Teillieferungen",
       "Return #": 'Return #',
-      "ReturnDate": 'ReturnDate'
+      "ReturnDate": 'ReturnDate',
+      "Show All Users": 'Alle Benutzer anzeigen'
     },
 
     French: {
@@ -808,6 +811,7 @@ export const TRANSLATIONS = {
       "I agree with the Terms and Conditions": "J'accepte les termes et conditions",
       "No partial deliveries": "Pas de livraisons partielles",
       "Return #": 'Return #',
-      "ReturnDate": 'ReturnDate'
+      "ReturnDate": 'ReturnDate',
+      "Show All Users": 'Afficher tous les utilisateurs'
     }
   };

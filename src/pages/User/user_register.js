@@ -50,6 +50,7 @@ class Userregister extends Component {
             ],
             userInfo: Auth.getUserInfo(), 
             userType: '',
+            showAllUser: false
         };
     }
 
@@ -318,7 +319,13 @@ class Userregister extends Component {
 
     render () {
         let userInfo = Auth.getUserInfo();
-        const {filterColunm, userData } = this.state;
+        const { filterColunm, userData, showAllUser } = this.state;
+        let userDataList = [];
+        if(!showAllUser){
+            userDataList = userData.filter(item =>item.isActive===true);
+        }else{
+            userDataList = userData;
+        }
         let filterData = [
             {"label": trls('UserName'), "value": "userName", "type": 'text'},
             {"label": trls('Email'), "value": "email", "type": 'text'},
@@ -354,6 +361,9 @@ class Userregister extends Component {
                             />
                         )}
                     </Row>
+                    <Col className="show-all_user">
+                        <Form.Check type="checkbox" label={trls("Show All Users")} onChange={(evt)=>this.setState({showAllUser: evt.target.checked})}/>
+                    </Col>
                     <div className="table-responsive credit-history">
                         <table id="example" className="place-and-orders__table table" width="99%">
                         <thead>
@@ -371,9 +381,9 @@ class Userregister extends Component {
                                 )}
                             </tr>
                         </thead>
-                        {userData && !this.state.loading &&(<tbody >
+                        {userDataList && !this.state.loading &&(<tbody >
                             {
-                                userData.map((data,i) =>(
+                                userDataList.map((data,i) =>(
                                     <tr id={i} key={i}>
                                         <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}>{data.userName}</td>
                                         <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{data.email}</td>
@@ -387,7 +397,6 @@ class Userregister extends Component {
                                         </td>
                                         <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''} style={{width: 300}}>
                                             <Row>
-												<i className="fas fa-trash-alt add-icon" onClick={()=>this.userDeleteConfirm(data.id)}><span className="action-title">{trls('Delete')}</span></i>
 												{userInfo.role==="Administrator" ? (
                                                     <i className="fas fa-pen add-icon" onClick={()=>this.userUpdate(data.id)}><span className="action-title">{trls('Edit')}</span></i>
                                                 ):
