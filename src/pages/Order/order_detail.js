@@ -237,7 +237,7 @@ class Placemanage extends Component {
                             <tr>
                                 <th>{trls("Product_code")}</th>
                                 <th>{trls("Product_description")}</th>
-                                <th>{trls("Unit")}</th>
+                                {/* <th>{trls("Unit")}</th> */}
                                 <th>{trls("Quantity")}</th>
                                 {showPrice ? (
                                     <th>{trls("Price")}</th>
@@ -262,9 +262,9 @@ class Placemanage extends Component {
                                     <td>
                                         <Form.Control type="text" name="description" disabled readOnly required defaultValue = {data.ItemDescription ? data.ItemDescription : ''} placeholder={trls('Description')} />
                                     </td>
-                                    <td>
+                                    {/* <td>
                                         {data.MeasureUnit ? data.MeasureUnit : ''}
-                                    </td>
+                                    </td> */}
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>
                                             <Form.Control type="text" name="quantity" style={{width: '80%'}} disabled required placeholder={trls('Quantity')} defaultValue = {data.InventoryQuantity ? data.InventoryQuantity : ''}/>

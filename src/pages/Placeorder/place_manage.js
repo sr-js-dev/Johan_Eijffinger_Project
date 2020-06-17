@@ -93,6 +93,7 @@ class Placemanage extends Component {
 
     componentDidMount() {
         this.getCustomerData();
+        this.handleAddRow();
     }
 
     getCustomerData = () => {
@@ -669,14 +670,6 @@ class Placemanage extends Component {
                                         />
                                     </Col>
                                 </Form.Group>
-                                {/* <Form.Group as={Row} controlId="formPlaintextPassword">
-                                    <Form.Label column sm="4">
-                                        {trls("DocDueDate")}  
-                                    </Form.Label>
-                                    <Col sm="8" className="product-text">
-                                        <DatePicker name="docDueDate" className="myDatePicker order-docdue__datepicker" isClearable={true} dateFormat="dd-MM-yyyy" selected={new Date(docDueDate)} onChange={date =>this.setState({docDueDate:date})} />
-                                    </Col>
-                                </Form.Group> */}
                             </Col>
                             <Col sm={6} className = "bill-shipping__address">
                                 <div className="place-order__address">
@@ -700,7 +693,7 @@ class Placemanage extends Component {
                             <tr>
                                 <th>{trls("Product_code")}</th>
                                 <th>{trls("Product_description")}</th>
-                                <th>{trls("Unit")}</th>
+                                {/* <th>{trls("Unit")}</th> */}
                                 <th>{trls("Quantity")}</th>
                                 {showPrice ? (
                                     <th>{trls("Price")}</th>
@@ -711,7 +704,6 @@ class Placemanage extends Component {
                                 <th>{trls("Image")}</th>
                                 <th>{trls("Customer_reference")}</th>
                                 <th>{trls("Expected_deliver_week")}</th>
-                                {/* <th>{trls("NoPatternCalculation")}</th> */}
                                 <th>{trls("Action")}</th>
                             </tr>
                         </thead>
@@ -729,9 +721,9 @@ class Placemanage extends Component {
                                     <td>
                                         <Form.Control type="text" name="description" className="place-order_description" readOnly required  defaultValue = {data.ItemName ? data.ItemName : ''} placeholder={trls('Description')} />
                                     </td>
-                                    <td>
+                                    {/* <td>
                                         {data.SalesUnit ? data.SalesUnit : ''}
-                                    </td>
+                                    </td> */}
                                     { data.ItemName && !patternCalculateCheck[data.rowId] ? (
                                         <td style={{display: "flex"}}>
                                             <Form.Control type="text" name="quantity" className="place_an_orrder-quantity-y" readOnly required placeholder={trls('Quantity')} value={itemQuantityData[data.rowId] ? Common.formatNumber(itemQuantityData[data.rowId]) : ''} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)} onBlur={()=>this.getItemPriceData(data.rowId, data.ItemCode)}

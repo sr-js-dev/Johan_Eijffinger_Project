@@ -219,7 +219,7 @@ class Returndetail extends Component {
                             <tr>
                                 <th>{trls("Product_code")}</th>
                                 <th>{trls("Product_description")}</th>
-                                <th>{trls("Unit")}</th>
+                                {/* <th>{trls("Unit")}</th> */}
                                 <th>{trls("Quantity")}</th>
                                 {showPrice ? (
                                     <th>{trls("Price")}</th>
@@ -244,9 +244,9 @@ class Returndetail extends Component {
                                     <td>
                                         <Form.Control type="text" name="description" disabled readOnly required defaultValue = {data.ItemDescription ? data.ItemDescription : ''} placeholder={trls('Description')} />
                                     </td>
-                                    <td>
-                                        {/* {data.SalesUnit ? data.SalesUnit : ''} */}
-                                    </td>
+                                    {/* <td>
+                                        {data.SalesUnit ? data.SalesUnit : ''}
+                                    </td> */}
                                     <td>
                                         <Row style={{justifyContent: "space-around"}}>
                                             <Form.Control type="text" name="quantity" style={{width: '80%'}} disabled required placeholder={trls('Quantity')} onChange={(evt)=>this.changeQuantityData(evt.target.value, data.rowId)}/>
