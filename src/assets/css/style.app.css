@@ -1149,3 +1149,36 @@ border: 1px solid #E2E3E4;
   padding-top: 20px;
   padding-bottom: 20px;
 }
+.header-social__icon{
+  margin: 0px 10px;
+}
+.header-social__icon_image{
+  height: 30px;
+}
+/* .header-social__icon_image:hover{
+  height: 40px;
+} */
+@media (max-width: 768px){
+  .header-social__icon-mobile {
+    padding: 3px 0;
+  }
+}
+@media (min-width: 768px){
+  .header-social__icon-mobile {
+    display: none;
+  }
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+@media (max-width: 768px){
+  .heder-social-icon-desktop_div {
+    display: none;
+  }
+}
+
+
+

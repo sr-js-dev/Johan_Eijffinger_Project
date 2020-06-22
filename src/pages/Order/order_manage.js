@@ -1,26 +1,17 @@
 import React, {Component} from 'react'
 import { connect } from 'react-redux';
 import { trls } from '../../factories/translate';
-import { Row, Col, Button, Form } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import SessionManager from '../../factories/session_manage';
-// import Select from 'react-select';
 import API from '../../factories/api'
 import Axios from 'axios';
-// import * as Auth from '../../factories/auth'
-// import  { Link } from 'react-router-dom';
-// import * as authAction  from '../../actions/authAction';
-// import Slider from 'react-bootstrap-slider';
-// import "bootstrap-slider/dist/css/bootstrap-slider.css"
 import $ from 'jquery';
 import { BallBeat } from 'react-pure-loaders';
-// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'datatables.net';
 import history from '../../history';
 import * as Common from '../../factories/common';
-import Filtercomponent from '../../components/filtercomponent';
 import Pageloadspiiner from '../../components/page_load_spinner';
-// import * as Auth from '../../factories/auth';
 import Sweetalert from 'sweetalert';
 import * as authAction  from '../../actions/authAction';
 import Pagination from '../../components/pagination_order';
@@ -349,14 +340,6 @@ class Ordermanage extends Component {
     
     render(){   
         const {filterColunm, ordersData, pageLodingFlag} = this.state;
-        let filterData = [
-            {"label": trls('Order'), "value": "DocNum", "type": 'text', "show": true},
-            {"label": trls('Order_Date'), "value": "DocDate", "type": 'date', "show": true},
-            {"label": trls('Product'), "value": "Product", "type": 'text', "show": true},
-            {"label": trls('Collection'), "value": "Collectie", "type": 'text', "show": true},
-            {"label": trls('Quantity'), "value": "Quantity", "type": 'text', "show": true},
-            {"label": trls('Batch'), "value": "BatchNumbers", "type": 'text', "show": true},
-        ]
         return (
             <div className="order_div">
                 <div className="content__header content__header--with-line">

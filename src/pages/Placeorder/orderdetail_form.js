@@ -191,7 +191,7 @@ class Productpriceform extends Component {
                                                 } */}
                                             </td>
                                             <td>
-                                                <Form.Control type="text" name="customerReference" disabled required placeholder={trls('Customer_reference')} defaultValue={orderDetailData ? orderDetailData.customerReference : ''} />
+                                                <Form.Control type="text" name="customerReference" disabled required placeholder={trls('Customer_reference')} defaultValue={data.U_DBS_CUSTREF ? data.U_DBS_CUSTREF : ''} />
                                             </td>
                                             <td>
                                                 {currentWeekNumber(orderDetailData.DocumentLines[0].ShipDate )}

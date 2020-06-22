@@ -287,7 +287,7 @@ class Placemanage extends Component {
                                         }
                                     </td>
                                     <td>
-                                        <Form.Control type="text" name="customerReference" disabled required placeholder={trls('Customer_reference')} onChange={(evt)=>this.setState({quantity: evt.target.value})} />
+                                        <Form.Control type="text" name="customerReference" disabled required placeholder={trls('Customer_reference')} defaultValue={data.U_DBS_CUSTREF ? data.U_DBS_CUSTREF : ''} />
                                     </td>
                                     <td>
                                         {currentWeekNumber(orderData.DocumentLines[0].ShipDate )}
