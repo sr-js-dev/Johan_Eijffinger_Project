@@ -200,7 +200,8 @@ export const TRANSLATIONS = {
       "No partial deliveries": "No partial deliveries",
       "Return #": 'Return #',
       "ReturnDate": 'ReturnDate',
-      "Show All Users": 'Show All Users'
+      "Show All Users": 'Show All Users',
+      "Reference": 'Reference'
     },
 
     Dutch: {
@@ -404,7 +405,8 @@ export const TRANSLATIONS = {
       "No partial deliveries": "Geen deelleveringen",
       "Return #": 'Return #',
       "ReturnDate": 'ReturnDate',
-      "Show All Users": 'Alle gebruikers weergeven'
+      "Show All Users": 'Alle gebruikers weergeven',
+      "Reference": 'Referentie'
     }, 
     
     German: {
@@ -608,7 +610,8 @@ export const TRANSLATIONS = {
       "No partial deliveries": "Keine Teillieferungen",
       "Return #": 'Return #',
       "ReturnDate": 'ReturnDate',
-      "Show All Users": 'Alle Benutzer anzeigen'
+      "Show All Users": 'Alle Benutzer anzeigen',
+      "Reference": 'Referenz'
     },
 
     French: {
@@ -812,6 +815,7 @@ export const TRANSLATIONS = {
       "No partial deliveries": "Pas de livraisons partielles",
       "Return #": 'Return #',
       "ReturnDate": 'ReturnDate',
-      "Show All Users": 'Afficher tous les utilisateurs'
+      "Show All Users": 'Afficher tous les utilisateurs',
+      "Reference": 'Référence'
     }
   };

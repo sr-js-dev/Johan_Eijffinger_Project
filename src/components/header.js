@@ -115,16 +115,16 @@ class Header extends Component {
                         <img src={require("../assets/images/eijffinger.svg")} className="header-social__icon_image" alt="woon"/>
                     </a>
                     <a href="https://www.facebook.com/Eijffinger/" className="header-social__icon" target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/facebook.png")} className="header-social__icon_image" alt="woon"/>
+                        <i className="fab fa-facebook header-social__icon_image"></i>
                     </a>
                     <a href="https://www.instagram.com/eijffinger" className="header-social__icon" target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/instagram.png")} className="header-social__icon_image" alt="woon"/>
+                        <i className="fab fa-instagram-square header-social__icon_image"></i>
                     </a>
                     <a href="https://nl.pinterest.com/eijffinger/" className="header-social__icon" target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/pinterest.png")} className="header-social__icon_image" alt="woon"/>
+                        <i className="fab fa-pinterest header-social__icon_image"></i>
                     </a>
                     <a href="https://www.youtube.com/channel/UCjxIhs-6AbLIo4D40IJ4a7g" className="header-social__icon youtube-icon"  target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/youtube.png")} className="header-social__icon_image" alt="woon"/>
+                        <i className="fab fa-youtube header-social__icon_image"></i>
                     </a>
                 </div>
                 <div className="header__controls">

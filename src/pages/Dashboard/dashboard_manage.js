@@ -180,6 +180,24 @@ class Dashboard extends Component {
         this.props.blankdispatch()
     }
 
+    showOrderDetail = (docNum) => {
+        history.push('/order-detail/'+docNum);
+    }
+
+    showDeliveryDetail = (docNum) => {
+        history.push({
+            pathname: '/delivery-detail/'+docNum,
+            state: { id: docNum, newSubmit:true }
+          })
+    }
+
+    showSalesInvoiceDetail = (docNum) => {
+        history.push({
+            pathname: '/salesinvoice-deail/'+docNum,
+            state: { id: docNum, newSubmit:true }
+          })
+    }
+
     render(){   
         const { 
             dashBoardData,
@@ -300,16 +318,16 @@ class Dashboard extends Component {
                                         <tr>
                                             <th>#</th>
                                             <th>{trls('Date')}</th>
-                                            <th>{trls('Total')}</th>
+                                            <th>{trls('Reference')}</th>
                                         </tr>
                                     </thead>
                                         {lastOrdersData &&(<tbody >
                                             {
                                                 lastOrdersData.map((data,i) =>(
                                                 <tr id={i} key={i}>
-                                                    <td>{data.DocNum}</td>
+                                                    <td><div className="action-div" onClick={()=>this.showOrderDetail(data.DocNum)}>{data.DocNum}</div></td>
                                                     <td>{Common.formatDate(data.DocDate)}</td>
-                                                    <td>{Common.formatMoney(data.DocTotal)}</td>
+                                                    <td>{data.NumAtCard}</td>
                                                 </tr>
                                             ))
                                             }
@@ -330,16 +348,16 @@ class Dashboard extends Component {
                                         <tr>
                                             <th>#</th>
                                             <th>{trls('Date')}</th>
-                                            <th>{trls('Total')}</th>
+                                            <th>{trls('Reference')}</th>
                                         </tr>
                                     </thead>
                                     {lastDeliveriesData &&(<tbody >
                                         {
                                             lastDeliveriesData.map((data,i) =>(
                                             <tr id={i} key={i}>
-                                                <td>{data.DocNum}</td>
+                                                <td><div className="action-div" onClick={()=>this.showDeliveryDetail(data.DocNum)}>{data.DocNum}</div></td>
                                                 <td>{Common.formatDate(data.DocDate)}</td>
-                                                <td>{Common.formatMoney(data.DocTotal)}</td>
+                                                <td>{data.NumAtCard}</td>
                                             </tr>
                                         ))
                                         }
@@ -360,16 +378,16 @@ class Dashboard extends Component {
                                         <tr>
                                             <th>#</th>
                                             <th>{trls('Date')}</th>
-                                            <th>{trls('Total')}</th>
+                                            <th>{trls('Reference')}</th>
                                         </tr>
                                     </thead>
                                     {lastOutstandingData &&(<tbody >
                                         {
                                             lastOutstandingData.map((data,i) =>(
                                             <tr id={i} key={i}>
-                                                <td>{data.DocNum}</td>
+                                                <td><div id={data.id} className="action-div" onClick={()=>this.showSalesInvoiceDetail(data.DocNum)}>{data.DocNum}</div></td>
                                                 <td>{Common.formatDate(data.DocDate)}</td>
-                                                <td>{Common.formatMoney(data.DocTotal)}</td>
+                                                <td>{data.NumAtCard}</td>
                                             </tr>
                                         ))
                                         }
