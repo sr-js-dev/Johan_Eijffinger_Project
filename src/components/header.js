@@ -107,45 +107,7 @@ class Header extends Component {
                 <a href="/" className="header__logo-mob">
                     <img title="" className="Logo--mobile" alt="Eijffinger Nederland" src="https://www.eijffinger.com/Themes/Eijffinger/Content/images/logo--mobile.svg"/>
                 </a>
-                <div className="heder-social-icon-desktop_div" stlye={{display: "flex"}}>
-                    <a href="https://www.woontotaal.nl/" className="header-social__icon" target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/woon.png")} className="header-social__icon_image" alt="woon"/>
-                    </a>
-                    <a href="https://www.eijffinger.com/" className="header-social__icon" target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/eijffinger.svg")} className="header-social__icon_image" alt="woon"/>
-                    </a>
-                    <a href="https://www.facebook.com/Eijffinger/" className="header-social__icon" target="_blank" rel="noopener noreferrer">
-                        <i className="fab fa-facebook header-social__icon_image"></i>
-                    </a>
-                    <a href="https://www.instagram.com/eijffinger" className="header-social__icon" target="_blank" rel="noopener noreferrer">
-                        <i className="fab fa-instagram-square header-social__icon_image"></i>
-                    </a>
-                    <a href="https://nl.pinterest.com/eijffinger/" className="header-social__icon" target="_blank" rel="noopener noreferrer">
-                        <i className="fab fa-pinterest header-social__icon_image"></i>
-                    </a>
-                    <a href="https://www.youtube.com/channel/UCjxIhs-6AbLIo4D40IJ4a7g" className="header-social__icon youtube-icon"  target="_blank" rel="noopener noreferrer">
-                        <i className="fab fa-youtube header-social__icon_image"></i>
-                    </a>
-                </div>
                 <div className="header__controls">
-                    <a href="https://www.woontotaal.nl/" className="header-social__icon-mobile" target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/woon.png")} className="header-social__icon_image" alt="woon"/>
-                    </a>
-                    <a href="https://www.eijffinger.com/" className="header-social__icon-mobile" target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/eijffinger.svg")} className="header-social__icon_image" alt="woon"/>
-                    </a>
-                    <a href="https://www.facebook.com/Eijffinger/" className="header-social__icon-mobile" target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/facebook.png")} className="header-social__icon_image" alt="woon"/>
-                    </a>
-                    <a href="https://www.instagram.com/eijffinger" className="header-social__icon-mobile" target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/instagram.png")} className="header-social__icon_image" alt="woon"/>
-                    </a>
-                    <a href="https://nl.pinterest.com/eijffinger/" className="header-social__icon-mobile" target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/pinterest.png")} className="header-social__icon_image" alt="woon"/>
-                    </a>
-                    <a href="https://www.youtube.com/channel/UCjxIhs-6AbLIo4D40IJ4a7g" className="header-social__icon-mobile"  target="_blank" rel="noopener noreferrer">
-                        <img src={require("../assets/images/youtube.png")} className="header-social__icon_image" alt="woon"/>
-                    </a>
                     {userType === "user" ? <Button variant="primary" onClick={()=>this.goBackAdmin()}>{trls('Go_Back_Admin')}</Button>
                     : '' }
                     <Dropdown>

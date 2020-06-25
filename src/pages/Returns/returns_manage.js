@@ -3,22 +3,16 @@ import { connect } from 'react-redux';
 import { trls } from '../../factories/translate';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import SessionManager from '../../factories/session_manage';
-// import Select from 'react-select';
 import API from '../../factories/api'
 import Axios from 'axios';
-// import * as Auth from '../../factories/auth'
-// import  { Link } from 'react-router-dom';
-// import * as authAction  from '../../actions/authAction';
-// import Slider from 'react-bootstrap-slider';
-// import "bootstrap-slider/dist/css/bootstrap-slider.css"
 import $ from 'jquery';
 import { BallBeat } from 'react-pure-loaders';
-// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import 'datatables.net';
 import history from '../../history';
 import * as Common from '../../factories/common';
 import Filtercomponent from '../../components/filtercomponent';
+import Returnorders from './retunrorders_form';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -45,7 +39,8 @@ class Deliveriesmanage extends Component {
                 {"label": 'Quantity', "value": "Quantity", "type": 'text', "show": true},
                 {"label": 'Batch', "value": "BatchNumbers", "type": 'text', "show": true},
                 {"label": 'Action', "value": "Action", "type": 'text', "show": true},
-            ]
+            ],
+            showOrdersForm: false
         };
     }
 
@@ -206,7 +201,7 @@ class Deliveriesmanage extends Component {
                 <div className="orders">
                     <Row>
                         <Col sm={6}>
-                            {/* <Button variant="primary" onClick={()=>this.addUser()}><i className="fas fa-plus add-icon"></i>{trls('Add_order')}</Button>  */}
+                            <Button variant="primary" onClick={()=>this.setState({showOrdersForm: true})}><i className="fas fa-plus add-icon"></i>{trls('Add return')}</Button> 
                         </Col>
                         <Col sm={6} className="has-search">
                             <div style={{display: 'flex', float: 'right'}}>
@@ -274,16 +269,10 @@ class Deliveriesmanage extends Component {
                             </div>
                         )}
                     </div>
-                    {/* {this.state.slideFormFlag ? (
-                        <Adduserform
-                            show={this.state.modalShow}
-                            mode={this.state.mode}
-                            onHide={() => this.setState({slideFormFlag: false})}
-                            onGetUser={() => this.getUserData()}
-                            userUpdateData={this.state.userUpdateData}
-                            userID={this.state.userID}
-                        /> 
-                    ): null} */}
+                    <Returnorders
+                        show={this.state.showOrdersForm}
+                        onHide={() => this.setState({showOrdersForm: false})}
+                    /> 
                 </div>
             </div>
         );

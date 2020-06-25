@@ -39,7 +39,7 @@ class Ordermanage extends Component {
                 {"label": 'Order_Date', "value": "DocDate", "type": 'date', "show": true},
                 {"label": 'Status', "value": "Status", "type": 'text', "show": true},
                 {"label": 'Product', "value": "Product", "type": 'text', "show": true},
-                {"label": 'Collection', "value": "Collectie", "type": 'text', "show": true},
+                {"label": 'ItemCode', "value": "ItemCode", "type": 'text', "show": true},
                 {"label": 'Quantity', "value": "Quantity", "type": 'text', "show": true},
                 {"label": 'Batch', "value": "BatchNumbers", "type": 'text', "show": true},
                 {"label": 'Action', "value": "Action", "type": 'text', "show": true},
@@ -394,7 +394,7 @@ class Ordermanage extends Component {
                                         <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
                                         <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenQty > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenQty > 0 ? "Open" : 'Send'}</div></td>
                                         <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemName}</td>
-                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.Collectie}</td>
+                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.ItemCode}</td>
                                         <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
                                         <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
                                         <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>
@@ -423,16 +423,6 @@ class Ordermanage extends Component {
                             </div>
                         )}
                     </div>
-                    {/* {this.state.slideFormFlag ? (
-                        <Adduserform
-                            show={this.state.modalShow}
-                            mode={this.state.mode}
-                            onHide={() => this.setState({slideFormFlag: false})}
-                            onGetUser={() => this.getUserData()}
-                            userUpdateData={this.state.userUpdateData}
-                            userID={this.state.userID}
-                        /> 
-                    ): null} */}
                 </div>
                 <Pageloadspiiner loading = {pageLodingFlag}/>
             </div>

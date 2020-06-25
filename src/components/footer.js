@@ -1,40 +1,47 @@
-import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import React, {Component} from 'react'
+import * as authAction  from '../actions/authAction';
+import { connect } from 'react-redux';
 
-const styles = theme => ({
-  footer: {
-    position: 'fixed',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 10,
-    backgroundColor: theme.palette.primary.dark,
-    padding: theme.spacing(2),
-    '& .content': {
-      textAlign: 'center',
-    },
-    '& h6': {
-      color: theme.palette.textOnPrimary,
-    },
-  },
-  link: {
-    color: '#fff',
-    textDecoration: 'none'
-  },
-  spacer: {
-    display: 'inline',
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
-  },
+const mapStateToProps = state => ({ 
+    ...state.auth,
 });
-
-const Footer = ({ classes }) => (
-  <footer className={classes.footer}>
-    <Typography variant="subtitle2" align="center" gutterBottom>
-      {"All rights reserved. Captain's Club " + (new Date().getFullYear())}
-    </Typography>
-  </footer>
-);
-
-export default withStyles(styles)(Footer);
+const mapDispatchToProps = (dispatch) => ({
+    blankdispatch: (blankFlag) =>
+        dispatch(authAction.blankdispatch(blankFlag)),
+});
+class Footer extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+        };
+    }
+    render () {
+      return (
+        <div>
+            <footer className="footer">
+              <div className="footer-social-icon-desktop_div" stlye={{display: "flex"}}>
+                  <a href="https://www.woontotaal.nl/" className="footer-social__icon" target="_blank" rel="noopener noreferrer">
+                      <img src={require("../assets/images/woon.png")} className="footer-social__icon_image" alt="woon"/>
+                  </a>
+                  <a href="https://www.eijffinger.com/" className="footer-social__icon" target="_blank" rel="noopener noreferrer">
+                      <img src={require("../assets/images/eijffinger.svg")} className="footer-social__icon_image" alt="woon"/>
+                  </a>
+                  <a href="https://www.facebook.com/Eijffinger/" className="footer-social__icon" target="_blank" rel="noopener noreferrer">
+                      <i className="fab fa-facebook footer-social__icon_image"></i>
+                  </a>
+                  <a href="https://www.instagram.com/eijffinger" className="footer-social__icon" target="_blank" rel="noopener noreferrer">
+                      <i className="fab fa-instagram-square footer-social__icon_image"></i>
+                  </a>
+                  <a href="https://nl.pinterest.com/eijffinger/" className="footer-social__icon" target="_blank" rel="noopener noreferrer">
+                      <i className="fab fa-pinterest footer-social__icon_image"></i>
+                  </a>
+                  <a href="https://www.youtube.com/channel/UCjxIhs-6AbLIo4D40IJ4a7g" className="footer-social__icon youtube-icon"  target="_blank" rel="noopener noreferrer">
+                      <i className="fab fa-youtube footer-social__icon_image"></i>
+                  </a>
+                </div>
+            </footer>
+        </div>
+      )
+    };
+  }
+  export default connect(mapStateToProps, mapDispatchToProps)(Footer);

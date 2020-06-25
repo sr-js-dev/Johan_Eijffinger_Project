@@ -3,6 +3,7 @@ import { Row } from 'react-bootstrap';
 import { Col } from 'react-bootstrap';
 import Sidebar from '../components/sidebar';
 import Header from '../components/header';
+import Footer from '../components/footer';
 import Dashboard from '../pages/Dashboard/dashboard_manage';
 import User from '../pages/User/user_register';
 import Order from '../pages/Order/order_manage';
@@ -80,6 +81,7 @@ class Layout extends Component {
                 )}
               </Switch>
             </Router>
+            <Footer/>
           </Col>
           <div className="fade-display"></div>
       </Row>

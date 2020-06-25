@@ -180,7 +180,7 @@ class Patterncalculateform extends Component {
     removeOrderLine = () => {
         const { patternRowId } = this.props;
         Sweetalert({
-            title: "Are you sure?",
+            title: trls("Are you sure?"),
             text: trls("Pattern calculation needs to be filled for this product, do you want to delete the product from the order lines?"),
             icon: "warning",
             buttons: true,

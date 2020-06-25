@@ -201,7 +201,10 @@ export const TRANSLATIONS = {
       "Return #": 'Return #',
       "ReturnDate": 'ReturnDate',
       "Show All Users": 'Show All Users',
-      "Reference": 'Reference'
+      "Reference": 'Reference',
+      "Add return": 'Add return',
+      "Return": 'Return',
+      "Are you sure?": 'Are you sure?'
     },
 
     Dutch: {
@@ -406,7 +409,10 @@ export const TRANSLATIONS = {
       "Return #": 'Return #',
       "ReturnDate": 'ReturnDate',
       "Show All Users": 'Alle gebruikers weergeven',
-      "Reference": 'Referentie'
+      "Reference": 'Referentie',
+      "Add return": 'Voeg retour toe',
+      "Return": 'Retour',
+      "Are you sure?": 'Weet je het zeker?'
     }, 
     
     German: {
@@ -611,7 +617,10 @@ export const TRANSLATIONS = {
       "Return #": 'Return #',
       "ReturnDate": 'ReturnDate',
       "Show All Users": 'Alle Benutzer anzeigen',
-      "Reference": 'Referenz'
+      "Reference": 'Referenz',
+      "Add return": 'Rückgabe hinzufügen',
+      "Return": 'Rückkehr',
+      "Are you sure?": 'Bist du sicher?'
     },
 
     French: {
@@ -816,6 +825,9 @@ export const TRANSLATIONS = {
       "Return #": 'Return #',
       "ReturnDate": 'ReturnDate',
       "Show All Users": 'Afficher tous les utilisateurs',
-      "Reference": 'Référence'
+      "Reference": 'Référence',
+      "Add return": 'Ajouter un retour',
+      "Return": 'Revenir',
+      "Are you sure?": 'Êtes-vous sûr?'
     }
   };

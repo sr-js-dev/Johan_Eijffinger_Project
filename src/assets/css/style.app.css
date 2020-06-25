@@ -31,6 +31,7 @@ html, body {
 }
 .order_div{
     padding:20px;
+    margin-bottom: 25px;
 }
 @media (max-width: 1000px){
 .orders__filters-item {
@@ -1149,38 +1150,32 @@ border: 1px solid #E2E3E4;
   padding-top: 20px;
   padding-bottom: 20px;
 }
-.header-social__icon{
+.footer-social__icon{
   margin: 0px 10px;
 }
-.header-social__icon_image{
-  height: 30px;
-  font-size: 30px;
+.footer-social__icon_image{
+  height: 23px;
+  font-size: 23px;
   color: #555555
-}
-/* .header-social__icon_image:hover{
-  height: 40px;
-} */
-@media (max-width: 768px){
-  .header-social__icon-mobile {
-    padding: 3px 0;
-  }
-}
-@media (min-width: 768px){
-  .header-social__icon-mobile {
-    display: none;
-  }
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-@media (max-width: 768px){
-  .heder-social-icon-desktop_div {
-    display: none;
-  }
+.footer-social-icon-desktop_div {
+  padding: 15px 10px;
 }
-
-
-
+.footer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: right;
+}
+.return-order_div{
+  max-height: 500px;
+  overflow: auto;
+}
+.return-order__table{
+  margin-top: 10px;
+}
