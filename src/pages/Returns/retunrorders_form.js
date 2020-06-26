@@ -274,8 +274,8 @@ class Returnordersform extends Component {
                 <div className="order_div return-order_div">
                     <div className="orders">
                         <Row>
-                            <Col sm={6}>
-                                <Button variant="primary" onClick = {()=>this.orderReturn()}>{trls('Return')}</Button> 
+                            <Col sm={6} className="return-order-form_header">
+                                <Button variant="primary" onClick = {()=>this.orderReturn()}><i className="fas fa-undo add-icon"></i>{trls('Return')}</Button> 
                             </Col>
                             {/* <Col sm={6} className="has-search">
                                 <div style={{display: 'flex', float: 'right'}}>

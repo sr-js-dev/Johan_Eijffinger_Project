@@ -225,8 +225,8 @@ class Placemanage extends Component {
                     "DocumentLines": documentLineArray
                     },
                     "parameters": {
-                    }
                 }
+            }
             Axios.post(API.PostOrder, params, headers)
             .then(result => {
                 if(this._isMounted){
@@ -804,15 +804,18 @@ class Placemanage extends Component {
                 <div>
                     <Button variant="light" onClick={()=>this.handleAddRow(totalAmount)}><i className="fas fa-plus add-icon"></i>{trls('Click_to_make_new_row')}</Button> 
                 </div>
-                <Col sm={4} style={{float: 'right', paddingLeft: 0, paddingRight: 0}}>
-                    <div className="info-block info-block--green">
-                        <span className="txt-bold">Order Total</span>
-                        {showPrice ? (
-                            <span>{Common.formatMoney(totalAmount)}</span>
-                        ): null}
-                    </div>
-                    <Button type="button" className="place-submit__order" onClick={()=>this.onSubmitOrder(null, true)}>Submit order</Button>
+                <Col sm={4} className="info-block info-block--green">
+                    <span className="txt-bold">Order Total</span>
+                    {showPrice ? (
+                        <span>{Common.formatMoney(totalAmount)}</span>
+                    ): null}
+                   
+                    {/* <Button type="button" className="place-submit__order" onClick={()=>this.onSubmitOrder(null, true)}>Submit order</Button> */}
                 </Col>
+                <div style={{textAlign: "right", height: 50}}>
+                    <Button type="button" className="place-submit__order" onClick={()=>this.onSubmitOrder(null, true)}>Submit order</Button>
+                </div>
+                
             </Container>
             {slideItemFormFlag ? (
                 <ItemSearchform

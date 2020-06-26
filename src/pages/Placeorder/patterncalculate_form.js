@@ -42,8 +42,11 @@ class Patterncalculateform extends Component {
     }
     
     componentDidMount() {
+        const { rowDatas } = this.state;
         this.props.blankdispatch();
-        this.handleAddRow();
+        if(rowDatas.length===0) {
+            this.handleAddRow();
+        }
     }
 
     handleSubmit = (event) => {
@@ -68,11 +71,6 @@ class Patterncalculateform extends Component {
     }
 
     handleAddRow = () => {
-        const { rowDatas } = this.state;
-        console.log('2323', rowDatas);
-        if(rowDatas.length!==0) {
-            return;
-        }
         let rowId = this.state.rowId;
         let patternCheckFlag = this.state.patternCheckFlag;
         const item = {

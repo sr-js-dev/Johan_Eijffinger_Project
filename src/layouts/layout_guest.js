@@ -83,6 +83,7 @@ class Layout extends Component {
             </Router>
             <Footer/>
           </Col>
+          
           <div className="fade-display"></div>
       </Row>
     )

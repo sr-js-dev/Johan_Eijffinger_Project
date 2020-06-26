@@ -1164,13 +1164,14 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 .footer-social-icon-desktop_div {
+  height: 50px;
   padding: 15px 10px;
 }
 .footer{
-  position: absolute;
-  bottom: 0;
   width: 100%;
   text-align: right;
+  position: absolute;
+  bottom: 0;
 }
 .return-order_div{
   max-height: 500px;
@@ -1178,4 +1179,7 @@ input::-webkit-inner-spin-button {
 }
 .return-order__table{
   margin-top: 10px;
+}
+.return-order-form_header{
+  padding-left: 0px;
 }
