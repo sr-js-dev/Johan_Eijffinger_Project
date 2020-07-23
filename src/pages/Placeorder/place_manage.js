@@ -84,7 +84,7 @@ class Placemanage extends Component {
             orderLineNum: 0,
             itemCustomerRefData: [],
             quantityFocusFlag: false,
-            showNewItemModal: true,
+            showNewItemModal: false,
             setItemCodeFlag: false
         };
     }
