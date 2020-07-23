@@ -312,26 +312,28 @@ class Dashboard extends Component {
                                         <img src={require("../../assets/images/icon-orders-white.svg")} alt="shipped"/>
                                     </div>
                                 </div>
-                                <table className="dashboard__bottom-item-table">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>{trls('Date')}</th>
-                                            <th>{trls('Reference')}</th>
-                                        </tr>
-                                    </thead>
-                                        {lastOrdersData &&(<tbody >
-                                            {
-                                                lastOrdersData.map((data,i) =>(
-                                                <tr id={i} key={i}>
-                                                    <td><div className="action-div" onClick={()=>this.showOrderDetail(data.DocNum)}>{data.DocNum}</div></td>
-                                                    <td>{Common.formatDate(data.DocDate)}</td>
-                                                    <td>{data.NumAtCard}</td>
-                                                </tr>
-                                            ))
-                                            }
-                                        </tbody>)}
-                                </table>
+                                <div className="table-responsive">
+                                    <table className="dashboard__bottom-item-table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>{trls('Date')}</th>
+                                                <th>{trls('Reference')}</th>
+                                            </tr>
+                                        </thead>
+                                            {lastOrdersData &&(<tbody >
+                                                {
+                                                    lastOrdersData.map((data,i) =>(
+                                                    <tr id={i} key={i}>
+                                                        <td><div className="action-div" onClick={()=>this.showOrderDetail(data.DocNum)}>{data.DocNum}</div></td>
+                                                        <td>{Common.formatDate(data.DocDate)}</td>
+                                                        <td>{data.NumAtCard}</td>
+                                                    </tr>
+                                                ))
+                                                }
+                                            </tbody>)}
+                                    </table>
+                                </div>
                             </div>
                         </Col>
                         <Col sm={4} style={{paddingBottom:20}}>
@@ -342,26 +344,28 @@ class Dashboard extends Component {
                                         <img src={require("../../assets/images/icon-orders-white.svg")} alt="shipped"/>
                                     </div>
                                 </div>
-                                <table className="dashboard__bottom-item-table">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>{trls('Date')}</th>
-                                            <th>{trls('Reference')}</th>
-                                        </tr>
-                                    </thead>
-                                    {lastDeliveriesData &&(<tbody >
-                                        {
-                                            lastDeliveriesData.map((data,i) =>(
-                                            <tr id={i} key={i}>
-                                                <td><div className="action-div" onClick={()=>this.showDeliveryDetail(data.DocNum)}>{data.DocNum}</div></td>
-                                                <td>{Common.formatDate(data.DocDate)}</td>
-                                                <td>{data.NumAtCard}</td>
+                                <div className="table-responsive">
+                                    <table className="dashboard__bottom-item-table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>{trls('Date')}</th>
+                                                <th>{trls('Reference')}</th>
                                             </tr>
-                                        ))
-                                        }
-                                    </tbody>)}
-                                </table>
+                                        </thead>
+                                        {lastDeliveriesData &&(<tbody >
+                                            {
+                                                lastDeliveriesData.map((data,i) =>(
+                                                <tr id={i} key={i}>
+                                                    <td><div className="action-div" onClick={()=>this.showDeliveryDetail(data.DocNum)}>{data.DocNum}</div></td>
+                                                    <td>{Common.formatDate(data.DocDate)}</td>
+                                                    <td>{data.NumAtCard}</td>
+                                                </tr>
+                                            ))
+                                            }
+                                        </tbody>)}
+                                    </table>
+                                </div>
                             </div>
                         </Col>
                         <Col sm={4} style={{paddingBottom:20}}>
@@ -372,26 +376,29 @@ class Dashboard extends Component {
                                         <img src={require("../../assets/images/icon-orders-white.svg")} alt="shipped"/>
                                     </div>
                                 </div>
-                                <table className="dashboard__bottom-item-table">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>{trls('Date')}</th>
-                                            <th>{trls('Reference')}</th>
-                                        </tr>
-                                    </thead>
-                                    {lastOutstandingData &&(<tbody >
-                                        {
-                                            lastOutstandingData.map((data,i) =>(
-                                            <tr id={i} key={i}>
-                                                <td><div id={data.id} className="action-div" onClick={()=>this.showSalesInvoiceDetail(data.DocNum)}>{data.DocNum}</div></td>
-                                                <td>{Common.formatDate(data.DocDate)}</td>
-                                                <td>{data.NumAtCard}</td>
+                                <div className="table-responsive">
+                                    <table className="dashboard__bottom-item-table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>{trls('Date')}</th>
+                                                <th>{trls('Reference')}</th>
                                             </tr>
-                                        ))
-                                        }
-                                    </tbody>)}
-                                </table>
+                                        </thead>
+                                        {lastOutstandingData &&(<tbody >
+                                            {
+                                                lastOutstandingData.map((data,i) =>(
+                                                <tr id={i} key={i}>
+                                                    <td><div id={data.id} className="action-div" onClick={()=>this.showSalesInvoiceDetail(data.DocNum)}>{data.DocNum}</div></td>
+                                                    <td>{Common.formatDate(data.DocDate)}</td>
+                                                    <td>{data.NumAtCard}</td>
+                                                </tr>
+                                            ))
+                                            }
+                                        </tbody>)}
+                                    </table>
+                                </div>
+                                
                             </div>
                         </Col>
                     </Row>

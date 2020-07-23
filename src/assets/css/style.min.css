@@ -1261,7 +1261,8 @@ table {
 }
 
 .dashboard__bottom-item-table td {
-	padding: 16px 20px
+	padding: 16px 20px;
+	white-space: nowrap;
 }
 
 .dashboard__bottom-item-table td a {
