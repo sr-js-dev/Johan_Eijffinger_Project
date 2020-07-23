@@ -204,7 +204,8 @@ export const TRANSLATIONS = {
       "Reference": 'Reference',
       "Add return": 'Add return',
       "Return": 'Return',
-      "Are you sure?": 'Are you sure?'
+      "Are you sure?": 'Are you sure?',
+      "New Item": 'New Item' 
     },
 
     Dutch: {
@@ -412,7 +413,8 @@ export const TRANSLATIONS = {
       "Reference": 'Referentie',
       "Add return": 'Voeg retour toe',
       "Return": 'Retour',
-      "Are you sure?": 'Weet je het zeker?'
+      "Are you sure?": 'Weet je het zeker?',
+      "New Item": 'Nieuw Item'
     }, 
     
     German: {
@@ -620,7 +622,8 @@ export const TRANSLATIONS = {
       "Reference": 'Referenz',
       "Add return": 'Rückgabe hinzufügen',
       "Return": 'Rückkehr',
-      "Are you sure?": 'Bist du sicher?'
+      "Are you sure?": 'Bist du sicher?',
+      "New Item": 'Neuer Gegenstand'
     },
 
     French: {
@@ -828,6 +831,7 @@ export const TRANSLATIONS = {
       "Reference": 'Référence',
       "Add return": 'Ajouter un retour',
       "Return": 'Revenir',
-      "Are you sure?": 'Êtes-vous sûr?'
+      "Are you sure?": 'Êtes-vous sûr?',
+      "New Item": 'Nouvel article'
     }
   };

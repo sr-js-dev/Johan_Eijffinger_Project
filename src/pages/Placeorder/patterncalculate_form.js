@@ -10,6 +10,7 @@ import Axios from 'axios';
 // import Select from 'react-select';
 import Pageloadspiiner from '../../components/page_load_spinner';
 import Sweetalert from 'sweetalert';
+import common from '../../reducers/common';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -168,15 +169,12 @@ class Patterncalculateform extends Component {
 
     submitTotalLength = (totalLength, patternCalcuRowData) => {
         let lengthVal = [];
-        const{ patternRowId } = this.props;
         lengthVal = parseFloat(totalLength);
         this.props.onHide();
-        this.props.onSetQuantity(lengthVal, patternRowId, patternCalcuRowData);
-        Common.hideSlideForm();
+        this.props.onSetQuantity(lengthVal, patternCalcuRowData);
     }
 
     removeOrderLine = () => {
-        const { patternRowId } = this.props;
         Sweetalert({
             title: trls("Are you sure?"),
             text: trls("Pattern calculation needs to be filled for this product, do you want to delete the product from the order lines?"),
@@ -186,7 +184,7 @@ class Patterncalculateform extends Component {
           })
           .then((willDelete) => {
             if (willDelete) {
-                this.props.removeOrderLine(patternRowId);
+                this.props.removeOrderLine();
                 Sweetalert("Success!", {
                 icon: "success",
               });

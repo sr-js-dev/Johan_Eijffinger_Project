@@ -146,7 +146,6 @@ class Dashboard extends Component {
         }
         return chunked_arr;
     }
-
     getNewsData = () => {
         this._isMounted = true;
         var headers = SessionManager.shared().getAuthorizationHeader();
@@ -402,7 +401,7 @@ class Dashboard extends Component {
                     {newsViewData &&(
                             newsViewData.map((data,i) =>(   
                                 <div id={i} key={i} style={{paddingBottom:20}} >
-                                    <div className="dashboard__bottom-item ">
+                                    <div className="dashboard__bottom-item">
                                         <div className="dashboard__bottom-item-header news-header">
                                             <h6 className="dashboard__bottom-item-title">{data[newsSubjectLang]}</h6>
                                         </div>

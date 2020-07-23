@@ -90,12 +90,10 @@ class Itemsearchform extends Component {
         let itemDataList = itemData.filter((item, key)=>item.checked===true);
         this.props.onHide();
         this.props.onSetItemData(itemDataList)
-        Common.hideSlideForm();
     }
 
     onHide = () => {
         this.props.onHide();
-        Common.hideSlideForm();
     }
 
     render(){   
