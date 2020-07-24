@@ -25,12 +25,15 @@ class Newitemform extends Component {
     _isMounted = false;
     constructor(props) {
         super(props);
+        const { editOrderRowData } = this.props;
         this.state = {  
-            itemCode: '',
+            itemCode: editOrderRowData.ItemCode ? editOrderRowData.ItemCode : '',
             itemData: [],
             itemFlag: false,
             pageLodingFlag: false,
-            quantity: ''
+            quantity: editOrderRowData.order_quantity ? editOrderRowData.order_quantity : '',
+            customerReference: editOrderRowData.order_customerreference ? editOrderRowData.order_customerreference : '',
+            itemEnable: false
         };
     }
     componentWillUnmount() {
@@ -42,8 +45,10 @@ class Newitemform extends Component {
     }
 
     handleSubmit = (event) => {
+        
         this.setState({pageLodingFlag: true});
-        const { patternCalculateCheck, itemQuantityData } = this.props;
+        const { patternCalculateCheck, itemQuantityData, editPatternCalcuRow } = this.props;
+        const { itemFlag } = this.state;
         this._isMounted = true;
         event.preventDefault();
         const clientFormData = new FormData(event.target);
@@ -52,12 +57,11 @@ class Newitemform extends Component {
             data[key] = clientFormData.get(key);
         }
         let quantity = 0;
-        if(patternCalculateCheck){
+        if((patternCalculateCheck && !editPatternCalcuRow.rowId) || (itemFlag&&!itemQuantityData)){
             quantity = parseFloat(data.quantity);
-        } else {
+        } else if(itemQuantityData){
             quantity = parseFloat(itemQuantityData);
         }
-        
         let params = {
             "itemCode": data.itemcode ? data.itemcode : '' ,
             "quantity": data.quantity ? quantity.toFixed(0) : 0,
@@ -81,7 +85,8 @@ class Newitemform extends Component {
     }
 
     getItemByDeliveryWeek = (itemCode, quantity, price, customerreference) => {
-        const { setItemCodeFlag, patternCalculateCheck } = this.props;
+        const { setItemCodeFlag, patternCalculateCheck, editOrderRowFlag, editOrderRowData } = this.props;
+        const { itemFlag } = this.state;
         
         this._isMounted = true; 
         let itemData = [];
@@ -97,12 +102,24 @@ class Newitemform extends Component {
         })
         .then(response => {
             if(this._isMounted){
-                if(!setItemCodeFlag) {
-                    itemData = this.state.itemData;
+                if(!editOrderRowFlag || itemFlag) {
+                    if(!setItemCodeFlag) {
+                        itemData = this.state.itemData;
+                    } else {
+                        itemData = this.props.itemData;
+                    }
                 } else {
-                    itemData = this.props.itemData;
+                    if(setItemCodeFlag) {
+                        itemData = this.props.itemData;
+                    } else {
+                        itemData = editOrderRowData;
+                    }
                 }
-                itemData.order_quantity = quantity;
+                if(!itemData.ItemCode){
+                    this.setState({itemEnable: false})
+                    return;
+                }
+                itemData.order_quantity = quantity; 
                 itemData.order_price = price;
                 itemData.order_customerreference = customerreference;
                 itemData.patterCalculateCheck = patternCalculateCheck;
@@ -112,7 +129,11 @@ class Newitemform extends Component {
                     icon: "success",
                 })
                 .then((value) => {
-                    this.props.onAddOrderRow(itemData);
+                    if(!editOrderRowFlag) {
+                        this.props.onAddOrderRow(itemData); 
+                    }else {
+                        this.props.updateOrderRowLine(itemData);
+                    }
                     this.onHide();
                 });
                 
@@ -127,10 +148,17 @@ class Newitemform extends Component {
 
     getItemData = () => {
         this._isMounted = true;
+        let itemCodeData = '';
         const { itemCode } = this.state;
+        const { setItemCodeFlag, itemData } = this.props;
+        if(setItemCodeFlag) {
+            itemCodeData = itemData.ItemCode;
+        }else{
+            itemCodeData = itemCode;
+        }
         let code = 0;
-        if(itemCode!==""){
-            code = itemCode;
+        if(itemCodeData!==""){
+            code = itemCodeData;
         }
         this.setState({pageLodingFlag: true})
         var settings = {
@@ -144,20 +172,28 @@ class Newitemform extends Component {
         $.ajax(settings).done(function (response) {
         })
         .then(response => {
-            this.setState({itemData: response, itemFlag: false, pageLodingFlag: false}, ()=>{
-                this.props.checkPatternCalculate(itemCode);
+            this.setState({itemData: response, itemFlag: true, pageLodingFlag: false, itemEnable: true}, ()=>{
+                this.props.checkPatternCalculate(itemCodeData);
+                $(".fade").attr("tabindex","disable");
             });
         })
         .catch(err => {
-            this.setState({itemFlag: true, pageLodingFlag: false})
+            this.setState({pageLodingFlag: false, itemEnable: false})
             $(".fade").attr("tabindex","disable");
-            this.props.searchItemForm(itemCode);
+            this.props.searchItemForm(itemCodeData);
         });
     }
 
     showSearchItem = () => {
+        let itemCodeData = '';
         const { itemCode } = this.state;
-        this.props.searchItemForm(itemCode);
+        const { setItemCodeFlag, itemData } = this.props;
+        if(setItemCodeFlag) {
+            itemCodeData = itemData.ItemCode;
+        }else{
+            itemCodeData = itemCode;
+        }
+        this.props.searchItemForm(itemCodeData);
         $(".fade").attr("tabindex","disable");
     }
 
@@ -177,9 +213,15 @@ class Newitemform extends Component {
         this.props.onHide();
     }
 
+    editPatternCalculate = () => {
+        $(".fade").attr("tabindex","disable");
+        this.props.calculatePattern();
+    }
+
     render(){
-        const { itemFlag, itemCode, pageLodingFlag, quantity } = this.state;
-        const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag, slidePatternFormFlag } = this.props;
+        const { itemFlag, itemCode, pageLodingFlag, quantity, customerReference, itemEnable } = this.state;
+        const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag, slidePatternFormFlag, editPatternCalcuRow } = this.props;
+        console.log('33333', editPatternCalcuRow);
         return (
             <Modal
                 show={this.props.show}
@@ -199,20 +241,23 @@ class Newitemform extends Component {
                 <Form onSubmit = { this.handleSubmit }>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="itemcode" required disabled={itemSearchformFlag ? true : false} value={ setItemCodeFlag ? itemData.ItemCode : itemCode} className={itemFlag ? "place-order__product-code active" : 'place-order__product-code'} placeholder={trls('Product_code')} onChange={(e)=>this.changeItemCode(e)} onBlur={()=>this.getItemData()}/>
+                            <Form.Control type="text" name="itemcode" autoComplete="off" required disabled={itemSearchformFlag ? true : false} value={ setItemCodeFlag ? itemData.ItemCode : itemCode} className={!itemEnable ? "place-order__product-code active" : 'place-order__product-code'} placeholder={trls('Product_code')} onChange={(e)=>this.changeItemCode(e)} onBlur={()=>this.getItemData()}/>
                             <label className="placeholder-label">{trls('Product_code')}</label>
                             <i className="fas fa-search place-an-order__loop" aria-hidden="true" onClick={()=>this.showSearchItem()}></i>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="quantity" required disabled={ !patternCalculateCheck || itemSearchformFlag ? true : false} value={ !patternCalculateCheck ? itemQuantityData : quantity} placeholder={trls('Quantity')} onChange={(e)=>this.setState({quantity: e.target.value})}/>
+                            <Form.Control type="text" name="quantity" required disabled={ (!patternCalculateCheck || itemSearchformFlag) || (editPatternCalcuRow.rowId && !itemFlag) ? true : false} value={ !patternCalculateCheck || itemQuantityData ? itemQuantityData : quantity} placeholder={trls('Quantity')} onChange={(e)=>this.setState({quantity: e.target.value})}/>
                             <label className="placeholder-label">{trls('Quantity')}</label>
+                            { editPatternCalcuRow.rowId && !itemFlag && (
+                                <i className="fas fa-pen place-an-order__loop" aria-hidden="true" onClick={()=>this.editPatternCalculate()}></i>
+                            )}
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="customerreference" placeholder={trls('Customer_reference')}/>
+                            <Form.Control type="text" name="customerreference" defaultValue={customerReference} placeholder={trls('Customer_reference')}/>
                             <label className="placeholder-label">{trls('Customer_reference')}</label>
                         </Col>
                     </Form.Group>

@@ -170,8 +170,8 @@ class Patterncalculateform extends Component {
     submitTotalLength = (totalLength, patternCalcuRowData) => {
         let lengthVal = [];
         lengthVal = parseFloat(totalLength);
-        this.props.onHide();
         this.props.onSetQuantity(lengthVal, patternCalcuRowData);
+        this.props.onHide();
     }
 
     removeOrderLine = () => {
@@ -195,7 +195,6 @@ class Patterncalculateform extends Component {
 
     onHide = () => {
         this.props.onHide();
-        Common.hideSlideForm();
     }
 
     changeCaculateCheck = (evt, rowId) => {
@@ -204,9 +203,7 @@ class Patterncalculateform extends Component {
         this.setState({patternCheckFlag: patternCheckFlag});
         const { rowsVal, calcRowLength, rowLength, rowDatas } = this.state;
         let totalRowsLength = 0;
-        
         rowDatas.map((data, index)=>{
-            
             if(!patternCheckFlag[data.rowId]){
                 totalRowsLength += rowsVal[data.rowId] ? rowsVal[data.rowId]*calcRowLength[data.rowId]*1 : 0;
             }else{

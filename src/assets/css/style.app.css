@@ -1477,3 +1477,7 @@ input::-webkit-inner-spin-button {
 .order_div .col-form-label {
   white-space: nowrap;
 }
+
+.place-order-ship-address .product-text {
+  padding: 0px;
+}

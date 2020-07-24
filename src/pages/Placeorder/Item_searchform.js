@@ -88,7 +88,7 @@ class Itemsearchform extends Component {
     addOrderItem = () => {
         const { itemData } = this.state;      
         let itemDataList = itemData.filter((item, key)=>item.checked===true);
-        this.props.onHide();
+        // this.props.onHide();
         this.props.onSetItemData(itemDataList)
     }
 
