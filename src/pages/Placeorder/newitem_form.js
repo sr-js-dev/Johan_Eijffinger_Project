@@ -179,7 +179,7 @@ class Newitemform extends Component {
 
     render(){
         const { itemFlag, itemCode, pageLodingFlag, quantity } = this.state;
-        const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag } = this.props;
+        const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag, slidePatternFormFlag } = this.props;
         return (
             <Modal
                 show={this.props.show}
@@ -206,7 +206,7 @@ class Newitemform extends Component {
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="quantity" required disabled={!patternCalculateCheck || itemSearchformFlag ? true : false} value={ !patternCalculateCheck ? itemQuantityData : quantity} placeholder={trls('Quantity')} onChange={(e)=>this.setState({quantity: e.target.value})}/>
+                            <Form.Control type="text" name="quantity" required disabled={ !patternCalculateCheck || itemSearchformFlag ? true : false} value={ !patternCalculateCheck ? itemQuantityData : quantity} placeholder={trls('Quantity')} onChange={(e)=>this.setState({quantity: e.target.value})}/>
                             <label className="placeholder-label">{trls('Quantity')}</label>
                         </Col>
                     </Form.Group>

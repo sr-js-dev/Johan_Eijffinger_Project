@@ -46,7 +46,6 @@ class Placemanage extends Component {
             itemQuantityData: [],
             itemProductCodeData: [],
             pageLodingFlag: false,
-            productDesription: '',
             itemPrice: '',
             quantity: '',
             unit: '',
@@ -57,12 +56,10 @@ class Placemanage extends Component {
             rowId: 0,
             patternRowId: [],
             selectShippingAddress: [],
-            itemFlag: [],
             slideItemFormFlag: false,
             slidePatternFormFlag: false,
             addRow: false,
             orderLineNumber: '',
-            rowNum: 0,
             currentUserInfo: Auth.getLoggedUserInfo(),
             customer_reference: '',
             docDueDate: new Date(),
@@ -77,8 +74,6 @@ class Placemanage extends Component {
             stockItemData: [],
             patternCalculateCheck:true,
             orderSubmitFlag: false,
-            deliveryWeek: [],
-            mainOrderData: [],
             orderApproveFlag: false,
             docEntry: '',
             orderLineNum: 0,
@@ -137,144 +132,66 @@ class Placemanage extends Component {
         returnOptionData[1] = shippingAddress;
         return returnOptionData;
     }
-
-    onSubmitOrder = ( approve, summary ) => {
+    
+    onSubmitOrder = () => {
         this._isMounted = true;
-        const { currentUserInfo, customer_reference, setSippingAddress, rows, itemQuantityData, mainOrderData, orderSubmitFlag, orderLineNum, itemCustomerRefData } = this.state;
+        const { rows, currentUserInfo, customer_reference, setSippingAddress } = this.state;
         let documentLineArray = [];
-        let patchdocumentLineArray  =[];
         let params = [];
-        if(!orderSubmitFlag&&summary){
-            this.setState({showDetailModal: true});
-            return;
-        }
         if(rows){
             let lineArray = [];
-            lineArray = {
-                LineNum: orderLineNum,
-                ItemCode: rows[rows.length-1].ItemCode,
-                Quantity: itemQuantityData[rows[rows.length-1].rowId] ? parseFloat(itemQuantityData[rows[rows.length-1].rowId]) : 0,
-                U_DBS_CUSTREF: itemCustomerRefData[rows[rows.length-1].rowId]
-            }
-            if(!itemQuantityData[rows[rows.length-1].rowId]){
-                Sweetalert("Please enter the quantity")
-                .then((value) => {
-                    this.setState({pageLodingFlag: false});
-                    return;
-                }); 
-            }
-            patchdocumentLineArray.push(lineArray);
             rows.map((row, index)=>{
-                if(!itemQuantityData[row.rowId]){
-                    Sweetalert("Please enter the quantity")
-                    .then((value) => {
-                        this.setState({pageLodingFlag: false});
-                        return;
-                    }); 
-                }
                 lineArray = {
                     ItemCode: row.ItemCode,
-                    Quantity: itemQuantityData[row.rowId] ? parseFloat(itemQuantityData[row.rowId]) : 0,
-                    U_DBS_CUSTREF: itemCustomerRefData[row.rowId]
+                    Quantity: row.order_quantity ? parseFloat(row.order_quantity) : 0,
+                    U_DBS_CUSTREF: row.order_customerreference,
+                    UnitPrice: row.order_price ? row.order_price : ''
                 }
                 documentLineArray.push(lineArray);
                 return row;
             })
-        }else{
-            return;
         }
         this.setState({pageLodingFlag: true});
         var headers = SessionManager.shared().getAuthorizationHeader();
-        if(mainOrderData.length===0){
-            params = {
-                "requestData": {
-                    "CardCode": currentUserInfo.SapCustomerCode,
-                    "DocDate": Common.formatDate1(new Date()),
-                    "DocDueDate": Common.formatDate1(new Date()),
-                    "NUMATCARD": customer_reference,
-                    "AddressExtension": {
-                        "ShipToStreet": setSippingAddress.Street, 
-                        "ShipToCity": setSippingAddress.City, 
-                        "ShipToZipCode": setSippingAddress.ZipCode,
-                        "ShipToCountry": setSippingAddress.Country
-                    },
-                    "DocumentLines": documentLineArray
-                    },
-                    "parameters": {
-                }
-            }
-            Axios.post(API.PostOrder, params, headers)
-            .then(result => {
-                if(this._isMounted){
-                    let orderResult = [];
-                    orderResult[0] =  result.data;
-                    let param = {
-                        "docEntry": result.data.DocEntry
-                    }
-                    this.setState({mainOrderData: orderResult, docEntry: result.data.DocEntry, orderLineNum: result.data.DocumentLines.length})
-                    Axios.post(API.PostDeliveryDate, param, headers)
-                    .then(result => {
-                        let orderLineData = this.setOrderLineData(orderResult);
-                        this.refillOrderLines(orderLineData[0].DocumentLines);
-                        Axios.post(API.GetOrderExpenses, param, headers)
-                        .then(result => {
-                            this.setState({ orderDetailData: orderLineData[0], orderExpenses: result.data, pageLodingFlag: false, orderSubmitFlag: false});
-                            if(summary){
-                                this.setState({showDetailModal: true})
-                            }
-                        })
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({pageLodingFlag: false});
-            });
-        }else{
-            let param = {
-                "docEntry": mainOrderData[0].DocEntry
-            }
-            let patchParams = {
-                "requestData": {
-                    "DocumentLines": patchdocumentLineArray
+        params = {
+            "requestData": {
+                "CardCode": currentUserInfo.SapCustomerCode,
+                "DocDate": Common.formatDate1(new Date()),
+                "DocDueDate": Common.formatDate1(new Date()),
+                "NUMATCARD": customer_reference,
+                "AddressExtension": {
+                    "ShipToStreet": setSippingAddress.Street, 
+                    "ShipToCity": setSippingAddress.City, 
+                    "ShipToZipCode": setSippingAddress.ZipCode,
+                    "ShipToCountry": setSippingAddress.Country
                 },
-                "parameters": {
-                    "p_DocEntry": mainOrderData[0].DocEntry,
-                }
+                "DocumentLines": documentLineArray
+            },
+            "parameters": {
             }
-            Axios.patch(API.PatchOrder, patchParams, headers)
-            .then(result => {
-                if(this._isMounted){
-                    Axios.post(API.PostDeliveryDate, param, headers)
-                    .then(result => {
-                        var settings = {
-                            "url": API.GetOrderDetails+mainOrderData[0].DocNum,
-                            "method": "GET",
-                            "headers": {
-                                "Content-Type": "application/json",
-                                "Authorization": "Bearer "+Auth.getUserToken(),
-                        }
-                        }
-                        $.ajax(settings).done(function (response) {
-                        })
-                        .then(response => {
-                            this.setState({orderLineNum: response.value[0].DocumentLines.length})
-                            let orderLineData = this.setOrderLineData(response.value);
-                            this.refillOrderLines(orderLineData[0].DocumentLines);
-                            Axios.post(API.GetOrderExpenses, param, headers)
-                            .then(result => {
-                                this.setState({ orderDetailData: orderLineData[0], orderExpenses: result.data, pageLodingFlag: false, orderSubmitFlag: false });
-                                if(summary){
-                                    this.setState({showDetailModal: true})
-                                }
-                            })
-                        })
-                    })
-                }
-            })
-            .catch(err => {
-                this.setState({pageLodingFlag: false});
-            });
         }
+        Axios.post(API.PostOrder, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                let orderResult = [];
+                orderResult[0] =  result.data;
+                this.setState({docEntry: result.data.DocEntry})
+                let param = {
+                    "docEntry": result.data.DocEntry
+                }
+                Axios.post(API.PostDeliveryDate, param, headers)
+                .then(result => {
+                    let orderLineData = this.setOrderLineData(orderResult);
+                    Axios.post(API.GetOrderExpenses, param, headers)
+                    .then(result => {
+                        this.setState({ orderDetailData: orderLineData[0], orderExpenses: result.data, pageLodingFlag: false, showDetailModal: true});
+                    })
+                })
+            }
+        })
+        .catch(err => {
+            this.setState({pageLodingFlag: false});
+        });
     }
 
     confirmOrderLines = () => {
@@ -329,33 +246,6 @@ class Placemanage extends Component {
         return deliveriesData;
     }
 
-    refillOrderLines = (orderDetails) => {
-        let rows = this.state.rows;
-        let itemPriceData = this.state.itemPriceData;
-        let itemQuantityData = this.state.itemQuantityData;
-        let itemCustomerRefData = this.state.itemCustomerRefData;
-        let deliveryWeek = this.state.deliveryWeek;
-        rows.map((row, index) => {
-            row.ItemCode = orderDetails[index].ItemCode;
-            row.ItemName = orderDetails[index].ItemDescription;
-            let price = {
-                UnitPrice: orderDetails[index].Price
-            }
-            itemPriceData[row.rowId] = price;
-            itemQuantityData[row.rowId] = orderDetails[index].Quantity;
-            itemCustomerRefData[row.rowId] = orderDetails[index].U_DBS_CUSTREF
-            deliveryWeek[row.rowId] = orderDetails[index].ShipDate;
-            return row;
-        })
-        this.setState({itemPriceData: itemPriceData, itemQuantityData: itemQuantityData, deliveryWeek: deliveryWeek});
-    }
-
-    changeCustomerReference = (value, rowId) => {
-        let itemCustomerRefData = this.state.itemCustomerRefData;
-        itemCustomerRefData[rowId] = value;
-        this.setState({itemCustomerRefData: itemCustomerRefData})
-    }
-
     changeShippigAddress = (data) =>{
         const { shippingAddress } = this.state;
         this.setState({selectShippingAddress: data})
@@ -370,7 +260,6 @@ class Placemanage extends Component {
         const { rows } = this.state;
         let rowsArr = rows.filter((item, key) => item.rowId !== rowId);
         let rowNum = this.state.rowNum;
-        this.setState({addRow: false, rowNum: rowNum});
         this.setState({
             rows: rowsArr,
         });
@@ -439,13 +328,6 @@ class Placemanage extends Component {
         this.setState({showShippingAddressModal: true}); 
     }
 
-    calculateDeliveryWeek = (rowId) => {
-        const { docDueDate } = this.state;
-        let deliveryWeek = this.state.deliveryWeek;
-        deliveryWeek[rowId] = docDueDate;
-        this.setState({deliveryWeek: deliveryWeek})
-    }
-
     addOrderRow = (rowData) => {
         let rows = this.state.rows;
         rows.push(rowData);
@@ -508,46 +390,43 @@ class Placemanage extends Component {
                                         <Form.Control type="text" name="reference" required defaultValue = {businessPartnerOption[0] ? businessPartnerOption[0].CardName : ''} readOnly placeholder={trls('Customer_reference')} />
                                     </Col>
                                 </Form.Group>
-                                <Form.Group as={Row} controlId="formPlaintextPassword">
-                                    <Form.Label column sm="4">
-                                        {trls("Contact")}  
-                                    </Form.Label>
-                                    <Col sm="8" className="product-text">
-                                        <Form.Control type="text" name="contact" defaultValue = {userInfo.userName} required placeholder={trls('Contact')} />
-                                    </Col>
-                                </Form.Group>
-                                <Form.Group as={Row} controlId="formPlaintextPassword">
-                                    <Form.Label column sm="4">
-                                        {trls("Shipping_Address")}  
-                                    </Form.Label>
-                                    <Col sm="8" className="product-text">
-                                        <Select
-                                            name="usinesspartner"
-                                            placeholder={trls('Shipping_Address')}
-                                            options={shippingAddressOption}
-                                            onChange={val => this.changeShippigAddress(val)}
-                                            value={selectShippingAddress}
-                                        />
-                                    </Col>
-                                </Form.Group>
+                                
                             </Col>
-                            <Col sm={6} className = "bill-shipping__address">
+                            <Col sm={3}>
                                 <div className="place-order__address">
                                     <p className="address-header">{trls('Billing_Address')}</p>
                                     <p>{billAddress.City ? billAddress.Street + " " + (billAddress.StreetNo ? billAddress.StreetNo : '') : '' }</p>
                                     <p>{billAddress.City ? billAddress.ZipCode + " " + billAddress.City : ''}</p>
                                     <p>{billAddress.Country ? billAddress.Country : ''}</p>
                                 </div>
-                                <div className="place-order__address">
-                                    <p className="address-header">{trls('Shipping_Address')}<i className="fas fa-pen add-icon shipping-address_edit" onClick={()=>this.editShippingAddree()}></i></p>
-                                    <p>{setSippingAddress.City ? setSippingAddress.Street + " " + (setSippingAddress.StreetNo ? setSippingAddress.StreetNo : '') : '' }</p>
-                                    <p>{setSippingAddress.City ? setSippingAddress.ZipCode + " " + setSippingAddress.City : ''}</p>
-                                    <p>{setSippingAddress.Country ? setSippingAddress.Country : ''}</p>
-                                </div>
+                            </Col>
+                            <Col sm={3} className="place-order-shipping-address">
+                                <Col  className="place-order__address">
+                                    <Form.Group as={Row} controlId="formPlaintextPassword" className="place-order-ship-address">
+                                        <Form.Label column sm="4">
+                                            {trls("Shipping_Address")}  
+                                        </Form.Label>
+                                        <Col sm="8" className="product-text">
+                                            <Select
+                                                name="usinesspartner"
+                                                placeholder={trls('Shipping_Address')}
+                                                options={shippingAddressOption}
+                                                onChange={val => this.changeShippigAddress(val)}
+                                                value={selectShippingAddress}
+                                            />
+                                        </Col>
+                                    </Form.Group>
+                                    <div >
+                                        <p className="address-header">{trls('Shipping_Address')}<i className="fas fa-pen add-icon shipping-address_edit" onClick={()=>this.editShippingAddree()}></i></p>
+                                        <p>{setSippingAddress.City ? setSippingAddress.Street + " " + (setSippingAddress.StreetNo ? setSippingAddress.StreetNo : '') : '' }</p>
+                                        <p>{setSippingAddress.City ? setSippingAddress.ZipCode + " " + setSippingAddress.City : ''}</p>
+                                        <p>{setSippingAddress.Country ? setSippingAddress.Country : ''}</p>
+                                    </div>
+                                </Col>
                             </Col>
                         </Row>                   
                     </Form>
-                    <div className="table-responsive">
+                    <div className="table-responsive order-row">
                         <table id="example" className="place-and-orders__table table table--striped prurprice-dataTable" width="100%">
                         <thead>
                             <tr>
@@ -656,6 +535,7 @@ class Placemanage extends Component {
                 itemQuantityData={itemQuantityData}
                 itemData={itemData}
                 patternCalculateCheck={patternCalculateCheck}
+                slidePatternFormFlag={slidePatternFormFlag}
                 setItemCodeFlag={setItemCodeFlag}
                 itemSearchformFlag={slideItemFormFlag}
             />

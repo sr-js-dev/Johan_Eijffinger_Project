@@ -12,7 +12,7 @@ body {
   margin-left: 0px;
   margin-right: 0px;
 }
-
+/* 
 @media (min-width: 576px) {
   .col-sm-3 {
     flex: 0 0 25%;
@@ -25,7 +25,7 @@ body {
     flex: 0 0 75%;
     max-width: 82%;
   }
-}
+} */
 
 .col-sm-10 {
   padding-right: 0px;
@@ -1079,7 +1079,6 @@ table.dataTable.no-footer {
 
 .place-order__address {
   max-height: 165px;
-  width: 45%;
   border: #cccccc solid 1px;
   border-radius: 4px;
   padding-left: 0px;
@@ -1453,4 +1452,28 @@ input::-webkit-inner-spin-button {
   top: 0.6em;
   right: 1.4em;
   cursor: pointer;
+}
+
+.order_div .order-row {
+  margin-top: 30px;
+}
+
+.place-order-ship-address {
+  position: absolute;
+  top: -3.6em;
+  left: -0.2em;
+  width: 100%;
+}
+
+@media (max-width: 576px) {
+  .place-order-shipping-address {
+    margin-top: 80px;
+  }
+  .place-order-ship-address {
+    top: -6.6em;
+  }
+}
+
+.order_div .col-form-label {
+  white-space: nowrap;
 }
