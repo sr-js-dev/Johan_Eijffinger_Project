@@ -298,9 +298,13 @@ class Placemanage extends Component {
             if(this._isMounted){
                 if(response.U_DBS_ONDERMATEN==="Y"){
                     patternCalculateCheck = false;
-                    this.setState({slidePatternFormFlag: true, stockItemData: response, itemCode: itemCode, editPatternCalcuRow: []});
+                    this.setState({slidePatternFormFlag: true, stockItemData: response, itemCode: itemCode});
                 }else{
                     patternCalculateCheck = true;
+                    if(editOrderRowFlag){
+                        patternCalcuRowData[editRowId] = []
+                        this.setState({patternCalcuRowData: patternCalcuRowData});
+                    }
                 }
                 this.setState({patternCalculateCheck: patternCalculateCheck, slideItemFormFlag: false})
             }

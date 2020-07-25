@@ -221,7 +221,7 @@ class Newitemform extends Component {
     render(){
         const { itemFlag, itemCode, pageLodingFlag, quantity, customerReference, itemEnable } = this.state;
         const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag, slidePatternFormFlag, editPatternCalcuRow } = this.props;
-        console.log('33333', editPatternCalcuRow);
+        // console.log('33333', editPatternCalcuRow);
         return (
             <Modal
                 show={this.props.show}
