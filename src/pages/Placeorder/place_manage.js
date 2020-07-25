@@ -306,7 +306,7 @@ class Placemanage extends Component {
                         this.setState({patternCalcuRowData: patternCalcuRowData});
                     }
                 }
-                this.setState({patternCalculateCheck: patternCalculateCheck, slideItemFormFlag: false})
+                this.setState({patternCalculateCheck: patternCalculateCheck, slideItemFormFlag: false, itemQuantityData: ''})
             }
         })
         .catch(err => {
@@ -557,7 +557,7 @@ class Placemanage extends Component {
             {showNewItemModal && (
                 <Newitemform
                     show={this.state.showNewItemModal}
-                    onHide={() => this.setState({showNewItemModal: false, itemQuantityData: 0, itemData: '', patternCalculateCheck: true, setItemCodeFlag: false, itemSearchformFlag: false})}
+                    onHide={() => this.setState({showNewItemModal: false, itemQuantityData: '', itemData: '', patternCalculateCheck: true, setItemCodeFlag: false, itemSearchformFlag: false})}
                     getItemData={()=>this.getItemData()}
                     searchItemForm={(itemCode)=>this.searchItemForm(itemCode)}
                     checkPatternCalculate={(itemCode)=>this.checkPatternCalculate(itemCode)}

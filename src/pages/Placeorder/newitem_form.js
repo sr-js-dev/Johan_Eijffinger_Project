@@ -41,7 +41,9 @@ class Newitemform extends Component {
     }
     
     componentDidMount() {
-        
+        $(document).on('keypress', ':input', function (e) {
+            if (e.which == 13) e.preventDefault();
+        });
     }
 
     handleSubmit = (event) => {
@@ -219,9 +221,8 @@ class Newitemform extends Component {
     }
 
     render(){
-        const { itemFlag, itemCode, pageLodingFlag, quantity, customerReference, itemEnable } = this.state;
+        const { quantity, itemFlag, itemCode, pageLodingFlag, customerReference, itemEnable } = this.state;
         const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag, slidePatternFormFlag, editPatternCalcuRow } = this.props;
-        // console.log('33333', editPatternCalcuRow);
         return (
             <Modal
                 show={this.props.show}
