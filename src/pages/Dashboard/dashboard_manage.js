@@ -43,6 +43,24 @@ class Dashboard extends Component {
             newsViewData: [],
             loginUser: Auth.getLoggedUserInfo(),
             newsDataPageSize: 0,
+            newsLanguage: {
+                "English":{
+                    "subject": 'subjectEnglish',
+                    "text": 'textEnglish',
+                },
+                "Dutch":{
+                    "subject": 'subjectDutch',
+                    "text": 'textDutch',
+                },
+                "German":{
+                    "subject": 'subjectGerman',
+                    "text": 'textGerman',
+                },
+                "French":{
+                    "subject": 'subjectFrench',
+                    "text": 'textFrench',
+                }
+            }
         };
     }
 
@@ -212,6 +230,7 @@ class Dashboard extends Component {
             loginUser,
             newsDataPageSize,
             newFlag,
+            newsLanguage
         } = this.state;
         let userInfo = Auth.getUserInfo();
         let lodingFlag = pageLodingFlag;
@@ -222,20 +241,16 @@ class Dashboard extends Component {
             lodingFlag = false;
         }
         let newsSubjectLang, newsTextLang = '';
-        
-        if(loginUser.Language==="English"){
-            newsSubjectLang = 'subjectEnglish';
-            newsTextLang = 'textEnglish';
-        }else if(loginUser.Language==="Dutch"){
-            newsSubjectLang = 'subjectDutch';
-            newsTextLang = 'textDutch';
-        }else if(loginUser.Language==="German"){
-            newsSubjectLang = 'subjectGerman';
-            newsTextLang = 'textGerman';
-        }else{
-            newsSubjectLang = 'subjectFrench';
-            newsTextLang = 'textFrench';
+        var lang = window.localStorage.getItem('eijf_lang');
+        if(loginUser.Language===lang){
+            newsSubjectLang = newsLanguage[loginUser.Language].subject;
+            newsTextLang = newsLanguage[loginUser.Language].text;
+        } else {
+            newsSubjectLang = newsLanguage[lang].subject;
+            newsTextLang = newsLanguage[lang].text;
         }
+        console.log('11', newsSubjectLang);
+        console.log('22', newsTextLang);
         return (
             <Container>
                 <div className="dashboard-header content__header content__header--with-line">

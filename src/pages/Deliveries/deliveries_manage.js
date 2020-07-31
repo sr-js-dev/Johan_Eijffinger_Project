@@ -41,7 +41,7 @@ class Deliveriesmanage extends Component {
                 {"label": 'DeliveryDate', "value": "DocDate", "type": 'date', "show": true},
                 {"label": 'Status', "value": "LineStatus", "type": 'text', "show": true},
                 {"label": 'Product', "value": "Product", "type": 'text', "show": true},
-                {"label": 'Collection', "value": "Collectie", "type": 'text', "show": true},
+                {"label": 'ItemCode', "value": "ItemCode", "type": 'text', "show": true},
                 {"label": 'Quantity', "value": "Quantity", "type": 'text', "show": true},
                 {"label": 'Batch', "value": "BatchNumbers", "type": 'text', "show": true},
                 {"label": 'Action', "value": "Action", "type": 'text', "show": true},
