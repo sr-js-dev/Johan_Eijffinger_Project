@@ -694,6 +694,10 @@ table.dataTable td {
 }
 
 .add-icon {
+  margin-right: 20px;
+  cursor: pointer;
+}
+.save-icon {
   margin-right: 10px;
   cursor: pointer;
 }
@@ -1410,6 +1414,10 @@ table.dataTable.no-footer {
   height: 23px;
   font-size: 23px;
   color: #555555;
+}
+.mark_image {
+  width: 30px;
+  height: 30px;
 }
 
 input::-webkit-outer-spin-button,

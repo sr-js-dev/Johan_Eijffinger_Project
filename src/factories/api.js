@@ -2,7 +2,7 @@ const BASEURL = 'https://eijffinger-api-dev.azurewebsites.net';
 export default {
     GetToken: `${BASEURL}/api/Token`,  
     PostResetPassword: `${BASEURL}/api/Account/ResetPassword`,  
-    GetOrdersData: `${BASEURL}/api/Orders`,
+    GetOrdersData: `${BASEURL}/api/Orders/GetOrders`,
     GetUserData: `${BASEURL}/api/users/SearchUser?excludeInactiveUser=false&pageNumber=1&pageSize=`,
     PostUserData: `${BASEURL}/api/users/Create`,
     GetUserDataById: `${BASEURL}/api/users/GetById/`,
@@ -43,4 +43,7 @@ export default {
     PostDeliveryDate: `${BASEURL}/api/SapProxy/deliverydate`,
     LoggedUserProfileUpdate: `${BASEURL}/api/Account/UpdateProfile`,
     GetItemByDeliveryWeek: `${BASEURL}/api/Orders/ItemByDeliveryWeek/`,
+    GetSampleItemByItemCode: `${BASEURL}/api/SampleItems`,
+    SearchSampleItem: `${BASEURL}/api/SampleItems`,
+    GetShippingAddresses: `${BASEURL}/api/ShippingAddress`
   };

@@ -15,6 +15,7 @@ import Salesinvoicedetail from '../pages/Salesinvoices/salesinvoice_deail';
 import Returns from '../pages/Returns/returns_manage';
 import Returndetail from '../pages/Returns/return_detail';
 import Placemanage from '../pages/Placeorder/place_manage';
+import Placesamplemanage from '../pages/Placesampleorder/place_manage';
 import Newsmanage from '../pages/News/news_manage';
 import { connect } from 'react-redux';
 import { Switch,Router, Route } from 'react-router-dom';
@@ -72,7 +73,10 @@ class Layout extends Component {
                   <Route path="/return-detail" component={Returndetail}/> 
                 )}
                 {userInfo.role!=="Administrator" && (
-                  <Route path="/placemanage" component={Placemanage}/>
+                  <Route path="/placeorder" component={Placemanage}/>
+                )} 
+                {userInfo.role!=="Administrator" && (
+                  <Route path="/placesampleorder" component={Placesamplemanage}/>
                 )} 
                 {userInfo.role==="Administrator" && (
                   <Switch>

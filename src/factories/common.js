@@ -105,6 +105,7 @@ export const hideSlideForm = () =>{
 }
 
 export const filterData = (filterOption, filterData) =>{
+    
     let resutDat = [];
     let orResultData = [];
     filterOption.map((data, index) => {

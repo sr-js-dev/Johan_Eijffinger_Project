@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Form, Button, Row, Col, Spinner, Alert } from 'react-bootstrap';
+import { Form, Button, Row, Col, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import * as authAction  from '../../actions/authAction';
 import SessionManager from '../../factories/session_manage';
@@ -28,17 +28,15 @@ class Itemsearchform extends Component {
         this.state = {  
             itemData: [],
             loading: false,
-            itemDataList: [],
-            messageClose: false,
-            productCode: 0
+            itemDataList: []
         };
     }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
-    componentDidMount() {
     
+    componentDidMount() {
     }
 
     handleSubmit = (event) => {
@@ -56,7 +54,7 @@ class Itemsearchform extends Component {
             collection: data.collection,
             itemCode: data.productcode
         }     
-        Axios.post(API.PostItems, params, headers)
+        Axios.post(API.SearchSampleItem, params, headers)
         .then(result => {
             if(this._isMounted){
                 this.setState({itemData: result.data.value, loading: false})
@@ -84,30 +82,23 @@ class Itemsearchform extends Component {
             return data;
         });
         let itemDataList = itemData.filter((item, key)=>item.checked===true);
-        this.props.onSetItemData(itemDataList);
         this.setState({itemData: itemData, itemDataList: itemDataList});
     }
 
     addOrderItem = () => {
-        // const { itemData } = this.state;      
-        // let itemDataList = itemData.filter((item, key)=>item.checked===true);
-        this.props.onHide();
-        // this.props.onSetItemData(itemDataList)
-        // this.props.addOrder();
+        const { itemData } = this.state;      
+        let itemDataList = itemData.filter((item, key)=>item.checked===true);
+        // this.props.onHide();
+        this.props.onSetItemData(itemDataList)
     }
 
     onHide = () => {
         this.props.onHide();
     }
-    // codeChange = (event) => {
-    //     this.setState({
-    //         productCode: event.target.value
-    //     })
-    // }
 
     render(){   
         const{ loading, itemData, itemDataList } = this.state;
-        const { itemCode, noItemMsg } = this.props;
+        const { itemCode } = this.props;
         return (
             <div className = "slide-form__controls open" style={{height: "100%"}}>
                 <div style={{marginBottom:30}}>
@@ -173,11 +164,6 @@ class Itemsearchform extends Component {
                             }
                         </tbody>)}
                     </table>
-                    {noItemMsg&&(
-                        <Alert variant="secondary">
-                            <p>{noItemMsg}</p>
-                        </Alert>
-                    )}
                     { this.state.loading&& (
                     <div className="col-md-4 offset-md-4 col-xs-12 loading" style={{textAlign:"center"}}>
                         <BallBeat
@@ -187,9 +173,15 @@ class Itemsearchform extends Component {
                     </div>
                     )}
                 </div>
+                {itemDataList.length>0 ? (
                     <Col className="place-order__search-itemtable">
-                        <Button type="button" disabled={!itemDataList.length || noItemMsg} onClick={()=>this.addOrderItem()}>{trls('Add_to_order')}</Button>
+                        <Button type="button" onClick={()=>this.addOrderItem()}>{trls('Add_to_order')}</Button>
                     </Col>
+                ):
+                    <Col className="place-order__search-itemtable">
+                        <Button type="button" disabled onClick={()=>this.addOrderItem()}>{trls('Add_to_order')}</Button>
+                    </Col>
+                }
             </div>
         );
     }

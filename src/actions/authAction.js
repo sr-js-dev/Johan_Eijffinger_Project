@@ -18,13 +18,14 @@ export const fetchLoginData = (params) => {
           $.ajax(settings).done(function (response) {
           })
           .then(response => {
-            window.localStorage.setItem('eijf_token', response.token);
-            window.localStorage.setItem('eijf_userName', response.claims.UserName);
-            window.localStorage.setItem('eijf_role', response.claims.Role);
-            window.localStorage.setItem('eijf_loggedUser', JSON.stringify(response.claims));
+            localStorage.setItem('eijf_token', response.token);
+            localStorage.setItem('eijf_userName', response.claims.UserName);
+            localStorage.setItem('eijf_role', response.claims.Role);
+            localStorage.setItem('eijf_loggedUser', JSON.stringify(response.claims));
             let lang = response.claims.Language ? response.claims.Language : "Dutch"
-            window.localStorage.setItem('eijf_lang',  lang);
-            window.localStorage.setItem('eijf_label',  lang);
+            localStorage.setItem('eijf_lang',  lang);
+            localStorage.setItem('eijf_label',  lang);
+            localStorage.setItem('eij_address_book', response.claims.U_EIJFF_PORTAL_ADRESBOEK)
             dispatch(fetchLoginDataSuccess(response));
             history.push('/dashboard')
         })

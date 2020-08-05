@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(authAction.blankdispatch(blankFlag)),
 });
 
-class Placemanage extends Component {
+class Placesamplemanage extends Component {
     
     _isMounted = false;
     constructor(props) {
@@ -48,11 +48,11 @@ class Placemanage extends Component {
             pageLodingFlag: false,
             billAddress: [],
             shippingAddress: [],
-            setShippingAddress: [],
+            setSippingAddress: [],
             userInfo: Auth.getUserInfo(), 
             rowId: 0,
             patternRowId: [],
-            selectedShippingAddress: [],
+            selectShippingAddress: [],
             slideItemFormFlag: false,
             slidePatternFormFlag: false,
             addRow: false,
@@ -80,7 +80,7 @@ class Placemanage extends Component {
             setItemCodeFlag: false,
             editOrderRowFlag: false,
             editOrderRowData: [],
-            editRowId: '',
+            editRowId: ''
         };
     }
 
@@ -100,59 +100,9 @@ class Placemanage extends Component {
         .then(result => {
             if(this._isMounted){
                 if(result.data.value.length){
-                    console.log("aaaaaaaaaaa", result.data.value)
                     let addressData = this.getShippingAddressOptionData(result.data.value);
-                    // let shippingData = addressData[1].map( s => ({value:s.BPCode,label: s.Street+" "+s.ZipCode+" "+s.City+" "+s.Country}));
-                    this.setState({
-                        businessPartnerOption: result.data.value, 
-                        billAddress: addressData[0][0], //first bill address related
-                        // shippingAddress: addressData[1], // all ship address related 
-                        // setSippingAddress: addressData[1][0] //first ship address related
-                    });
-                }
-            }
-        })
-        .catch(err => {
-            if(err.response.status===401){
-                history.push('/login')
-            }
-        });
-        this.getShippingAddresses();
-        // Axios.get(API.GetShippingAddresses, headers)
-        // .then(response => {
-        //     if(this._isMounted){
-        //         if(response.data.length > 0){
-        //             let shippingAddresses = response.data.map( data => ({value:data.id, label: data.address+" "+data.zipCode+" "+data.city+" "+data.country}));
-        //             this.setState({
-        //                 shippingAddresses: response.data,
-        //                 setShippingAddress: response.data[0],
-        //                 shippingAddressOption: shippingAddresses,
-        //                 selectedShippingAddress: shippingAddresses[0]
-        //             })
-
-        //         }
-        //     }
-        // })
-        // .catch(err => {
-        //     if(err.response.status===401){
-        //         history.push('/login')
-        //     }
-        // });
-    }
-    getShippingAddresses = () => {
-        var headers = SessionManager.shared().getAuthorizationHeader();
-        Axios.get(API.GetShippingAddresses, headers)
-        .then(response => {
-            if(this._isMounted){
-                if(response.data.length > 0){
-                    let shippingAddresses = response.data.map( data => ({value:data.id, label: data.address+" "+data.zipCode+" "+data.city+" "+data.country}));
-                    this.setState({
-                        shippingAddresses: response.data,
-                        setShippingAddress: response.data[0],
-                        shippingAddressOption: shippingAddresses,
-                        selectedShippingAddress: shippingAddresses[0]
-                    })
-
+                    let shippingData = addressData[1].map( s => ({value:s.BPCode,label: s.Street+" "+s.ZipCode+" "+s.City+" "+s.Country}));
+                    this.setState({businessPartnerOption: result.data.value, shippingAddressOption: shippingData, billAddress: addressData[0][0], shippingAddress: addressData[1], selectShippingAddress: shippingData[0], setSippingAddress: addressData[1][0]});
                 }
             }
         })
@@ -162,30 +112,30 @@ class Placemanage extends Component {
             }
         });
     }
+
     getShippingAddressOptionData = (optionData) => {
         let returnOptionData = [];
         let billAddress = [];
-        // let shippingAddress = [];
+        let shippingAddress = [];
         optionData.map((data, index)=>{
             data.BPAddresses.map((bpAddress, key)=>{
                 if(bpAddress.AddressName==="Bill to"){
                     billAddress.push(bpAddress);
+                }else if(bpAddress.AddressName==="Ship To"){
+                    shippingAddress.push(bpAddress)
                 }
-                // else if(bpAddress.AddressName==="Ship To"){
-                //     shippingAddress.push(bpAddress)
-                // }
                 return bpAddress;
             })
             return data;
         });
         returnOptionData[0] = billAddress;
-        // returnOptionData[1] = shippingAddress;
+        returnOptionData[1] = shippingAddress;
         return returnOptionData;
     }
     
     onSubmitOrder = () => {
         this._isMounted = true;
-        const { rows, currentUserInfo, customer_reference, setShippingAddress } = this.state;
+        const { rows, currentUserInfo, customer_reference, setSippingAddress } = this.state;
         let documentLineArray = [];
         let params = [];
         if(rows){
@@ -210,10 +160,10 @@ class Placemanage extends Component {
                 "DocDueDate": Common.formatDate1(new Date()),
                 "NUMATCARD": customer_reference,
                 "AddressExtension": {
-                    "ShipToStreet": setShippingAddress.address, 
-                    "ShipToCity": setShippingAddress.city, 
-                    "ShipToZipCode": setShippingAddress.zipCode,
-                    "ShipToCountry": setShippingAddress.country
+                    "ShipToStreet": setSippingAddress.Street, 
+                    "ShipToCity": setSippingAddress.City, 
+                    "ShipToZipCode": setSippingAddress.ZipCode,
+                    "ShipToCountry": setSippingAddress.Country
                 },
                 "DocumentLines": documentLineArray
             },
@@ -296,12 +246,12 @@ class Placemanage extends Component {
         return deliveriesData;
     }
 
-    changeShippingAddress = (data) =>{
-        const { shippingAddresses } = this.state;
-        this.setState({selectedShippingAddress: data})
-        let selectedShippingAddress = shippingAddresses.filter(item => item.id===data.value);
-        if(selectedShippingAddress){
-            this.setState({setShippingAddress: selectedShippingAddress[0]})
+    changeShippigAddress = (data) =>{
+        const { shippingAddress } = this.state;
+        this.setState({selectShippingAddress: data})
+        let setSippingAddress = shippingAddress.filter(item => item.BPCode===data.value);
+        if(setSippingAddress){
+            this.setState({setSippingAddress: setSippingAddress[0]})
         }
         
     }
@@ -327,7 +277,6 @@ class Placemanage extends Component {
         this.setState({itemData: itemList[0], itemCode: itemList[0].ItemCode, setItemCodeFlag: true}, ()=>{
             this.checkPatternCalculate(itemList[0].ItemCode);
         });
-        
     }
 
     checkPatternCalculate = (itemCode) => {
@@ -347,24 +296,17 @@ class Placemanage extends Component {
         })
         .then(response => {
             if(this._isMounted){
-                console.log("11111111", response)
                 if(response.U_DBS_ONDERMATEN==="Y"){
                     patternCalculateCheck = false;
                     this.setState({slidePatternFormFlag: true, stockItemData: response, itemCode: itemCode});
                 }else{
                     patternCalculateCheck = true;
-                    if(response.U_DBS_ITEM_INCOURANT !== null && response.U_DBS_ITEM_INCOURANT !== '-'){
-                        this.setState({
-                            noItemMessage: trls('NoItemMessage')
-                        })
-                    }
                     if(editOrderRowFlag){
                         patternCalcuRowData[editRowId] = []
                         this.setState({patternCalcuRowData: patternCalcuRowData});
                     }
                 }
-                this.setState({patternCalculateCheck: patternCalculateCheck})
-                
+                this.setState({patternCalculateCheck: patternCalculateCheck, slideItemFormFlag: false, itemQuantityData: ''})
             }
         })
         .catch(err => {
@@ -390,7 +332,7 @@ class Placemanage extends Component {
         this.setState({itemData: itemData, itemCode: itemCode, slidePatternFormFlag: true})
     }
 
-    editShippingAddress = () => {
+    editShippingAddree = () => {
         this.setState({showShippingAddressModal: true}); 
     }
 
@@ -428,29 +370,6 @@ class Placemanage extends Component {
         this.setState({rows: updateRowData, itemData: itemRowData, itemCode: itemRowData.ItemCode});
     }
 
-    saveShippingAddress = () => {
-        this._isMounted = true;
-        var headers = SessionManager.shared().getAuthorizationHeader();
-        var params = {
-            customerNumber: this.state.setShippingAddress.customerNumber,
-            address: this.state.setShippingAddress.address,
-            zipCode: this.state.setShippingAddress.zipCode,
-            city: this.state.setShippingAddress.city,
-            country: this.state.setShippingAddress.country,
-        };
-        Axios.post(API.GetShippingAddresses,params, headers)
-        .then(response => {
-            if(this._isMounted){
-                this.getShippingAddresses();
-            }
-        })
-        .catch(err => {
-            if(err.response.status===401){
-                history.push('/login')
-            }
-        });
-    }
-
     render(){   
         let totalAmount = 0;
         const { businessPartnerOption, 
@@ -458,10 +377,10 @@ class Placemanage extends Component {
             itemPriceData, 
             pageLodingFlag, 
             billAddress, 
-            setShippingAddress,
+            setSippingAddress,
             itemQuantityData,
             rows,
-            selectedShippingAddress,
+            selectShippingAddress,
             slideItemFormFlag,
             slidePatternFormFlag,
             patternCalculateCheck,
@@ -472,9 +391,7 @@ class Placemanage extends Component {
             editPatternCalcuRow,
             editOrderRowData,
             showNewItemModal,
-            editRowId,
-            addressBook,
-            noItemMessage
+            editRowId
         } = this.state; 
         let showPrice = localStorage.getItem('eijf_showPrice')==="true";
         if(itemPriceData){
@@ -487,7 +404,7 @@ class Placemanage extends Component {
             <div className="order_div">
                 <div className="content__header content__header--with-line">
                     <div id="google_translate_element"></div>
-                    <h2 className="title">{trls("Place_an_order")}</h2>
+                    <h2 className="title">{trls("Place_a_sample_order")}</h2>
                 </div>
                 <Container>
                     <Form className="container product-form" onSubmit = { this.handleSubmit }>
@@ -527,16 +444,16 @@ class Placemanage extends Component {
                                                 name="usinesspartner"
                                                 placeholder={trls('Shipping_Address')}
                                                 options={shippingAddressOption}
-                                                onChange={val => this.changeShippingAddress(val)}
-                                                value={selectedShippingAddress}
+                                                onChange={val => this.changeShippigAddress(val)}
+                                                value={selectShippingAddress}
                                             />
                                         </Col>
                                     </Form.Group>
                                     <div >
-        <p className="address-header">{trls('Shipping_Address')}<span className="shipping-address_edit"><i className="fas fa-pen add-icon " onClick={()=>this.editShippingAddress()} />{this.state.userInfo.addressBook&&<i className="fas fa-save save-icon" onClick={this.saveShippingAddress} />}</span></p>
-                                        <p>{setShippingAddress.address?setShippingAddress.address:''}</p>
-                                        <p>{(setShippingAddress.zipCode?setShippingAddress.zipCode: '') + " " + (setShippingAddress.city ? setShippingAddress.city: '')}</p>
-                                        <p>{setShippingAddress.country?setShippingAddress.country: ''}</p>
+                                        <p className="address-header">{trls('Shipping_Address')}<i className="fas fa-pen add-icon shipping-address_edit" onClick={()=>this.editShippingAddree()}></i></p>
+                                        <p>{setSippingAddress.City ? setSippingAddress.Street + " " + (setSippingAddress.StreetNo ? setSippingAddress.StreetNo : '') : '' }</p>
+                                        <p>{setSippingAddress.City ? setSippingAddress.ZipCode + " " + setSippingAddress.City : ''}</p>
+                                        <p>{setSippingAddress.Country ? setSippingAddress.Country : ''}</p>
                                     </div>
                                 </Col>
                             </Col>
@@ -662,10 +579,9 @@ class Placemanage extends Component {
             
             {slideItemFormFlag ? (
                 <ItemSearchform
-                    onHide={() => this.setState({slideItemFormFlag: false, temQuantityData: ''})}
+                    onHide={() => this.setState({slideItemFormFlag: false})}
                     onSetItemData={(itemList) => this.setOrderItem(itemList)}
                     itemCode={this.state.itemCode}
-                    noItemMsg = {noItemMessage}
                 /> 
             ): null}
             {slidePatternFormFlag ? (
@@ -693,12 +609,12 @@ class Placemanage extends Component {
             <Shippingaddressform
                 show={this.state.showShippingAddressModal}
                 onHide={() => this.setState({showShippingAddressModal: false})}
-                shippingAddress={setShippingAddress}
-                setShippingAddress={(shippingAddress)=>{this.setState({setShippingAddress: shippingAddress})}}
+                shippingAddress={setSippingAddress}
+                setSippingAddress={(shippingAddress)=>{this.setState({setSippingAddress: shippingAddress})}}
             />
             <Pageloadspiiner loading = {pageLodingFlag}/>
         </div>
         );
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Placemanage);
+export default connect(mapStateToProps, mapDispatchToProps)(Placesamplemanage);

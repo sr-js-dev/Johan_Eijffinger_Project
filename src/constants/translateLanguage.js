@@ -1,5 +1,9 @@
 export const TRANSLATIONS = {
-  English: {
+    English: {
+      "NoItemMessage": "Item is no longer available",
+      "Reference": "Reference",
+      // "TrackAndTrace": "TrackAndTrace",
+      "AddressBook": "AddressBook",
       "Username": 'Username',
       "Password": 'Password',
       "ConfirmPassword": 'ConfirmPassword',
@@ -25,6 +29,7 @@ export const TRANSLATIONS = {
       "Due_Soon": 'Due Soon',
       "Total_Outstanding": 'Total Outstanding',
       "Place_an_order": 'Place an order',
+      "Place_a_sample_order": 'Place a sample order',
       "Search_Lines": 'Search Products and Create Order Lines',
       "Make_a_Payment": 'Make a Payment',
       "Credit_card": 'Credit card, PayPal, Worldpay, On Account',
@@ -207,8 +212,11 @@ export const TRANSLATIONS = {
       "Are you sure?": 'Are you sure?',
       "New Item": 'New Item' 
     },
-
-    Dutch: {
+    Dutch: {  
+      "NoItemMessage": "Artikel is niet meer leverbaarr",
+      "Reference": "Referentie",
+      "AddressBook": "Adresboek",
+      // "TrackAndTrace": "TrackEnTrace",
       "Username": 'Gebruikersnaam',
       "Password": 'Wachtwoord',
       "ConfirmPassword": 'Bevestig wachtwoord',
@@ -234,6 +242,7 @@ export const TRANSLATIONS = {
       "Due_Soon": 'Due Spoedig',
       "Total_Outstanding": 'Totaal Voortreffelijk',
       "Place_an_order": 'Een bestelling plaatsen',
+      "Place_a_sample_order": "Plaats een voorbeeldbestelling",
       "Search_Lines": 'Zoek producten en maak orderregels',
       "Make_a_Payment": 'Maak een betaling',
       "Credit_card": 'Creditcard, PayPal, Worldpay, op account',
@@ -416,8 +425,11 @@ export const TRANSLATIONS = {
       "Are you sure?": 'Weet je het zeker?',
       "New Item": 'Nieuw Item'
     }, 
-    
     German: {
+      "NoItemMessage": "Artikel is nicht mehr lieferbahr",
+      "Reference": "Referenz",
+      "AddressBook": "Adressbuch",
+      // "TrackAndTrace": "Sendungsverfolgung",
       "Username": 'Nutzername',
       "Password": 'Passwort',
       "ConfirmPassword": 'Bevestig wachtwoord',
@@ -443,6 +455,7 @@ export const TRANSLATIONS = {
       "Due_Soon": 'Fällig Bald',
       "Total_Outstanding": 'Gesamt Hervorragend',
       "Place_an_order": 'Ort ein bestellen',
+      "Place_a_sample_order": "Geben Sie eine Musterbestellung auf",
       "Search_Lines": 'Suche Linien',
       "Make_a_Payment": 'Machen ein Zahlung',
       "Credit_card": 'Anerkennung Karte',
@@ -625,8 +638,11 @@ export const TRANSLATIONS = {
       "Are you sure?": 'Bist du sicher?',
       "New Item": 'Neuer Gegenstand'
     },
-
     French: {
+      "NoItemMessage": "l’article n’est plus disponsible",
+      "Reference": "Référence",
+      "AddressBook": "Carnet d'adresses",
+      // "TrackAndTrace": "Suivre et tracer",
       "Username": "Nom d'utilisateur",
       "Password": 'Mot de passe',
       "ConfirmPassword": 'Confirmez le mot de passe',
@@ -652,6 +668,7 @@ export const TRANSLATIONS = {
       "Due_Soon": 'Du  Bientôt',
       "Total_Outstanding": 'Total Exceptionnel',
       "Place_an_order": 'Endroit un commande',
+      "Place_a_sample_order": "Passer une commande d'échantillon",
       "Search_Lines": 'ChercherLignes',
       "Make_a_Payment": 'Faire une Paiement',
       "Credit_card": 'Crédit carte',

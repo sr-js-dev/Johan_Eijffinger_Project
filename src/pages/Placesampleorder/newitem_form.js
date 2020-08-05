@@ -164,7 +164,7 @@ class Newitemform extends Component {
         }
         this.setState({pageLodingFlag: true})
         var settings = {
-            "url": API.GetItemDataByItemCode+'/'+code,
+            "url": API.GetSampleItems+'/'+code,
             "method": "GET",
             "headers": {
                 "Content-Type": "application/json",
@@ -174,7 +174,6 @@ class Newitemform extends Component {
         $.ajax(settings).done(function (response) {
         })
         .then(response => {
-            console.log("1234", response)
             this.setState({itemData: response, itemFlag: true, pageLodingFlag: false, itemEnable: true}, ()=>{
                 this.props.checkPatternCalculate(itemCodeData);
                 $(".fade").attr("tabindex","disable");

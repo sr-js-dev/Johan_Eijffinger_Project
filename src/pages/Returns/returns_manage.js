@@ -13,7 +13,7 @@ import history from '../../history';
 import * as Common from '../../factories/common';
 import Filtercomponent from '../../components/filtercomponent';
 import Returnorders from './retunrorders_form';
-
+import * as Auth from '../../factories/auth';
 const mapStateToProps = state => ({ 
     ...state.auth,
 });
@@ -28,8 +28,10 @@ class Deliveriesmanage extends Component {
         super(props);
         this.state = {  
             loading: false,
+            returnsData: [],
             deliveriesData: [],
             originFilterData: [],
+            ordersData: [],
             filterColunm: [
                 {"label": 'Return #', "value": "DocNum", "type": 'text', "show": true},
                 {"label": 'ReturnDate', "value": "DocDate", "type": 'date', "show": true},
@@ -49,10 +51,53 @@ class Deliveriesmanage extends Component {
     }
 
     componentDidMount() {
+        this.getReturnsData();
+        this.getOrdersData(5, 1);
         this.getDeliveriesData();
     }
+    getOrdersData (pageSize, page) {
+        this._isMounted = true;
+        this.setState({loading: true});
+        var settings = {
+            "url": API.GetOrdersData,
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+            },
+            "data": JSON.stringify({"top":pageSize,"skip":page})
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            if(this._isMounted){
+                this.setState({ordersData: response.value});
+                this.setState({loading:false})
+            }
+        });
+    }
+    getDeliveriesData = () => {
+        
+        this._isMounted = true;
+        this.setState({loading:true})
+        let params = {};
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.GetDeliveriesData, params, headers)
+        .then(result => {
+            if(this._isMounted){
+                this.setState({loading:false});
+                    let deliveriesDataList = this.setDeliveriesData(result.data.value);
+                    this.setState({deliveriesData: deliveriesDataList});
+                }
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
+        })
+    }
 
-    getDeliveriesData = (data) => {
+    getReturnsData = (data) => {
         this._isMounted = true;
         this.setState({loading:true})
         let params = {};
@@ -62,17 +107,17 @@ class Deliveriesmanage extends Component {
             if(this._isMounted){
                 this.setState({loading:false});
                 // if(result.data.value.length){
-                    let deliveriesDataList = this.setDeliveriesData(result.data.value);
+                    let returnsDataList = this.setReturnsData(result.data.value);
                     if(!data){
-                        this.setState({deliveriesData: deliveriesDataList, originFilterData: deliveriesDataList});
+                        this.setState({returnsData: returnsDataList, originFilterData: returnsDataList});
                     }else{
-                        this.setState({deliveriesData: data});
+                        this.setState({returnsData: data});
                     }
-                    $('.fitler').on( 'keyup', function () {
+                    $('.filter').on( 'keyup', function () {
                         table.search( this.value ).draw();
                     } );
-                    $('#deliver-table').dataTable().fnDestroy();
-                    var table = $('#deliver-table').DataTable(
+                    $('#returns-table').dataTable().fnDestroy();
+                    var table = $('#returns-table').DataTable(
                         {
                             "language": {
                                 "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
@@ -99,7 +144,7 @@ class Deliveriesmanage extends Component {
         });
     }
 
-    setDeliveriesData = (deliveriesData) => {
+    setReturnsData = (deliveriesData) => {
         let returnDeliveriesData = [];
         let documentLineData = [];
         deliveriesData.map((data, index)=>{
@@ -117,7 +162,31 @@ class Deliveriesmanage extends Component {
         });
         return returnDeliveriesData;
     }
-
+    setDeliveriesData = (deliveriesData) => {
+        let returnDeliveriesData = [];
+        let documentLineData = [];
+        deliveriesData.map((data, index)=>{
+            data.DocumentLines.map((documentLine, key)=>{
+                if(documentLine.TreeType==="iSalesTree"){
+                    documentLineData = documentLine;
+                    documentLineData.DocDate = data.DocDate;
+                    documentLineData.CardName = data.CardName;
+                    documentLineData.DocNum = data.DocNum;
+                    documentLineData.NumAtCard = data.NumAtCard;
+                    if(data.DocumentPackages.length>0){
+                        documentLineData.TrackAndTrace = data.DocumentPackages[0].U_DBS_TrackAndTrace;
+                    } else {
+                        documentLineData.TrackAndTrace = null;
+                    }
+                    
+                    returnDeliveriesData.push(documentLineData);
+                }
+                return documentLine;
+            })
+            return data;
+        });
+        return returnDeliveriesData;
+    }
     showPlaceOrder = (docNumber) => {
         history.push({
             pathname: '/return-detail/'+docNumber,
@@ -149,7 +218,7 @@ class Deliveriesmanage extends Component {
         if(!filterOption.length){
             dataA=null;
         }
-        this.getDeliveriesData(dataA);
+        this.getReturnsData(dataA);
     }
 
     changeFilter = () => {
@@ -183,7 +252,7 @@ class Deliveriesmanage extends Component {
     }
     
     render(){   
-        const {filterColunm, deliveriesData} = this.state;
+        const {filterColunm, returnsData, deliveriesData, ordersData} = this.state;
         let filterData = [
             {"label": trls('Order'), "value": "DocNum", "type": 'text', "show": true},
             {"label": trls('Order_Date'), "value": "DocDate", "type": 'date', "show": true},
@@ -208,7 +277,7 @@ class Deliveriesmanage extends Component {
                                 <Button variant="light" onClick={()=>this.changeFilter()}><i className="fas fa-filter add-icon"></i>{trls('Filter')}</Button>
                                 <div style={{marginLeft: 20}}>
                                     <span className="fa fa-search form-control-feedback"></span>
-                                    <Form.Control className="form-control fitler" type="text" name="number"placeholder={trls("Quick_search")}/>
+                                    <Form.Control className="form-control filter" type="text" name="number"placeholder={trls("Quick_search")}/>
                                 </div>
                             </div>
                         </Col>
@@ -222,25 +291,20 @@ class Deliveriesmanage extends Component {
                         )}
                     </Row>
                     <div className="table-responsive credit-history">
-                        <table id="deliver-table" className="place-and-orders__table table" width="100%">
+                        <table id="returns-table" className="place-and-orders__table table" width="100%">
                         <thead>
                             <tr>
                                 {filterColunm.map((item, key)=>(
                                     <th className={!item.show ? "filter-show__hide" : ''} key={key}>
                                        {item.label}
-                                        {/* <Contextmenu
-                                            triggerTitle = {item.label}
-                                            addFilterColumn = {(value)=>this.addFilterColumn(value)}
-                                            removeColumn = {(value)=>this.removeColumn(value)}
-                                        /> */}
                                     </th>
                                     )
                                 )}
                             </tr>
                         </thead>
-                        {deliveriesData && !this.state.loading &&(<tbody >
+                        {returnsData && !this.state.loading &&(<tbody >
                             {
-                                deliveriesData.map((data,i) =>(
+                                returnsData.map((data,i) =>(
                                     <tr id={i} key={i}>
                                         <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div id={data.id} className="action-div" onClick={()=>this.showPlaceOrder(data.DocNum)}>{data.DocNum}</div></td>
                                         <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
@@ -269,10 +333,15 @@ class Deliveriesmanage extends Component {
                             </div>
                         )}
                     </div>
-                    <Returnorders
-                        show={this.state.showOrdersForm}
-                        onHide={() => this.setState({showOrdersForm: false})}
-                    /> 
+                    {this.state.showOrdersForm&&deliveriesData.length>0&&ordersData.length>0&&(
+                        <Returnorders
+                            show = {this.state.showOrdersForm}
+                            onHide={() => this.setState({showOrdersForm: false})}
+                            deliveriesData = {deliveriesData}
+                            ordersData = {ordersData}
+                        /> 
+                    )}
+                   
                 </div>
             </div>
         );

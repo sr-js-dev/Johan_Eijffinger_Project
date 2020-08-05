@@ -47,7 +47,7 @@ class Sidebar extends Component {
                             </li>
                             {userInfo.role!=="Administrator" && (
                                 <li id="0" className="menu__item" onClick={this.changeItem}>
-                                    <Link to={'/placemanage'} className={window.location.pathname === "/placemanage" ? 'menu__link menu__link--active' : 'menu__link menu__link'}>
+                                    <Link to={'/placeorder'} className={window.location.pathname === "/placeorder" ? 'menu__link menu__link--active' : 'menu__link menu__link'}>
                                         <span className="menu__link-img-wrap">
                                             <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path className="menu-link__icon menu-link__icon--active" d="M13 5H10V9L8 8L6 9V5H3C2.4 5 2 5.4 2 6V13C2 13.6 2.4 14 3 14H13C13.6 14 14 13.6 14 13V6C14 5.4 13.6 5 13 5Z" fill="#CCCCCC"/>
@@ -68,6 +68,19 @@ class Sidebar extends Component {
                                             </svg>
                                         </span>
                                         <span>{trls("User")}</span>
+                                    </Link>
+                                </li>
+                            )}
+                            {userInfo.role!=="Administrator" && (
+                                <li id="0" className="menu__item" onClick={this.changeItem}>
+                                    <Link to={'/placesampleorder'} className={window.location.pathname === "/placesampleorder" ? 'menu__link menu__link--active' : 'menu__link menu__link'}>
+                                        <span className="menu__link-img-wrap">
+                                            <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path className="menu-link__icon menu-link__icon--active" d="M13 5H10V9L8 8L6 9V5H3C2.4 5 2 5.4 2 6V13C2 13.6 2.4 14 3 14H13C13.6 14 14 13.6 14 13V6C14 5.4 13.6 5 13 5Z" fill="#CCCCCC"/>
+                                                <path className="menu-link__icon menu-link__icon--active" d="M0 0H16V4H0V0Z"/>
+                                            </svg>
+                                        </span>
+                                        <span>{trls("Place_a_sample_order")}</span>
                                     </Link>
                                 </li>
                             )}

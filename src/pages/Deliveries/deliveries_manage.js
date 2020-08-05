@@ -43,9 +43,11 @@ class Deliveriesmanage extends Component {
                 {"label": 'Product', "value": "Product", "type": 'text', "show": true},
                 {"label": 'ItemCode', "value": "ItemCode", "type": 'text', "show": true},
                 {"label": 'Quantity', "value": "Quantity", "type": 'text', "show": true},
+                {"label": 'Reference', "value": "NumAtCard", "type": 'text', "show": true},
                 {"label": 'Batch', "value": "BatchNumbers", "type": 'text', "show": true},
                 {"label": 'Action', "value": "Action", "type": 'text', "show": true},
             ]
+            
         };
     }
 
@@ -68,13 +70,14 @@ class Deliveriesmanage extends Component {
             if(this._isMounted){
                 this.setState({loading:false});
                 // if(result.data.value.length){
+                    console.log("999", result.data.value)
                     let deliveriesDataList = this.setDeliveriesData(result.data.value);
                     if(!data){
                         this.setState({deliveriesData: deliveriesDataList, originFilterData: deliveriesDataList});
                     }else{
                         this.setState({deliveriesData: data});
                     }
-                    $('.fitler').on( 'keyup', function () {
+                    $('.filter').on( 'keyup', function () {
                         table.search( this.value ).draw();
                     } );
                     $('#deliver-table').dataTable().fnDestroy();
@@ -115,6 +118,13 @@ class Deliveriesmanage extends Component {
                     documentLineData.DocDate = data.DocDate;
                     documentLineData.CardName = data.CardName;
                     documentLineData.DocNum = data.DocNum;
+                    documentLineData.NumAtCard = data.NumAtCard;
+                    if(data.DocumentPackages.length>0){
+                        documentLineData.TrackAndTrace = data.DocumentPackages[0].U_DBS_TrackAndTrace;
+                    } else {
+                        documentLineData.TrackAndTrace = null;
+                    }
+                    
                     returnDeliveriesData.push(documentLineData);
                 }
                 return documentLine;
@@ -148,10 +158,10 @@ class Deliveriesmanage extends Component {
         return filterColum[0].show;
     }
 
-    showPlaceOrder = (docNumber) => {
+    showPlaceOrder = (docNumber, trackAndTrace) => {
         history.push({
             pathname: '/delivery-detail/'+docNumber,
-            state: { id: docNumber, newSubmit:true }
+            state: { id: docNumber, newSubmit:true, trackAndTrace:  trackAndTrace}
           })
     }
 
@@ -221,7 +231,7 @@ class Deliveriesmanage extends Component {
                                 <Button variant="light" onClick={()=>this.changeFilter()}><i className="fas fa-filter add-icon"></i>{trls('Filter')}</Button>
                                 <div style={{marginLeft: 20}}>
                                     <span className="fa fa-search form-control-feedback"></span>
-                                    <Form.Control className="form-control fitler" type="text" name="number"placeholder={trls("Quick_search")}/>
+                                    <Form.Control className="form-control filter" type="text" name="number"placeholder={trls("Quick_search")}/>
                                 </div>
                             </div>
                         </Col>
@@ -255,17 +265,21 @@ class Deliveriesmanage extends Component {
                             {
                                 deliveriesData.map((data,i) =>(
                                     <tr id={i} key={i}>
-                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div id={data.id} className="action-div" onClick={()=>this.showPlaceOrder(data.DocNum)}>{data.DocNum}</div></td>
+                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div id={data.id} className="action-div" onClick={()=>this.showPlaceOrder(data.DocNum, data.TrackAndTrace)}>{data.DocNum}</div></td>
                                         <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
                                         <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenAmount > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenAmount > 0 ? "Open" : 'Send'}</div></td>
                                         <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemDescription}</td>
                                         <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.ItemCode}</td>
                                         <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
-                                        <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
-                                        <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>
+                                        <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.NumAtCard}</td>
+                                        <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
+                                        <td className={!this.showColumn(filterColunm[8].label) ? "filter-show__hide" : ''}>
                                             <Row style={{justifyContent: "space-around", width: 70}}>
                                                 <i className="far fa-file-pdf add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title"></span></i>
-												{/* <i className="fas fa-trash-alt add-icon"><span className="action-title"></span></i> */}
+                                                {data.TrackAndTrace !==null &&
+                                                <a href={data.TrackAndTrace}  target="_blank" rel="noopener noreferrer">
+                                                    <img src={require("../../assets/images/mark.png")} className="mark_image" alt="woon"/>
+                                                </a>}
 											</Row>
                                         </td>
                                     </tr>

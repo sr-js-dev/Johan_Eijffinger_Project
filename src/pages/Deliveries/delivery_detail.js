@@ -34,8 +34,8 @@ const mapDispatchToProps = (dispatch) => ({
 class Deliverydetail extends Component {
     _isMounted = false;
     constructor(props) {
-        let pathname = window.location.pathname;
-        let pathArray = pathname.split('/');
+        // let pathname = window.location.pathname;
+        // let pathArray = pathname.split('/');
         super(props);
         this.state = {  
             orderData: [],
@@ -46,7 +46,8 @@ class Deliverydetail extends Component {
             billAddress: [],
             shippingAddress: [],
             setSippingAddress: [],
-            orderId: pathArray[2] ? pathArray[2] : '',
+            // orderId: pathArray[2] ? pathArray[2] : '',
+            orderId: props.location.state.id,
             showPrice: localStorage.getItem('eijf_showPrice')==="true"
         };
     }
@@ -132,6 +133,7 @@ class Deliverydetail extends Component {
     }
 
     render(){   
+        let trackAndTrace = this.props.location.state.trackAndTrace;
         let totalAmount = 0;
         const { businessPartnerOption, 
             shippingAddressOption, 
@@ -155,6 +157,13 @@ class Deliverydetail extends Component {
                 </div>
                 <Container>
                     <Form className="container product-form" onSubmit = { this.handleSubmit }>
+                        <Row>
+                            {trackAndTrace !== null && 
+                                (<a href={trackAndTrace} target="_blank" rel="noopener noreferrer">
+                                    <Button variant="light">{trls("TrackAndTrace")}</Button> 
+                                </a>)
+                            }
+                        </Row>
                         <Row className="order__info-bill">
                             <Col sm={6} style={{paddingLeft: 0, paddingTop: 10}}>
                                     <Form.Group as={Row} controlId="formPlaintextPassword">
