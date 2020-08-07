@@ -307,7 +307,15 @@ class Placesamplemanage extends Component {
     //     }
         
     // }
-
+    changeShippingAddress = (value) =>{
+        const { shippingAddresses, shippingAddressOption } = this.state;
+        this.setState({selectedShippingAddress: value})
+        let index = shippingAddressOption.indexOf(value);
+        if(index > -1){
+            let selectedShippingAddress = shippingAddresses[index];
+            this.setState({setShippingAddress: selectedShippingAddress})
+        }
+    }
     removeOrderRow = (rowId) => {
         const { rows } = this.state;
         let rowsArr = rows.filter((item, key) => item.rowId !== rowId);
@@ -479,7 +487,7 @@ class Placesamplemanage extends Component {
                                                 name="usinesspartner"
                                                 placeholder={trls('Shipping_Address')}
                                                 options={shippingAddressOption}
-                                                onChange={val => this.changeShippigAddress(val)}
+                                                onChange={this.changeShippingAddress}
                                                 value={selectedShippingAddress}
                                             />
                                         </Col>
@@ -615,7 +623,8 @@ class Placesamplemanage extends Component {
             
             {slideItemFormFlag ? (
                 <ItemSearchform
-                    onHide={() => this.setState({slideItemFormFlag: false, showNewItemModal: false})}
+                    // onHide={() => this.setState({slideItemFormFlag: false, showNewItemModal: false})}
+                    onHide={() => this.setState({slideItemFormFlag: false, temQuantityData: ''})}
                     onSetItemData={(itemList) => this.setOrderItem(itemList)}
                     itemCode={this.state.itemCode}
                 /> 

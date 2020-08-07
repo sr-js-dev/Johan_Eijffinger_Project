@@ -76,7 +76,6 @@ class Itemsearchform extends Component {
         // this.props.addOrder();
     }
     changeItemCode = (e) => {
-        console.log("dddd")
         this.setState({itemCode: e.target.value});
         // this.props.onSetItemCodeFlag();
     }
@@ -180,7 +179,7 @@ class Itemsearchform extends Component {
                     )}
                 </div>
                     <Col className="place-order__search-itemtable">
-                        <Button type="button" disabled={!Object.keys(selectedItem).length || noItemMsg} onClick={()=>this.addOrderItem()}>{trls('Add_to_order')}</Button>
+                        <Button type="button" disabled={!Object.keys(selectedItem).length || noItemMsg} onClick={this.addOrderItem}>{trls('Add_to_order')}</Button>
                     </Col>
             </div>
         );
