@@ -35,6 +35,8 @@ class Returnordersform extends Component {
             currentUserInfo: Auth.getLoggedUserInfo(),
             orderQuantity: {},
             deliveryQuantity: {},
+            ordersLength: 0,
+            deliveriesLength: 0,
             deliveriesData: props.deliveriesData? props.deliveriesData: [],
             filterColunm: [
                 {"label": '', "value": "", "type": 'text', "show": true},
@@ -201,10 +203,14 @@ class Returnordersform extends Component {
             }
             return item;
         })
-        // ordersData = ordersData.filter(function(item) {
-        //     return item.checked;
-        // })
+        
         this.setState({ordersData: ordersData});
+        ordersData = ordersData.filter(function(item) {
+            return item.checked;
+        })
+        this.setState({
+            ordersLength: ordersData.length
+        })
     }
     changeDeliveryCheck = (value, index) => {
         let deliveriesData = this.state.deliveriesData;
@@ -216,6 +222,12 @@ class Returnordersform extends Component {
         // })
         deliveriesData[index].checked = value;
         this.setState({deliveriesData: deliveriesData});
+        deliveriesData = deliveriesData.filter(function(item) {
+            return item.checked;
+        })
+        this.setState({
+            deliveriesLength: deliveriesData.length
+        })
     }
     orderReturn = () => {
         // const { patternRowId } = this.props;
@@ -358,7 +370,7 @@ class Returnordersform extends Component {
                         <div className="orders">
                             <Row>
                                 <Col sm={6} className="return-order-form_header">
-                                    <Button variant="primary" onClick = {this.orderReturn}><i className="fas fa-undo add-icon"></i>{trls('Return')}</Button> 
+                                    <Button variant="primary" onClick = {this.orderReturn} disabled={this.state.ordersLength === 0 && this.state.deliveriesLength === 0}><i className="fas fa-undo add-icon"></i>{trls('Return')}</Button> 
                                 </Col>
                                 <Col sm={6} className="has-search">
                                     <div style={{display: 'flex', float: 'right'}}>
