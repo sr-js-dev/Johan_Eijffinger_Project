@@ -91,6 +91,7 @@ class Placemanage extends Component {
 
     componentDidMount() {
         this.getCustomerData();
+        this.getShippingAddresses();
     }
 
     getCustomerData = () => {
@@ -117,20 +118,28 @@ class Placemanage extends Component {
                 history.push('/login')
             }
         });
-        this.getShippingAddresses();
     }
     getShippingAddresses = () => {
+        this._isMounted = true;
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.get(API.GetShippingAddresses + this.state.currentUserInfo.SapCustomerCode, headers)
         .then(response => {
             if(this._isMounted){
                 if(Object.keys(response.data).length > 0){
-                    let realShippingAddresses = response.data.shippingAddress;
-                    let realSapAddresses = response.data.sapAddresses;
-                    let realAddresses = [...realShippingAddresses, ...realSapAddresses];
-                    let shippingAddressesForOptions = response.data.shippingAddress.map( data => ({value: "ship"+data.id, label: data.address+" "+data.zipCode+" "+data.city+" "+data.country}));
-                    let sapAddressesForOptions = response.data.sapAddresses.map((data, index) => ({value:"sap"+index, label: data.Street+" "+data.ZipCode+" "+data.City+" "+data.Country}));
+                    var shippingAddressesForOptions = [];
+                    var sapAddressesForOptions = [];
+                    var realShippingAddresses = [];
+                    var realSapAddresses = [];
+                    if(response.data.shippingAddress !== null){
+                        realShippingAddresses = response.data.shippingAddress;
+                        shippingAddressesForOptions = response.data.shippingAddress.map( data => ({value: "ship"+data.id, label: data.address+" "+data.zipCode+" "+data.city+" "+data.country}));
+                    }
+                    if(response.data.sapAddresses !== null){
+                        realSapAddresses = response.data.sapAddresses;
+                        sapAddressesForOptions = response.data.sapAddresses.map((data, index) => ({value:"sap"+index, label: data.Street+" "+data.ZipCode+" "+data.City+" "+data.Country}));
+                    }
                     let addressesForOptions = [...shippingAddressesForOptions, ...sapAddressesForOptions];
+                    let realAddresses = [...realShippingAddresses, ...realSapAddresses];
                     this.setState({
                         shippingAddresses: realAddresses,
                         setShippingAddress: realAddresses[0],
@@ -522,7 +531,7 @@ class Placemanage extends Component {
                                         </Col>
                                     </Form.Group>
                                     <div >
-                                        <p className="address-header">{trls('Shipping_Address')}<span className="shipping-address_edit"><i className="fas fa-pen add-icon " onClick={()=>this.editShippingAddress()} />{this.state.userInfo.addressBook&&<i className="fas fa-save save-icon" onClick={this.saveShippingAddress} />}</span></p>
+                                        <p className="address-header">{trls('Shipping_Address')}<span className="shipping-address_edit"><i className="fas fa-pen add-icon " onClick={()=>this.editShippingAddress()} />{this.state.userInfo.addressBook === "Y" &&<i className="fas fa-save save-icon" onClick={this.saveShippingAddress} />}</span></p>
                                         <p>{setShippingAddress.hasOwnProperty("id")?setShippingAddress.address:setShippingAddress.Street}</p>
                                         <p>{(setShippingAddress.hasOwnProperty("id")?setShippingAddress.zipCode:setShippingAddress.ZipCode) + " " + (setShippingAddress.hasOwnProperty("id")?setShippingAddress.city:setShippingAddress.City)}</p>
                                         <p>{setShippingAddress.hasOwnProperty("id")?setShippingAddress.country:setShippingAddress.Country}</p>
