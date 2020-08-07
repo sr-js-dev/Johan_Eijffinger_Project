@@ -28,19 +28,14 @@ class Itemsearchform extends Component {
         this.state = {  
             itemData: [],
             loading: false,
-            itemDataList: [],
-            messageClose: false,
-            productCode: 0
+            selectedItem: {},
+            itemCode: props.itemCode? props.itemCode: '',
+            selectedIndex: -1
         };
     }
-
     componentWillUnmount() {
         this._isMounted = false;
     }
-    componentDidMount() {
-    
-    }
-
     handleSubmit = (event) => {
         this._isMounted = true;
         this.setState({loading: true});
@@ -58,6 +53,7 @@ class Itemsearchform extends Component {
         }     
         Axios.post(API.PostItems, params, headers)
         .then(result => {
+            console.log("RESULT", result.data.value)
             if(this._isMounted){
                 this.setState({itemData: result.data.value, loading: false})
             }
@@ -68,68 +64,54 @@ class Itemsearchform extends Component {
             }
         })
     }
-
-    selectItemData = (ItemCode) => {
+    selectRow = (index) => {
         const { itemData } = this.state;
-        itemData.map((data, index)=>{
-            if(data.ItemCode===ItemCode){
-                if(data.checked){
-                    data.checked = false;
-                }else{
-                    data.checked = true;
-                }
-            }else{
-                data.checked = false;
-            }
-            return data;
-        });
-        let itemDataList = itemData.filter((item, key)=>item.checked===true);
-        this.props.onSetItemData(itemDataList);
-        this.setState({itemData: itemData, itemDataList: itemDataList});
+        this.setState({selectedIndex: index})
+        this.props.onSetItemData(itemData[index]);
+        this.setState({itemData: itemData, selectedItem: itemData[index]});
     }
-
     addOrderItem = () => {
-        // const { itemData } = this.state;      
-        // let itemDataList = itemData.filter((item, key)=>item.checked===true);
         this.props.onHide();
         // this.props.onSetItemData(itemDataList)
         // this.props.addOrder();
     }
-
-    onHide = () => {
-        this.props.onHide();
+    changeItemCode = (e) => {
+        console.log("dddd")
+        this.setState({itemCode: e.target.value});
+        // this.props.onSetItemCodeFlag();
     }
-    // codeChange = (event) => {
-    //     this.setState({
-    //         productCode: event.target.value
-    //     })
-    // }
 
     render(){   
-        const{ loading, itemData, itemDataList } = this.state;
-        const { itemCode, noItemMsg } = this.props;
+        const{ loading, itemData, selectedItem, selectedIndex } = this.state;
+        console.log("Selected", selectedIndex)
+        const { noItemMsg } = this.props;
         return (
             <div className = "slide-form__controls open" style={{height: "100%"}}>
                 <div style={{marginBottom:30}}>
-                    <i className="fas fa-times slide-close" style={{ fontSize: 20, cursor: 'pointer'}} onClick={()=>this.onHide()}></i>
+                    <i className="fas fa-times slide-close" style={{ fontSize: 20, cursor: 'pointer'}} onClick={()=>this.props.onHide()}></i>
                 </div>
                 <Form className="container place-order__search-item" onSubmit = { this.handleSubmit }>
                     <Col className="title add-product">{trls('Search_Item')}</Col>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="productcode" defaultValue={itemCode} placeholder={trls('Product_code')}/>
+                            {noItemMsg?(
+                                <Form.Control type="text" required name="productcode" value="" placeholder={trls('Product_code')} onChange={(e)=>this.changeItemCode(e)}/>
+                            ):(
+                                <Form.Control type="text" required name="productcode" value={this.state.itemCode} placeholder={trls('Product_code')} onChange={(e)=>this.changeItemCode(e)}/>
+                            )}
+                            
                             <label className="placeholder-label">{trls('Product_code')}</label>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="itemname" placeholder={trls('Item_Name')}/>
+                            <Form.Control type="text" name="itemname" placeholder={trls('Item_Name')} defaultValue="" />
                             <label className="placeholder-label">{trls('Item_Name')}</label>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="collection" placeholder={trls('Collection')}/>
+                            <Form.Control type="text" name="collection" placeholder={trls('Collection')} defaultValue="" />
                             <label className="placeholder-label">{trls('Collection')}</label>
                         </Col>
                     </Form.Group>
@@ -156,9 +138,19 @@ class Itemsearchform extends Component {
                         </thead>
                         {itemData && !loading &&(<tbody >
                             {
-                                itemData.map((data,i) =>(
-                                    <tr id={i} key={i} onClick={()=>this.selectItemData(data.ItemCode)} className={data.checked ? "item-search__tr-active" : "item-search__tr"} >
-                                        <td className={data.checked ? "item-search__tr-active" : "item-search__tr"}>{data.ItemCode}</td>
+                                itemData.map((data,index) =>(
+                                    <tr id={index} key={index} onClick={() => this.selectRow(index)} className={selectedIndex === index? "item-search__tr-active" : "item-search__tr"} >
+                                        <td>{data.ItemCode}</td>
+                                        <td>{data.ItemName}</td>
+                                        <td>{data.SalesUnit}</td>
+                                        <td>{data.U_DBS_COLLECTION}</td>
+                                        <td>
+                                            {data.Image&&(
+                                                <img src={ data.Image ? "data:image/png;base64," + data.Image : ''} className = "image__zoom" alt={data.ItemName}></img>
+                                            ) 
+                                            }
+                                        </td>
+                                        {/* <td className={data.checked ? "item-search__tr-active" : "item-search__tr"}>{data.ItemCode}</td>
                                         <td className={data.checked ? "item-search__tr-active" : "item-search__tr"}>{data.ItemName}</td>
                                         <td className={data.checked ? "item-search__tr-active" : "item-search__tr"}>{data.SalesUnit}</td>
                                         <td className={data.checked ? "item-search__tr-active" : "item-search__tr"}>{data.U_DBS_COLLECTION}</td>
@@ -167,7 +159,7 @@ class Itemsearchform extends Component {
                                                 <img src={ data.Image ? "data:image/png;base64," + data.Image : ''} className = "image__zoom" alt={data.ItemName}></img>
                                             ) 
                                             }
-                                        </td>
+                                        </td> */}
                                     </tr>
                             ))
                             }
@@ -188,7 +180,7 @@ class Itemsearchform extends Component {
                     )}
                 </div>
                     <Col className="place-order__search-itemtable">
-                        <Button type="button" disabled={!itemDataList.length || noItemMsg} onClick={()=>this.addOrderItem()}>{trls('Add_to_order')}</Button>
+                        <Button type="button" disabled={!Object.keys(selectedItem).length || noItemMsg} onClick={()=>this.addOrderItem()}>{trls('Add_to_order')}</Button>
                     </Col>
             </div>
         );

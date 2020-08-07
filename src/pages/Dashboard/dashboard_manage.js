@@ -104,7 +104,6 @@ class Dashboard extends Component {
                 if(result.data.value){
                     this.setState({lastOrdersData: result.data.value, lastOrdersFlag: true})
                 }
-               
             }
         })
         .catch(err => {
@@ -241,7 +240,7 @@ class Dashboard extends Component {
             lodingFlag = false;
         }
         let newsSubjectLang, newsTextLang = '';
-        var lang = window.localStorage.getItem('eijf_lang');
+        var lang = localStorage.getItem('eijf_lang');
         if(loginUser.Language===lang){
             newsSubjectLang = newsLanguage[loginUser.Language].subject;
             newsTextLang = newsLanguage[loginUser.Language].text;
@@ -442,7 +441,6 @@ class Dashboard extends Component {
                         />
                     )}
                 </Col>
-                
                 <Pageloadspiiner loading = {lodingFlag}/>
             </Container>
         );

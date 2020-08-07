@@ -113,7 +113,7 @@ class Deliveriesmanage extends Component {
         let documentLineData = [];
         deliveriesData.map((data, index)=>{
             data.DocumentLines.map((documentLine, key)=>{
-                if(documentLine.TreeType==="iSalesTree"){
+                // if(documentLine.TreeType==="iSalesTree"){
                     documentLineData = documentLine;
                     documentLineData.DocDate = data.DocDate;
                     documentLineData.CardName = data.CardName;
@@ -126,7 +126,7 @@ class Deliveriesmanage extends Component {
                     }
                     
                     returnDeliveriesData.push(documentLineData);
-                }
+                // }
                 return documentLine;
             })
             return data;
@@ -158,7 +158,7 @@ class Deliveriesmanage extends Component {
         return filterColum[0].show;
     }
 
-    showPlaceOrder = (docNumber, trackAndTrace) => {
+    showDeliveryDetail = (docNumber, trackAndTrace) => {
         history.push({
             pathname: '/delivery-detail/'+docNumber,
             state: { id: docNumber, newSubmit:true, trackAndTrace:  trackAndTrace}
@@ -265,7 +265,7 @@ class Deliveriesmanage extends Component {
                             {
                                 deliveriesData.map((data,i) =>(
                                     <tr id={i} key={i}>
-                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div id={data.id} className="action-div" onClick={()=>this.showPlaceOrder(data.DocNum, data.TrackAndTrace)}>{data.DocNum}</div></td>
+                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div id={data.id} className="action-div" onClick={()=>this.showDeliveryDetail(data.DocNum, data.TrackAndTrace)}>{data.DocNum}</div></td>
                                         <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
                                         <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenAmount > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenAmount > 0 ? "Open" : 'Send'}</div></td>
                                         <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemDescription}</td>

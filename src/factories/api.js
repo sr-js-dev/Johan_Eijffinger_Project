@@ -22,7 +22,7 @@ export default {
     PostLoginAsUser: `${BASEURL}/api/Token/LoginAs/`,
     GetCustomerData: `${BASEURL}/api/SapFactory/execute/get/GetCustomer`,
     GetItemData: `${BASEURL}/api/Items/StockItems/`,
-    GetItemDataByItemCode: `${BASEURL}/api/Items`,
+    GetItemDataByItemCode: `${BASEURL}/api/Items/`,
     GetDiscountPrice: `${BASEURL}/api/SapProxy/discountprice`,
     GetDashboardData: `${BASEURL}/api/Dashboard`,
     PostItems: `${BASEURL}/api/Items`,
@@ -43,7 +43,8 @@ export default {
     PostDeliveryDate: `${BASEURL}/api/SapProxy/deliverydate`,
     LoggedUserProfileUpdate: `${BASEURL}/api/Account/UpdateProfile`,
     GetItemByDeliveryWeek: `${BASEURL}/api/Orders/ItemByDeliveryWeek/`,
-    GetSampleItemByItemCode: `${BASEURL}/api/SampleItems`,
+    GetSampleItemByItemCode: `${BASEURL}/api/SampleItems/`,
     SearchSampleItem: `${BASEURL}/api/SampleItems`,
-    GetShippingAddresses: `${BASEURL}/api/ShippingAddress`
+    GetShippingAddresses: `${BASEURL}/api/ShippingAddress/GetByCustomerNumber/`,
+    PostShippingAddress: `${BASEURL}/api/ShippingAddress`
   };

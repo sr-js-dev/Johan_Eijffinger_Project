@@ -28,7 +28,6 @@ class Shippingaddressform extends Component {
 
     handleSubmit = (event) => {
         let shippingAddress = this.props.shippingAddress;
-        console.log("dddddd55", shippingAddress)
         this._isMounted = true;
         event.preventDefault();
         const clientFormData = new FormData(event.target);
@@ -36,9 +35,9 @@ class Shippingaddressform extends Component {
         for (let key of clientFormData.keys()) {
             data[key] = clientFormData.get(key);
         }
-        shippingAddress.address = data.address;
-        shippingAddress.city = data.city;
-        shippingAddress.zipCode = data.zipCode;
+        shippingAddress.hasOwnProperty("id") ? shippingAddress.address = data.address: shippingAddress.Street = data.address;
+        shippingAddress.hasOwnProperty("id") ? shippingAddress.city = data.city: shippingAddress.City = data.city;
+        shippingAddress.hasOwnProperty("id") ? shippingAddress.zipCode = data.zipCode: shippingAddress.ZipCode = data.zipCode;
         this.props.setShippingAddress(shippingAddress);
         this.props.onHide();
     }
@@ -63,19 +62,19 @@ class Shippingaddressform extends Component {
                 <Form onSubmit = { this.handleSubmit }>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="address" defaultValue={shippingAddress ? shippingAddress.address: ''} required placeholder={trls('Street')}/>
+                            <Form.Control type="text" name="address" defaultValue={shippingAddress.hasOwnProperty("id") ? shippingAddress.address: shippingAddress.Street} required placeholder={trls('Street')}/>
                             <label className="placeholder-label">{trls('Street')}</label>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="zipCode" defaultValue={shippingAddress ? shippingAddress.zipCode : ''} required placeholder={trls('Zipcode')}/>
+                            <Form.Control type="text" name="zipCode" defaultValue={shippingAddress.hasOwnProperty("id") ? shippingAddress.zipCode : shippingAddress.ZipCode} required placeholder={trls('Zipcode')}/>
                             <label className="placeholder-label">{trls('Zipcode')}</label>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="city" defaultValue={shippingAddress ? shippingAddress.city : ''} required placeholder={trls('City')}/>
+                            <Form.Control type="text" name="city" defaultValue={shippingAddress.hasOwnProperty("id") ? shippingAddress.city : shippingAddress.City} required placeholder={trls('City')}/>
                             <label className="placeholder-label">{trls('City')}</label>
                         </Col>
                     </Form.Group>

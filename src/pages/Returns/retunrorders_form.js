@@ -15,6 +15,7 @@ import Pagination from '../../components/pagination_order';
 import Pageloadspiiner from '../../components/page_load_spinner';
 import * as Auth from '../../factories/auth';
 import Sweetalert from 'sweetalert';
+
 const mapStateToProps = state => ({ 
     ...state.auth,
 });
@@ -68,32 +69,71 @@ class Returnordersform extends Component {
 
     componentDidMount() {
         this.getRecordNum(null);
-
-        $('.filter_orders').on( 'keyup', function () {
-            orderTable.search( this.value ).draw();
-        } );
-        $('#orders-table').dataTable().fnDestroy();
-        var orderTable = $('#orders-table').DataTable(
-            {
-                "language": {
-                    "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
-                    "zeroRecords": "Nothing found - sorry",
-                    "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
-                    "infoEmpty": "No records available",
-                    "infoFiltered": "(filtered from _MAX_ total records)",
-                    "search": trls('Search'),
-                    "paginate": {
-                        "previous": trls('Previous'),
-                        "next": trls('Next')
-                    }
-                },
-                "dom": 't<"bottom-datatable" lip>',
-                "columnDefs": [{
-                    "targets": [0, 3, 4, 6, 7],
-                    "orderable": false
-                }]
-            }
-        );
+        var editor;
+        
+// $(document).ready(function() {
+//     editor = new $.fn.dataTable.Editor( {   
+//         table: "#orders-table",
+//         fields: [ {
+//                 label: "Quantity:",
+//                 name: "quantity"
+//             }
+//         ]
+//     } );
+//     $('#orders-table').on( 'click', 'tbody td', function (e) {
+//         editor.inline( this );
+//     } );
+    $('.filter_orders').on( 'keyup', function () {
+        orderTable.search( this.value ).draw();
+    } );
+    $('#orders-table').dataTable().fnDestroy();
+    var orderTable = $('#orders-table').DataTable(
+        {
+            "language": {
+                "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
+                "zeroRecords": "Nothing found - sorry",
+                "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
+                "infoEmpty": "No records available",
+                "infoFiltered": "(filtered from _MAX_ total records)",
+                "search": trls('Search'),
+                "paginate": {
+                    "previous": trls('Previous'),
+                    "next": trls('Next')
+                }
+            },
+            "dom": 't<"bottom-datatable" lip>',
+            "columnDefs": [{
+                "targets": [0, 3, 4, 6, 7],
+                "orderable": false
+            }],
+            // columns: [
+            //     {
+            //         data: null,
+            //         defaultContent: '',
+            //         className: 'select-checkbox',
+            //         orderable: false
+            //     },
+            //     { data: 'Order'},
+            //     { data: 'Order_Date'},
+            //     { data: 'Status' },
+            //     { data: 'Product' },
+            //     { data: 'ItemCode' },
+            //     // { data: 'Quantity', render: $.fn.dataTable.render.number( ',', '.', 0, '$' ), className: 'editable' }
+            //     { data: 'Quantity', className: 'editable' }
+            // ],
+            // select: {
+            //     style:    'os',
+            //     selector: 'td:first-child'
+            // },
+            // buttons: [
+            //     { extend: 'create', editor: editor },
+            //     { extend: 'edit',   editor: editor },
+            //     { extend: 'remove', editor: editor }
+            // ]
+        }
+    );
+// })
+        
         
         $('.filter_deliveries').on( 'keyup', function () {
             deliveryTable.search( this.value ).draw();
@@ -119,11 +159,7 @@ class Returnordersform extends Component {
         );
     
     }
-    // myCallbackFunction = (updatedCell, updatedRow, oldValue) => {
-    //     // console.log("The new value for the cell is: " + updatedCell.data());
-    //     // console.log("The old value for that cell was: " + oldValue);
-    //     // console.log("The values for each cell in that row are: " + updatedRow.data());
-    // }
+
     getRecordNum = () => {
         this._isMounted = true;
         var settings = {

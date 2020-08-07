@@ -59,8 +59,8 @@ class Addnewform extends Component {
         let params = {
             "subjectDutch": data.subjectdutch,
             "subjectEnglish": data.subjectenglish,
-            "subjectGerman": data.subjectfrench,
-            "subjectFrench": data.subjectgerman,
+            "subjectGerman": data.subjectgerman,
+            "subjectFrench": data.subjectfrench,
             "textDutch": textDutch,
             "textEnglish": textEnglish,
             "textGerman": textGerman,
@@ -81,8 +81,8 @@ class Addnewform extends Component {
             params = {
                 "subjectDutch": data.subjectdutch,
                 "subjectEnglish": data.subjectenglish,
-                "subjectGerman": data.subjectfrench,
-                "subjectFrench": data.subjectgerman,
+                "subjectGerman": data.subjectgerman,
+                "subjectFrench": data.subjectfrench,
                 "textDutch": textDutch,
                 "textEnglish": textEnglish,
                 "textGerman": textGerman,

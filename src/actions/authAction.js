@@ -25,7 +25,7 @@ export const fetchLoginData = (params) => {
             let lang = response.claims.Language ? response.claims.Language : "Dutch"
             localStorage.setItem('eijf_lang',  lang);
             localStorage.setItem('eijf_label',  lang);
-            localStorage.setItem('eij_address_book', response.claims.U_EIJFF_PORTAL_ADRESBOEK)
+            localStorage.setItem('eij_address_book', response.claims.U_EIJFF_PORTAL_ADRESBOEK);
             dispatch(fetchLoginDataSuccess(response));
             history.push('/dashboard')
         })

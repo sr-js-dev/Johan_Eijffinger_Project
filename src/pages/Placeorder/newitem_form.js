@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Modal, Button, Form, Row, Col } from 'react-bootstrap';
+import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { trls } from '../../factories/translate';
 import "react-datepicker/dist/react-datepicker.css";
@@ -164,7 +164,7 @@ class Newitemform extends Component {
         }
         this.setState({pageLodingFlag: true})
         var settings = {
-            "url": API.GetItemDataByItemCode+'/'+code,
+            "url": API.GetItemDataByItemCode + code,
             "method": "GET",
             "headers": {
                 "Content-Type": "application/json",
@@ -174,7 +174,6 @@ class Newitemform extends Component {
         $.ajax(settings).done(function (response) {
         })
         .then(response => {
-            console.log("1234", response)
             this.setState({itemData: response, itemFlag: true, pageLodingFlag: false, itemEnable: true}, ()=>{
                 this.props.checkPatternCalculate(itemCodeData);
                 $(".fade").attr("tabindex","disable");
@@ -223,7 +222,7 @@ class Newitemform extends Component {
 
     render(){
         const { quantity, itemFlag, itemCode, pageLodingFlag, customerReference, itemEnable } = this.state;
-        const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag, slidePatternFormFlag, editPatternCalcuRow } = this.props;
+        const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag, slidePatternFormFlag, editPatternCalcuRow, noItemMsg } = this.props;
         return (
             <Modal
                 show={this.props.show}
@@ -243,9 +242,14 @@ class Newitemform extends Component {
                 <Form onSubmit = { this.handleSubmit }>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="itemcode" autoComplete="off" required disabled={itemSearchformFlag ? true : false} value={ setItemCodeFlag ? itemData.ItemCode : itemCode} className={!itemEnable ? "place-order__product-code active" : 'place-order__product-code'} placeholder={trls('Product_code')} onChange={(e)=>this.changeItemCode(e)} onBlur={()=>this.getItemData()}/>
+                            {noItemMsg?(
+                                <Form.Control type="text" name="itemcode" autoComplete="off" required disabled={itemSearchformFlag} value="" className={!itemEnable ? "place-order__product-code active" : 'place-order__product-code'} placeholder={trls('Product_code')} onChange={(e)=>this.changeItemCode(e)} onBlur={this.getItemData}/>
+                            ):(
+                                <Form.Control type="text" name="itemcode" autoComplete="off" required disabled={itemSearchformFlag} value={ setItemCodeFlag ? itemData.ItemCode : itemCode} className={!itemEnable ? "place-order__product-code active" : 'place-order__product-code'} placeholder={trls('Product_code')} onChange={(e)=>this.changeItemCode(e)} onBlur={this.getItemData}/>
+                            )}
+                            
                             <label className="placeholder-label">{trls('Product_code')}</label>
-                            <i className="fas fa-search place-an-order__loop" aria-hidden="true" onClick={()=>this.showSearchItem()}></i>
+                            <i className="fas fa-search place-an-order__loop" aria-hidden="true" onClick={this.showSearchItem}></i>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
@@ -263,8 +267,17 @@ class Newitemform extends Component {
                             <label className="placeholder-label">{trls('Customer_reference')}</label>
                         </Col>
                     </Form.Group>
+                    <Form.Group as={Row} controlId="formPlaintextPassword">
+                        <Col className="product-text">
+                            {noItemMsg&&(
+                            <Alert variant="secondary">
+                                <p>{noItemMsg}</p>
+                            </Alert>
+                            )}
+                        </Col>
+                    </Form.Group>
                     <Form.Group style={{textAlign:"center"}}>
-                        <Button type="Submit" style={{width: "10%"}}>Submit</Button>
+                        <Button type="Submit" style={{width: "10%"}} disabled={noItemMsg}>Submit</Button>
                     </Form.Group>
                 </Form>    
             </Modal.Body>
