@@ -206,7 +206,6 @@ export const TRANSLATIONS = {
       "Return #": 'Return #',
       "ReturnDate": 'ReturnDate',
       "Show All Users": 'Show All Users',
-      "Reference": 'Reference',
       "Add return": 'Add return',
       "Return": 'Return',
       "Are you sure?": 'Are you sure?',
@@ -214,7 +213,6 @@ export const TRANSLATIONS = {
     },
     Dutch: {  
       "NoItemMessage": "Artikel is niet meer leverbaarr",
-      "Reference": "Referentie",
       "AddressBook": "Adresboek",
       "TrackAndTrace": "TrackEnTrace",
       "Username": 'Gebruikersnaam',
@@ -427,7 +425,6 @@ export const TRANSLATIONS = {
     }, 
     German: {
       "NoItemMessage": "Artikel is nicht mehr lieferbahr",
-      "Reference": "Referenz",
       "AddressBook": "Adressbuch",
       "TrackAndTrace": "Sendungsverfolgung",
       "Username": 'Nutzername',
@@ -640,7 +637,6 @@ export const TRANSLATIONS = {
     },
     French: {
       "NoItemMessage": "l’article n’est plus disponsible",
-      "Reference": "Référence",
       "AddressBook": "Carnet d'adresses",
       "TrackAndTrace": "Suivre et tracer",
       "Username": "Nom d'utilisateur",

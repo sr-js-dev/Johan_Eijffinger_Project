@@ -42,7 +42,7 @@ class Newitemform extends Component {
     
     componentDidMount() {
         $(document).on('keypress', ':input', function (e) {
-            if (e.which == 13) e.preventDefault();
+            if (e.which === 13) e.preventDefault();
         });
     }
 
@@ -222,7 +222,8 @@ class Newitemform extends Component {
 
     render(){
         const { quantity, itemFlag, itemCode, pageLodingFlag, customerReference, itemEnable } = this.state;
-        const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag, slidePatternFormFlag, editPatternCalcuRow, noItemMsg } = this.props;
+        const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag, editPatternCalcuRow, noItemMsg } = this.props;
+        // const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag, slidePatternFormFlag, editPatternCalcuRow, noItemMsg } = this.props;
         return (
             <Modal
                 show={this.props.show}

@@ -10,7 +10,7 @@ import Axios from 'axios';
 // import Select from 'react-select';
 import Pageloadspiiner from '../../components/page_load_spinner';
 import Sweetalert from 'sweetalert';
-import common from '../../reducers/common';
+// import common from '../../reducers/common';
 
 const mapStateToProps = state => ({ 
     ...state.auth,

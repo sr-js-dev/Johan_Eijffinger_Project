@@ -70,7 +70,6 @@ class Deliveriesmanage extends Component {
             if(this._isMounted){
                 this.setState({loading:false});
                 // if(result.data.value.length){
-                    console.log("999", result.data.value)
                     let deliveriesDataList = this.setDeliveriesData(result.data.value);
                     if(!data){
                         this.setState({deliveriesData: deliveriesDataList, originFilterData: deliveriesDataList});

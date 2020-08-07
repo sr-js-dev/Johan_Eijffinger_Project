@@ -6,15 +6,15 @@ import API from '../../factories/api';
 import SessionManager from '../../factories/session_manage';
 import Axios from 'axios';
 import $ from 'jquery';
-import { BallBeat } from 'react-pure-loaders';
+// import { BallBeat } from 'react-pure-loaders';
+import Sweetalert from 'sweetalert';
 import "react-datepicker/dist/react-datepicker.css";
 import 'datatables.net';
 import history from '../../history';
 import * as Common from '../../factories/common';
-import Pagination from '../../components/pagination_order';
-import Pageloadspiiner from '../../components/page_load_spinner';
+// import Pagination from '../../components/pagination_order';
+// import Pageloadspiiner from '../../components/page_load_spinner';
 import * as Auth from '../../factories/auth';
-import Sweetalert from 'sweetalert';
 
 const mapStateToProps = state => ({ 
     ...state.auth,
@@ -30,9 +30,12 @@ class Returnordersform extends Component {
         super(props);
         this.state = {  
             // loading: false,
-            ordersData: [],
+            ordersData: props.ordersData? props.ordersData: [],
             originFilterData: [],
-            deliveriesData: [],
+            currentUserInfo: Auth.getLoggedUserInfo(),
+            orderQuantity: {},
+            deliveryQuantity: {},
+            deliveriesData: props.deliveriesData? props.deliveriesData: [],
             filterColunm: [
                 {"label": '', "value": "", "type": 'text', "show": true},
                 {"label": 'Order', "value": "DocNum", "type": 'text', "show": true},
@@ -55,7 +58,7 @@ class Returnordersform extends Component {
                 {"label": 'Batch', "value": "BatchNumbers", "type": 'text', "show": true},
                 {"label": 'Action', "value": "Action", "type": 'text', "show": true},
             ],
-            pageLodingFlag: false,
+            // pageLodingFlag: false,
             pages:[{"value":"all","label":"all"}, {"value":5,"label":5}, {"value":10,"label":10}, {"value":20,"label":20}, {"value":30,"label":30}, {"value":40,"label":40}],
             obj: this,
             recordNum: 0,
@@ -69,20 +72,21 @@ class Returnordersform extends Component {
 
     componentDidMount() {
         this.getRecordNum(null);
-        var editor;
+        let orderData = this.state.ordersData;
+        var orderQuantity = {};
+        orderData.map((data, index) => {
+            orderQuantity["order_quantity_"+index] = data.Quantity;
+            return orderQuantity
+        })
+        this.setState({orderQuantity: orderQuantity})   
         
-// $(document).ready(function() {
-//     editor = new $.fn.dataTable.Editor( {   
-//         table: "#orders-table",
-//         fields: [ {
-//                 label: "Quantity:",
-//                 name: "quantity"
-//             }
-//         ]
-//     } );
-//     $('#orders-table').on( 'click', 'tbody td', function (e) {
-//         editor.inline( this );
-//     } );
+        let deliveriesData = this.state.deliveriesData;
+        var deliveryQuantity = {};
+        deliveriesData.map((data, index) => {
+            deliveryQuantity["delivery_quantity_"+index] = data.Quantity;
+            return deliveryQuantity
+        })
+        this.setState({deliveryQuantity: deliveryQuantity}) 
     $('.filter_orders').on( 'keyup', function () {
         orderTable.search( this.value ).draw();
     } );
@@ -106,34 +110,8 @@ class Returnordersform extends Component {
                 "targets": [0, 3, 4, 6, 7],
                 "orderable": false
             }],
-            // columns: [
-            //     {
-            //         data: null,
-            //         defaultContent: '',
-            //         className: 'select-checkbox',
-            //         orderable: false
-            //     },
-            //     { data: 'Order'},
-            //     { data: 'Order_Date'},
-            //     { data: 'Status' },
-            //     { data: 'Product' },
-            //     { data: 'ItemCode' },
-            //     // { data: 'Quantity', render: $.fn.dataTable.render.number( ',', '.', 0, '$' ), className: 'editable' }
-            //     { data: 'Quantity', className: 'editable' }
-            // ],
-            // select: {
-            //     style:    'os',
-            //     selector: 'td:first-child'
-            // },
-            // buttons: [
-            //     { extend: 'create', editor: editor },
-            //     { extend: 'edit',   editor: editor },
-            //     { extend: 'remove', editor: editor }
-            // ]
         }
     );
-// })
-        
         
         $('.filter_deliveries').on( 'keyup', function () {
             deliveryTable.search( this.value ).draw();
@@ -223,20 +201,24 @@ class Returnordersform extends Component {
             }
             return item;
         })
+        // ordersData = ordersData.filter(function(item) {
+        //     return item.checked;
+        // })
         this.setState({ordersData: ordersData});
     }
-    changeDeliveryCheck = (value, id) => {
+    changeDeliveryCheck = (value, index) => {
         let deliveriesData = this.state.deliveriesData;
-        deliveriesData.map((item, index)=>{
-            if(item.id__===id){
-                item.checked=value;
-            }
-            return item;
-        })
+        // deliveriesData.map((item, index)=>{
+        //     if(item.id__===id){
+        //         item.checked=value;
+        //     }
+        //     return item;
+        // })
+        deliveriesData[index].checked = value;
         this.setState({deliveriesData: deliveriesData});
     }
     orderReturn = () => {
-        const { patternRowId } = this.props;
+        // const { patternRowId } = this.props;
         Sweetalert({
             title: trls("Are you sure?"),
             icon: "warning",
@@ -245,59 +227,73 @@ class Returnordersform extends Component {
           })
           .then((willDelete) => {
             if (willDelete) {
-                this.returnOrderLine(patternRowId);
-            //     Sweetalert("Success!", {
-            //     icon: "success",
-            //   });
+                // this.returnOrderLine(patternRowId);
+                this.returnOrderLine();
             } else {
             }
         });
     }
 
     returnOrderLine = () => {
+        let totalData = [];
+        let documentLines = [];
         let ordersData = this.state.ordersData;
+        let deliveriesData = this.state.deliveriesData;
+        
+        let orderQuantity = this.state.orderQuantity;
+        let deliveryQuantity = this.state.deliveryQuantity;
+        
+        ordersData.map((data, index) => {
+            data.Quantity = orderQuantity[(Object.keys(orderQuantity))[index]];
+            return data;
+        })
         ordersData = ordersData.filter(function(item, key) {
             return item.checked;
         })
-        let orderLenght = ordersData.length;
-        let documentLineArray = [];
-        let lineArray = [];
-        ordersData.map((data, index)=>{
-            documentLineArray = [];
-            lineArray = [];
-            lineArray = {
+        
+        deliveriesData.map((data, index) => {
+            data.Quantity = deliveryQuantity[(Object.keys(deliveryQuantity))[index]];
+            return data;
+        })
+        
+        deliveriesData = deliveriesData.filter(function(item, key) {
+            return item.checked;
+        })
+        totalData = [...ordersData, ...deliveriesData];
+
+        totalData.map(data => {
+            let temp = {};
+            temp = {
                 ItemCode: data.ItemCode,
                 Quantity: data.Quantity,
-                Price: data.Price
+                UnitPrice: data.Price,
+                TaxCode: data.TaxCode ? data.TaxCode : null,
             }
-            documentLineArray.push(lineArray);
-            let params = {
-                "requestData": {
-                    "CardCode": data.CardCode,
-                    "DocDate": Common.formatDate1(data.DocDate),
-                    "DocDueDate": Common.formatDate1(data.DocDueDate),
-                    "AddressExtension": {
-                    },
-                    "DocumentLines": documentLineArray
-                },
-                "parameters": {
-                }
+            documentLines.push(temp);
+            return documentLines;
+        })
+        let params = {
+            "requestData": {
+                "CardCode": this.state.currentUserInfo.SapCustomerCode,
+                // "DocDate": Common.formatDate1(data.DocDate),
+                // "DocDueDate": Common.formatDate1(data.DocDueDate),
+                // "AddressExtension": {
+                // },
+                "DocumentLines": documentLines
+            },
+            "parameters": {
             }
-            var headers = SessionManager.shared().getAuthorizationHeader();
-            Axios.post(API.ReturnOrder, params, headers)
-            .then(result => {
-                if(index===orderLenght-1){
-                    Sweetalert("Success!", {
-                        icon: "success",
-                    });
-                }
-                            })
-            .catch(err => {
-                if(err.response.status===401){
-                    history.push('/login')
-                }
-            })
-            return data;
+        }
+        var headers = SessionManager.shared().getAuthorizationHeader();
+        Axios.post(API.PosReturnRequestData, params, headers)
+        .then(response => {
+            console.log("result", response);
+            this.props.onHide();
+        })
+        .catch(err => {
+            if(err.response.status===401){
+                history.push('/login')
+            }
         })
     }
     showPlaceOrder = (orderId) => {
@@ -312,10 +308,37 @@ class Returnordersform extends Component {
             state: { id: docNumber, newSubmit:true, trackAndTrace:  trackAndTrace}
           })
     }
+    orderQuantityChange = (e, originalQuantity) => {
+        let temp = {};
+        temp = this.state.orderQuantity;
+        if(Number(e.target.value) > Number(originalQuantity)){
+            temp[e.target.name] = originalQuantity;
+        } else {
+            temp[e.target.name] = e.target.value;
+        }
+        console.log("TEMP", temp)
+        this.setState({
+            orderQuantity: temp
+        })
+    }
+
+    deliveryQuantityChange = (e, originalQuantity) => {
+        let temp = {};
+        temp = this.state.deliveryQuantity;
+        if(Number(e.target.value) > Number(originalQuantity)){
+            temp[e.target.name] = originalQuantity;
+        } else {
+            temp[e.target.name] = e.target.value;
+        }
+        this.setState({
+            deliveryQuantity: temp
+        })
+    }
 
     render(){
-        const {filterColunm, pageLodingFlag, filterColunmDeliveries} = this.state;
-        const { deliveriesData, ordersData} = this.props;
+        // const {filterColunm, pageLodingFlag, filterColunmDeliveries} = this.state;
+        const {filterColunm, filterColunmDeliveries, ordersData, deliveriesData, orderQuantity, deliveryQuantity} = this.state;
+        // const { deliveriesData, ordersData} = this.props;
         return (
             <Modal
                 show={this.props.show}
@@ -335,7 +358,7 @@ class Returnordersform extends Component {
                         <div className="orders">
                             <Row>
                                 <Col sm={6} className="return-order-form_header">
-                                    <Button variant="primary" onClick = {()=>this.orderReturn()}><i className="fas fa-undo add-icon"></i>{trls('Return')}</Button> 
+                                    <Button variant="primary" onClick = {this.orderReturn}><i className="fas fa-undo add-icon"></i>{trls('Return')}</Button> 
                                 </Col>
                                 <Col sm={6} className="has-search">
                                     <div style={{display: 'flex', float: 'right'}}>
@@ -358,23 +381,23 @@ class Returnordersform extends Component {
                                             )}
                                         </tr>
                                     </thead>
-                                    {ordersData &&(
                                     <tbody >
                                         {
                                             ordersData.map((data,i) =>(
-                                                <tr id={i} key={i}>
+                                                <tr id={i} key={i} className={data.checked? "item-search__tr-active" : "item-search__tr"}>
                                                     <td><Form.Check type="checkbox" onChange={(evt)=>this.changeOrderCheck(evt.target.checked, data.id__)}/></td>
                                                     <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div id={data.id} className="action-div" onClick={()=>this.showPlaceOrder(data.DocNum)}>{data.DocNum}</div></td>
                                                     <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
                                                     <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenQty > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenQty > 0 ? "Open" : 'Send'}</div></td>
                                                     <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemName}</td>
                                                     <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.ItemCode}</td>
-                                                    <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
+                                                    {/* <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td> */}
+                                                    <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}><Form.Control type="text" name={"order_quantity_"+i} required disabled={!data.checked} value={!data.checked? data.Quantity: orderQuantity["order_quantity_"+i]} onChange={(e) => this.orderQuantityChange(e, data.Quantity)} /></td>
                                                     <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
                                                 </tr>
                                             ))
                                         }
-                                    </tbody>)}
+                                    </tbody>
                                 </table>
                                 {/* {!this.state.filterDataFlag&&(
                                     <Pagination
@@ -420,14 +443,14 @@ class Returnordersform extends Component {
                                         <tbody>
                                             {
                                                 deliveriesData.map((data,i) =>(
-                                                    <tr id={i} key={i}>
-                                                        <td><Form.Check type="checkbox" onChange={(evt)=>this.changeDeliveryCheck(evt.target.checked, data.id__)}/></td>
+                                                    <tr id={i} key={i} className={data.checked? "item-search__tr-active" : "item-search__tr"}>
+                                                        <td><Form.Check type="checkbox" onChange={(evt)=>this.changeDeliveryCheck(evt.target.checked, i)}/></td>
                                                         <td className={!this.showColumnDeliveries(filterColunmDeliveries[0].label) ? "filter-show__hide" : ''}><div id={data.id} className="action-div" onClick={()=>this.showDeliveryDetail(data.DocNum, data.TrackAndTrace)}>{data.DocNum}</div></td>
                                                         <td className={!this.showColumnDeliveries(filterColunmDeliveries[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
                                                         <td className={!this.showColumnDeliveries(filterColunmDeliveries[2].label) ? "filter-show__hide" : ''}><div className={data.OpenAmount > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenAmount > 0 ? "Open" : 'Send'}</div></td>
                                                         <td className={!this.showColumnDeliveries(filterColunmDeliveries[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemDescription}</td>
                                                         <td className={!this.showColumnDeliveries(filterColunmDeliveries[4].label) ? "filter-show__hide" : ''}>{data.ItemCode}</td>
-                                                        <td className={!this.showColumnDeliveries(filterColunmDeliveries[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
+                                                        <td className={!this.showColumnDeliveries(filterColunmDeliveries[5].label) ? "filter-show__hide" : ''}><Form.Control type="text" name={"delivery_quantity_"+i} required disabled={!data.checked} value={!data.checked? data.Quantity: deliveryQuantity["delivery_quantity_"+i]} onChange={(e) => this.deliveryQuantityChange(e, data.Quantity)} /></td>
                                                         <td className={!this.showColumnDeliveries(filterColunmDeliveries[6].label) ? "filter-show__hide" : ''}>{data.NumAtCard}</td>
                                                         <td className={!this.showColumnDeliveries(filterColunmDeliveries[7].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
                                                         <td className={!this.showColumnDeliveries(filterColunmDeliveries[8].label) ? "filter-show__hide" : ''}>

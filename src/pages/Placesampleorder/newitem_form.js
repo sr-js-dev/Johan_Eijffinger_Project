@@ -42,7 +42,7 @@ class Newitemform extends Component {
     
     componentDidMount() {
         $(document).on('keypress', ':input', function (e) {
-            if (e.which == 13) e.preventDefault();
+            if (e.which === 13) e.preventDefault();
         });
     }
 
@@ -225,7 +225,7 @@ class Newitemform extends Component {
     render(){
         const { quantity, itemFlag, itemCode, pageLodingFlag, customerReference, itemEnable } = this.state;
         // const { itemQuantityData, itemData, patternCalculateCheck, setItemCodeFlag, itemSearchformFlag, slidePatternFormFlag, editPatternCalcuRow } = this.props;
-        const { itemQuantityData, itemData, setItemCodeFlag, itemSearchformFlag, slidePatternFormFlag, editPatternCalcuRow } = this.props;
+        const { itemQuantityData, itemData, setItemCodeFlag, itemSearchformFlag, editPatternCalcuRow } = this.props;
         return (
             <Modal
                 show={this.props.show}
@@ -245,7 +245,7 @@ class Newitemform extends Component {
                 <Form onSubmit = { this.handleSubmit }>
                     <Form.Group as={Row} controlId="formPlaintextPassword">
                         <Col className="product-text">
-                            <Form.Control type="text" name="itemcode" autoComplete="off" required disabled={itemSearchformFlag} value={ setItemCodeFlag ? itemData.ItemCode : itemCode} className={!itemEnable ? "place-order__product-code active" : 'place-order__product-code'} placeholder={trls('Product_code')} onChange={(e)=>this.changeItemCode(e)} onBlur={()=>this.getItemData()}/>
+                            <Form.Control type="text" name="itemcode" autoComplete="off" required disabled={itemSearchformFlag} value={ setItemCodeFlag ? itemData.ItemCode : itemCode} className={!itemEnable ? "place-order__product-code active" : 'place-order__product-code'} placeholder={trls('Product_code')} onChange={(e)=>this.changeItemCode(e)} onBlur={this.getItemData}/>
                             <label className="placeholder-label">{trls('Product_code')}</label>
                             <i className="fas fa-search place-an-order__loop" aria-hidden="true" onClick={()=>this.showSearchItem()}></i>
                         </Col>

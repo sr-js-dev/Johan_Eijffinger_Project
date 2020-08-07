@@ -1326,7 +1326,13 @@ table.dataTable.no-footer {
   font-weight: bold;
   cursor: pointer;
 }
-
+.search__tr-active {
+  background-color: #9e9d99;
+  color: #000 !important;
+  font-size: 14px !important;
+  font-weight: bold;
+  cursor: pointer;
+}
 .place-pattern_calculate {
   padding: 25px;
   width: 60%;

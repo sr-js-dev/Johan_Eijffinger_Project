@@ -17,7 +17,7 @@ import history from '../../history';
 import Orderdetailform from './orderdetail_form';
 import Shippingaddressform from './shippingaddress_form';
 import Newitemform from './newitem_form';
-import currentWeekNumber from 'current-week-number';
+// import currentWeekNumber from 'current-week-number';
 import Sweetalert from 'sweetalert';
 import * as authAction  from '../../actions/authAction';
 
@@ -470,14 +470,14 @@ class Placemanage extends Component {
             slideItemFormFlag,
             slidePatternFormFlag,
             patternCalculateCheck,
-            patternCalcuRowData,
+            // patternCalcuRowData,
             itemData,
             setItemCodeFlag,
             editOrderRowFlag,
             editPatternCalcuRow,
             editOrderRowData,
             showNewItemModal,
-            editRowId,
+            // editRowId,
             noItemMessage
         } = this.state; 
         let showPrice = localStorage.getItem('eijf_showPrice')==="true";

@@ -14,7 +14,7 @@ import * as Common from '../../factories/common';
 import Pageloadspiiner from '../../components/page_load_spinner';
 import Sweetalert from 'sweetalert';
 import * as authAction  from '../../actions/authAction';
-import Pagination from '../../components/pagination_order';
+// import Pagination from '../../components/pagination_order';
 import * as Auth from '../../factories/auth';
 import Filtercomponent from '../../components/filtercomponent';
 const mapStateToProps = state => ({ 

@@ -6,7 +6,6 @@ import SessionManager from '../../factories/session_manage';
 import API from '../../factories/api'
 import Axios from 'axios';
 import { trls } from '../../factories/translate';
-import * as Common from '../../factories/common';
 import { BallBeat } from 'react-pure-loaders';
 import history from '../../history';
 

@@ -11,6 +11,7 @@ export default {
     PostActivateUser: `${BASEURL}/api/users/ActivateUser/`,
     PostForgotPassEmail: `${BASEURL}/api/Account/ForgotPassword/`,
     GetDeliveriesData: `${BASEURL}/api/SapFactory/execute/get/GetDeliveries`,
+    PosReturnRequestData: `${BASEURL}/api/SapFactory/execute/post/ReturnRequest`,
     GetReturnsData: `${BASEURL}/api/SapFactory/execute/get/GetReturns`,
     GetSalesInvoicesData: `${BASEURL}/api/SapFactory/execute/get/SalesInvoices`,
     GetCreditNotesData: `${BASEURL}/api/SapFactory/execute/get/CreditNotes`,

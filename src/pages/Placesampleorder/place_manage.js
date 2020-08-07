@@ -8,16 +8,16 @@ import * as Common from '../../factories/common';
 import Axios from 'axios';
 import * as Auth from '../../factories/auth'
 import SessionManager from '../../factories/session_manage';
-import $ from 'jquery';
+// import $ from 'jquery';
 import { BallBeat } from 'react-pure-loaders';
 import ItemSearchform from './Item_searchform';
-import Patterncalculateform from './patterncalculate_form';
+// import Patterncalculateform from './patterncalculate_form';
 import Pageloadspiiner from '../../components/page_load_spinner';
 import history from '../../history';
 import Orderdetailform from './orderdetail_form';
 import Shippingaddressform from './shippingaddress_form';
 import Newitemform from './newitem_form';
-import currentWeekNumber from 'current-week-number';
+// import currentWeekNumber from 'current-week-number';
 import Sweetalert from 'sweetalert';
 import * as authAction  from '../../actions/authAction';
 
@@ -425,7 +425,7 @@ class Placesamplemanage extends Component {
             itemPriceData, 
             pageLodingFlag, 
             billAddress, 
-            setSippingAddress,
+            // setSippingAddress,
             itemQuantityData,
             rows,
             selectedShippingAddress,
@@ -433,14 +433,14 @@ class Placesamplemanage extends Component {
             slidePatternFormFlag,
             setShippingAddress,
             // patternCalculateCheck,
-            patternCalcuRowData,
+            // patternCalcuRowData,
             itemData,
             setItemCodeFlag,
             editOrderRowFlag,
             editPatternCalcuRow,
             editOrderRowData,
             showNewItemModal,
-            editRowId
+            // editRowId
         } = this.state; 
         let showPrice = localStorage.getItem('eijf_showPrice')==="true";
         if(itemPriceData){
