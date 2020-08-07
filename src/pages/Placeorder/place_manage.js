@@ -91,7 +91,7 @@ class Placemanage extends Component {
 
     componentDidMount() {
         this.getCustomerData();
-        this.getShippingAddresses();
+        this.getShippingAddresses(null);
     }
 
     getCustomerData = () => {
@@ -119,7 +119,7 @@ class Placemanage extends Component {
             }
         });
     }
-    getShippingAddresses = () => {
+    getShippingAddresses = (addressInfo) => {
         this._isMounted = true;
         var headers = SessionManager.shared().getAuthorizationHeader();
         Axios.get(API.GetShippingAddresses + this.state.currentUserInfo.SapCustomerCode, headers)
@@ -130,8 +130,12 @@ class Placemanage extends Component {
                     var sapAddressesForOptions = [];
                     var realShippingAddresses = [];
                     var realSapAddresses = [];
+                    var savedIndex = 0;
                     if(response.data.shippingAddress !== null){
                         realShippingAddresses = response.data.shippingAddress;
+                        if(addressInfo !== null){
+                            savedIndex = realShippingAddresses.findIndex(addr => JSON.stringify(addr) === JSON.stringify(addressInfo) );
+                        }
                         shippingAddressesForOptions = response.data.shippingAddress.map( data => ({value: "ship"+data.id, label: data.address+" "+data.zipCode+" "+data.city+" "+data.country}));
                     }
                     if(response.data.sapAddresses !== null){
@@ -140,19 +144,21 @@ class Placemanage extends Component {
                     }
                     let addressesForOptions = [...shippingAddressesForOptions, ...sapAddressesForOptions];
                     let realAddresses = [...realShippingAddresses, ...realSapAddresses];
+                    
                     this.setState({
                         shippingAddresses: realAddresses,
-                        setShippingAddress: realAddresses[0],
+                        setShippingAddress: realAddresses[savedIndex],
                         shippingAddressOption: addressesForOptions,
-                        selectedShippingAddress: addressesForOptions[0],
+                        selectedShippingAddress: addressesForOptions[savedIndex],
                     })
                 }
             }
         })
         .catch(err => {
-            if(err.response.status===401){
-                history.push('/login')
-            }
+            console.log("error", err)
+            // if(err.response.status===401){
+            //     history.push('/login')
+            //}
         });
     }
     getShippingAddressOptionData = (optionData) => {
@@ -435,12 +441,12 @@ class Placemanage extends Component {
             address: setShippingAddress.hasOwnProperty("id") ? setShippingAddress.address: setShippingAddress.Street,
             zipCode: setShippingAddress.hasOwnProperty("id") ? setShippingAddress.zipCode: setShippingAddress.ZipCode,
             city: setShippingAddress.hasOwnProperty("id") ? setShippingAddress.city: setShippingAddress.City,
-            country: setShippingAddress.hasOwnProperty("id") ? setShippingAddress.city: setShippingAddress.Country,
+            country: setShippingAddress.hasOwnProperty("id") ? setShippingAddress.country: setShippingAddress.Country,
         };
         Axios.post(API.PostShippingAddress,params, headers)
         .then(response => {
             if(this._isMounted){
-                this.getShippingAddresses();
+                this.getShippingAddresses(response.data);
             }
         })
         .catch(err => {
