@@ -34,6 +34,8 @@ class Ordermanage extends Component {
             loading: false,
             ordersData: [],
             originFilterData: [],
+            top: 0,
+            skip: 0,
             filterColunm: [
                 {"label": 'Order', "value": "DocNum", "type": 'text', "show": true},
                 {"label": 'Order_Date', "value": "DocDate", "type": 'date', "show": true},
@@ -58,33 +60,32 @@ class Ordermanage extends Component {
     }
 
     componentDidMount() {
-        this.getRecordNum(null);
-        this.getOrdersData(5, 1);
-       
+        // this.getRecordNum(null);
+        this.getOrdersData(null, null, null);
     }
 
-    getRecordNum = () => {
-        this._isMounted = true;
-        var settings = {
-            "url": API.GetOrdersData,
-            "method": "POST",
-            "headers": {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer "+Auth.getUserToken(),
-            },
-            "data": JSON.stringify({"top":5})
-        }
-        $.ajax(settings).done(function (response) {
-        })
-        .then(response => {
-            this.setState({recordNum: response['@odata.count']})
-        })
-        .catch(err => {
-            if(err.response.status===401){
-                history.push('/login')
-            }
-        });
-    }
+    // getRecordNum = () => {
+    //     this._isMounted = true;
+    //     var settings = {
+    //         "url": API.GetOrdersData,
+    //         "method": "POST",
+    //         "headers": {
+    //             "Content-Type": "application/json",
+    //             "Authorization": "Bearer "+Auth.getUserToken(),
+    //         },
+    //         "data": JSON.stringify({"top":5})
+    //     }
+    //     $.ajax(settings).done(function (response) {
+    //     })
+    //     .then(response => {
+    //         this.setState({recordNum: response['@odata.count']})
+    //     })
+    //     .catch(err => {
+    //         if(err.response.status===401){
+    //             history.push('/login')
+    //         }
+    //     });
+    // }
     // filter module
     filterOptionData = (filterOption) =>{
         let dataA = []
@@ -92,9 +93,9 @@ class Ordermanage extends Component {
         if(!filterOption.length){
             dataA=null;
         }
-        this.getOrdersData(5, 1, dataA);
+        this.getOrdersData(null, null, dataA);
     }
-
+    
     getOrdersData (pageSize, page, data) {
         this._isMounted = true;
         this.setState({loading: true});
@@ -105,56 +106,94 @@ class Ordermanage extends Component {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer "+Auth.getUserToken(),
             },
-            "data": JSON.stringify({"top":pageSize,"skip":page})
+            "data": pageSize !== null && page !== null ? JSON.stringify({"top":pageSize,"skip":page}) : JSON.stringify({})
         }
         $.ajax(settings).done(function (response) {
         })
         .then(response => {
-            
             if(this._isMounted){
-                console.log("dddddd", response.value)
                 if(!data){
                     this.setState({ordersData: response.value, originFilterData: response.value});
                 }else{
                     this.setState({ordersData: data});
                 }
-                this.setState({loading:false})
-                // $('#order-table').dataTable().fnDestroy();
-                // if(this.state.filterDataFlag){
-                    $('.filter').on( 'keyup', function () {
-                        table.search( this.value ).draw();
-                    } );
-                    
-                    $('#order-table').dataTable().fnDestroy();
-                    
-                    var table = $('#order-table').DataTable(
-                        {
-                            "language": {
-                                "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
-                                "zeroRecords": "Nothing found - sorry",
-                                "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
-                                "infoEmpty": "No records available",
-                                "infoFiltered": "(filtered from _MAX_ total records)",
-                                "search": trls('Search'),
-                                "paginate": {
-                                  "previous": trls('Previous'),
-                                  "next": trls('Next')
-                                }
-                            },
-                            // "searching": false,
-                            "dom": 't<"bottom-datatable" lip>',
-                            // "ordering": false
-                            "columnDefs": [{
-                                "targets": [2, 3, 5, 6, 7],
-                                "orderable": false
-                            }]
-                        }
-                    );
-                // }
+                this.setState({loading:false});
+                $('.filter').on( 'keyup', function () {
+                    table.search( this.value ).draw();
+                } );
+                
+                $('#order-table').dataTable().fnDestroy();
+                
+                var table = $('#order-table').DataTable(
+                    {
+                        "language": {
+                            "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
+                            "zeroRecords": "Nothing found - sorry",
+                            "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
+                            "infoEmpty": "No records available",
+                            "infoFiltered": "(filtered from _MAX_ total records)",
+                            "search": trls('Search'),
+                            "paginate": {
+                              "previous": trls('Previous'),
+                              "next": trls('Next')
+                            }
+                        },
+                        // "searching": false,
+                        "dom": 't<"bottom-datatable" lip>',
+                        // "ordering": false
+                        "columnDefs": [{
+                            "targets": [2, 3, 5, 6, 7],
+                            "orderable": false
+                        }],
+                        // "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+                    }
+                );
+                $('#order-table').on( 'length.dt', ( e, settings, len ) => {
+                   
+                    this.setState({
+                        top: len
+                    })
+                    let skip = len * this.state.skip;
+                    this.getERPOrdersData(len, skip,  null);
+                } );
+                $('#order-table').on( 'page.dt', () => {
+                    var info = table.page.info();
+                    // console.log("L", info.page)
+                    this.setState({
+                        skip: info.page
+                    })
+                    let skip = this.state.top * info.page;
+                    let top = this.state.top;
+                    this.getERPOrdersData(top, skip,  null);
+                } );
             }
         });
     }
-
+    getERPOrdersData (pageSize, page, data) {
+        this._isMounted = true;
+        this.setState({loading: true});
+        var settings = {
+            "url": API.GetOrdersData,
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+            },
+            "data": pageSize !== null && page !== null ? JSON.stringify({"top":pageSize,"skip":page}) : JSON.stringify({})
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            if(this._isMounted){
+                if(!data){
+                    this.setState({ordersData: response.value, originFilterData: response.value});
+                }else{
+                    this.setState({ordersData: data});
+                }
+                this.setState({loading:false});
+            }
+        });
+    }
     showOrderDetail = (orderId) => {
         history.push({
             pathname: '/order-detail/'+orderId,
@@ -397,44 +436,47 @@ class Ordermanage extends Component {
                         )}
                     </Row>
                     <div className="table-responsive credit-history">
-                        <table id="order-table" className="place-and-orders__table table" width="100%">
-                        <thead>
-                            <tr>
-                                {filterColunm.map((item, key)=>(
-                                    <th className={!item.show ? "filter-show__hide" : ''} key={key} style={item.value==="Action" ? {width: 25} : {}}>
-                                        {trls(item.label) ? trls(item.label) : ''}
-                                        {/* <Contextmenu
-                                            triggerTitle = {item.label}
-                                            addFilterColumn = {(value)=>this.addFilterColumn(value)}
-                                            removeColumn = {(value)=>this.removeColumn(value)}
-                                        /> */}
-                                    </th>
-                                    )
-                                )}
-                            </tr>
-                        </thead>
-                        {ordersData && !this.state.loading &&(<tbody >
-                            {
-                                ordersData.map((data,i) =>(
-                                    <tr id={i} key={i}>
-                                        <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div id={data.id} className="action-div" onClick={()=>this.showPlaceOrder(data.DocNum)}>{data.DocNum}</div></td>
-                                        <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
-                                        <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenQty > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenQty > 0 ? "Open" : 'Send'}</div></td>
-                                        <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemName}</td>
-                                        <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.ItemCode}</td>
-                                        <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
-                                        <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
-                                        <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>
-                                            <Row style={{justifyContent: "space-around", width: 70}}>
-                                                <i className="far fa-file-pdf add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title"></span></i>
-												<i className="fas fa-undo add-icon" onClick={()=>this.returnOrderConform(data)}><span className="action-title"></span></i>
-											</Row>
-                                        </td>
-                                    </tr>
-                                ))
-                            }
-                        </tbody>)}
-                    </table>
+                        {ordersData&&(
+                            <table id="order-table" className="place-and-orders__table table" width="100%">
+                            <thead>
+                                <tr>
+                                    {filterColunm.map((item, key)=>(
+                                        <th className={!item.show ? "filter-show__hide" : ''} key={key} style={item.value==="Action" ? {width: 25} : {}}>
+                                            {trls(item.label) ? trls(item.label) : ''}
+                                            {/* <Contextmenu
+                                                triggerTitle = {item.label}
+                                                addFilterColumn = {(value)=>this.addFilterColumn(value)}
+                                                removeColumn = {(value)=>this.removeColumn(value)}
+                                            /> */}
+                                        </th>
+                                        )
+                                    )}
+                                </tr>
+                            </thead>
+                            {ordersData && !this.state.loading &&(<tbody >
+                                {
+                                    ordersData.map((data,i) =>(
+                                        <tr id={i} key={i}>
+                                            <td className={!this.showColumn(filterColunm[0].label) ? "filter-show__hide" : ''}><div id={data.id} className="action-div" onClick={()=>this.showPlaceOrder(data.DocNum)}>{data.DocNum}</div></td>
+                                            <td className={!this.showColumn(filterColunm[1].label) ? "filter-show__hide" : ''}>{Common.formatDate(data.DocDate)}</td>
+                                            <td className={!this.showColumn(filterColunm[2].label) ? "filter-show__hide" : ''}><div className={data.OpenQty > 0 ? "order-open__state" : "order-Send__state"}>{data.OpenQty > 0 ? "Open" : 'Send'}</div></td>
+                                            <td className={!this.showColumn(filterColunm[3].label) ? "filter-show__hide" : ''}><img src={data.picture ? "data:image/png;base64,"+data.picture : ''} alt={data.picture ? i : ''} className = "image__zoom"></img> {data.ItemName}</td>
+                                            <td className={!this.showColumn(filterColunm[4].label) ? "filter-show__hide" : ''}>{data.ItemCode}</td>
+                                            <td className={!this.showColumn(filterColunm[5].label) ? "filter-show__hide" : ''}>{data.Quantity}</td>
+                                            <td className={!this.showColumn(filterColunm[6].label) ? "filter-show__hide" : ''}>{data.BatchNumbers}</td>
+                                            <td className={!this.showColumn(filterColunm[7].label) ? "filter-show__hide" : ''}>
+                                                <Row style={{justifyContent: "space-around", width: 70}}>
+                                                    <i className="far fa-file-pdf add-icon" onClick={()=>this.getFileDownLoad(data)}><span className="action-title"></span></i>
+                                                    <i className="fas fa-undo add-icon" onClick={()=>this.returnOrderConform(data)}><span className="action-title"></span></i>
+                                                </Row>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
+                            </tbody>)}
+                        </table>
+                        )}
+                        
                         {/* {!this.state.filterDataFlag&&(
                             <Pagination
                                 recordNum={this.state.recordNum}

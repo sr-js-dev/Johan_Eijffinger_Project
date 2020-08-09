@@ -89,12 +89,20 @@ class Deliveriesmanage extends Component {
                                 "infoEmpty": "No records available",
                                 "infoFiltered": "(filtered from _MAX_ total records)",
                                 "search": trls('Search'),
+                                // "paginate": {
+                                //   "previous": trls('Previous'),
+                                //   "next": trls('Next')
+                                // }
                                 "paginate": {
-                                  "previous": trls('Previous'),
-                                  "next": trls('Next')
-                                }
+                                    "first": '<i class="fa fa-angle-double-left" ></i> First',
+                                    "previous": '<i class="fa fa-angle-double-left" ></i> Previous',
+                                    "next": 'Next <i class="fa fa-angle-double-right" ></i>',
+                                    "last": 'Last <i class="fa fa-angle-double-right" ></i>'
+                                },
                             },
-                              "dom": 't<"bottom-datatable" lip>'
+                            "dom": 't<"bottom-datatable" lip>',
+                            // "paging": true,
+                            // "ordering": true
                           }
                       );
                 }
