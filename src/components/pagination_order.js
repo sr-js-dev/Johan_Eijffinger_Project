@@ -84,7 +84,7 @@ class Pagination extends Component {
 		super(props);
 		this.state = {  
       page: 1,
-      pageSize: 5
+      pageSize: 10
     };
     this.onPageChange = this.onPageChange.bind(this);
   }
@@ -136,10 +136,10 @@ class Pagination extends Component {
         <div className="pagination">
             <span className="pagination-info">{trls("Show")}</span>
             <select name="project_table_length" aria-controls="project_table" className="" onChange={(evt)=>this.changePageLength(evt)}>
-                <option value="5">5</option>
                 <option value="10">10</option>
-                <option value="15">15</option>
-                <option value="20">20</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
             </select>
             <span className="pagination-info">{trls("Entries")}</span>
             <div style={{marginLeft: 'auto', display: 'flex'}}>
