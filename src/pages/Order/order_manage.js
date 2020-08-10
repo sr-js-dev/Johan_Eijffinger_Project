@@ -34,7 +34,7 @@ class Ordermanage extends Component {
             loading: false,
             ordersData: [],
             originFilterData: [],
-            top: 0,
+            top: 10,
             skip: 0,
             filterColunm: [
                 {"label": 'Order', "value": "DocNum", "type": 'text', "show": true},
@@ -158,7 +158,7 @@ class Ordermanage extends Component {
                 } );
                 $('#order-table').on( 'page.dt', () => {
                     var info = table.page.info();
-                    // console.log("L", info.page)
+                    console.log("L", info.page)
                     this.setState({
                         skip: info.page
                     })
