@@ -248,8 +248,6 @@ class Dashboard extends Component {
             newsSubjectLang = newsLanguage[lang].subject;
             newsTextLang = newsLanguage[lang].text;
         }
-        console.log('11', newsSubjectLang);
-        console.log('22', newsTextLang);
         return (
             <Container>
                 <div className="dashboard-header content__header content__header--with-line">

@@ -16,7 +16,8 @@ import Sweetalert from 'sweetalert';
 import * as authAction  from '../../actions/authAction';
 import Pagination from '../../components/pagination_order';
 import * as Auth from '../../factories/auth';
-import Filtercomponent from '../../components/filtercomponent';
+// import Filtercomponent from '../../components/filtercomponent';
+import Filtercomponent from './filtercomponent';
 const mapStateToProps = state => ({ 
     ...state.auth,
 });
@@ -34,6 +35,12 @@ class Ordermanage extends Component {
             loading: false,
             ordersData: [],
             originFilterData: [],
+            // orderField: '',
+            orderNumber: false,
+            orderDate: false,
+            itemCode: false,
+            pageSize: 10,
+            page: 0,
             filterColunm: [
                 {"label": 'Order', "value": "DocNum", "type": 'text', "show": true},
                 {"label": 'Order_Date', "value": "DocDate", "type": 'date', "show": true},
@@ -45,7 +52,7 @@ class Ordermanage extends Component {
                 {"label": 'Action', "value": "Action", "type": 'text', "show": true},
             ],
             pageLodingFlag: false,
-            pages:[{"value":"all","label":"all"}, {"value":5,"label":5}, {"value":10,"label":10}, {"value":20,"label":20}, {"value":30,"label":30}, {"value":40,"label":40}],
+            // pages:[{"value":"all","label":"all"}, {"value":5,"label":5}, {"value":10,"label":10}, {"value":20,"label":20}, {"value":30,"label":30}, {"value":40,"label":40}],
             obj: this,
             recordNum: 0,
             filterDataFlag: false
@@ -58,34 +65,86 @@ class Ordermanage extends Component {
     }
 
     componentDidMount() {
-        // this.getRecordNum(null);
-        this.getOrdersData(10, 0);
+        var that = this;
+        $('.filter').on( 'keyup', function () {
+            table.search( this.value ).draw();
+        } );
+        
+        $('#order-table').dataTable().fnDestroy();
+        
+        var table = $('#order-table').DataTable(
+            {
+                "language": {
+                    // "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
+                    "zeroRecords": "Nothing found - sorry",
+                    // "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
+                    "infoEmpty": "No records available",
+                    "infoFiltered": "(filtered from _MAX_ total records)",
+                    "search": trls('Search'),
+                    // "paginate": {
+                    //   "previous": trls('Previous'),
+                    //   "next": trls('Next')
+                    // }
+                },
+                "dom": 't<"bottom-datatable" lip>',
+                "order": [],
+                "columnDefs": [{
+                    "targets": [0, 1, 2, 3, 4, 5, 6, 7],
+                    "orderable": false
+                }],
+                // "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                "bLengthChange" : false, 
+                "paging":false,   
+                "info": false
+            }
+        );
+
+        $('#order-table').on( 'click', 'thead th', function(){
+            var index;
+            index = table.column(this).index();
+            if(index === 0){
+                that.getSortedOrdersData(that.state.pageSize, that.state.page, 'DocNum', Number(that.state.orderNumber));
+                // that.state({ orderField: 'DocNum' })
+                that.setState({orderNumber: !that.state.orderNumber})
+            } else if(index === 1){
+                that.getSortedOrdersData(that.state.pageSize, that.state.page, 'DocDate', Number(that.state.orderDate));
+                // that.state({ orderField: 'DocDate' })
+                that.setState({orderDate: !that.state.orderDate})
+            } else if(index === 4){
+                that.getSortedOrdersData(that.state.pageSize, that.state.page, 'ItemCode', Number(that.state.itemCode));
+                // that.state({ orderField: 'ItemCode' })
+                that.setState({itemCode: !that.state.itemCode})
+            } 
+          });
+        this.getOrdersData(this.state.pageSize, this.state.page);
     }
 
-    // getRecordNum = () => {
-    //     this._isMounted = true;
-    //     var settings = {
-    //         "url": API.GetOrdersData,
-    //         "method": "POST",
-    //         "headers": {
-    //             "Content-Type": "application/json",
-    //             "Authorization": "Bearer "+Auth.getUserToken(),
-    //         },
-    //         "data": JSON.stringify({"top":5})
-    //     }
-    //     $.ajax(settings).done(function (response) {
-    //     })
-    //     .then(response => {
-    //         this.setState({recordNum: response['@odata.count']})
-    //     })
-    //     .catch(err => {
-    //         if(err.response.status===401){
-    //             history.push('/login')
-    //         }
-    //     });
-    // }
-    // filter module
-    
+    getSortedOrdersData (pageSize, page, orderField, orderDirection) {
+        this._isMounted = true;
+        this.setState({loading: true});
+        var settings = {
+            "url": API.GetOrdersData,
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+            },
+            "data": JSON.stringify({
+                "top": pageSize,
+                "skip": page,
+                "orderByField": orderField,
+                "sortDirection": orderDirection
+            })
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            if(this._isMounted){
+                this.setState({ordersData: response.value, originFilterData: response.value, recordNum: response['@odata.count']});
+                this.setState({loading:false});
+            }
+        });
+    }
     
     getOrdersData (pageSize, page) {
         this._isMounted = true;
@@ -105,84 +164,22 @@ class Ordermanage extends Component {
             if(this._isMounted){
                 this.setState({ordersData: response.value, originFilterData: response.value, recordNum: response['@odata.count']});
                 this.setState({loading:false});
-                $('.filter').on( 'keyup', function () {
-                    table.search( this.value ).draw();
-                } );
-                
-                $('#order-table').dataTable().fnDestroy();
-                
-                var table = $('#order-table').DataTable(
-                    {
-                        "language": {
-                            // "lengthMenu": trls("Show")+" _MENU_ "+trls("Result_on_page"),
-                            "zeroRecords": "Nothing found - sorry",
-                            // "info": trls("Show_page")+" _PAGE_ "+trls('Results_of')+" _PAGES_",
-                            "infoEmpty": "No records available",
-                            "infoFiltered": "(filtered from _MAX_ total records)",
-                            "search": trls('Search'),
-                            // "paginate": {
-                            //   "previous": trls('Previous'),
-                            //   "next": trls('Next')
-                            // }
-                        },
-                        // "searching": false,
-                        "dom": 't<"bottom-datatable" lip>',
-                        // "ordering": false
-                        "columnDefs": [{
-                            "targets": [2, 3, 5, 6, 7],
-                            "orderable": false
-                        }],
-                        // "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-                        "bLengthChange" : false, //thought this line could hide the LengthMenu
-                        "paging":false,   
-                        "info": false
-                    }
-                );
+                this.setState({
+                    pageSize: pageSize,
+                    page: page,
+                    // orderField: '',
+                    orderNumber: false,
+                    orderDate: false,
+                    itemCode: false,
+                })
                 // $('#order-table').on( 'length.dt', ( e, settings, len ) => {
-                   
-                //     this.setState({
-                //         top: len
-                //     })
-                //     let skip = len * this.state.skip;
-                //     this.getERPOrdersData(len, skip,  null);
                 // } );
                 // $('#order-table').on( 'page.dt', () => {
-                //     var info = table.page.info();
-                //     this.setState({
-                //         skip: info.page
-                //     })
-                //     let skip = this.state.top * info.page;
-                //     let top = this.state.top;
-                //     this.getERPOrdersData(top, skip,  null);
                 // } );
             }
         });
     }
-    // getERPOrdersData (pageSize, page, data) {
-    //     this._isMounted = true;
-    //     this.setState({loading: true});
-    //     var settings = {
-    //         "url": API.GetOrdersData,
-    //         "method": "POST",
-    //         "headers": {
-    //             "Content-Type": "application/json",
-    //             "Authorization": "Bearer "+Auth.getUserToken(),
-    //         },
-    //         "data": pageSize !== null && page !== null ? JSON.stringify({"top":pageSize,"skip":page}) : JSON.stringify({})
-    //     }
-    //     $.ajax(settings).done(function (response) {
-    //     })
-    //     .then(response => {
-    //         if(this._isMounted){
-    //             if(!data){
-    //                 this.setState({ordersData: response.value, originFilterData: response.value});
-    //             }else{
-    //                 this.setState({ordersData: data});
-    //             }
-    //             this.setState({loading:false});
-    //         }
-    //     });
-    // }
+   
     showOrderDetail = (orderId) => {
         history.push({
             pathname: '/order-detail/'+orderId,
@@ -209,24 +206,47 @@ class Ordermanage extends Component {
 
     // filter module
     filterOptionData = (filterOption) =>{
-        let filteredData = []
-        filteredData = Common.filterData(filterOption, this.state.originFilterData);
-        if(!filterOption.length){
-            this.setState({filterDataFlag: false});
-            filteredData=null;
-        }else{
-            this.setState({filterDataFlag: true});
-        }
-        this.setState({ ordersData: filteredData});
+        // filteredData = Common.filterData(filterOption, this.state.originFilterData);
+        this.filterOrdersData(this.state.pageSize, this.state.page, filterOption);
+        // if(!filterOption.length){
+        //     this.setState({filterDataFlag: false});
+        //     filteredData=null;
+        // }else{
+        //     this.setState({filterDataFlag: true});
+        // }
+        // this.setState({ ordersData: filteredData});
     }
-    // filterOptionData = (filterOption) =>{
-    //     let dataA = []
-    //     dataA = Common.filterData(filterOption, this.state.originFilterData);
-    //     if(!filterOption.length){
-    //         dataA=null;
-    //     }
-    //     this.getOrdersData(null, null, dataA);
-    // }
+
+    filterOrdersData = (pageSize, page, filterOption) => {
+        this._isMounted = true;
+        this.setState({loading: true});
+        let data = {}
+        let temp = {
+            "top": pageSize,
+            "skip": page,
+        }
+        Object.assign(data, temp, filterOption);
+        // console.log("123123", data)
+        var settings = {
+            "url": API.GetOrdersData,
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer "+Auth.getUserToken(),
+            },
+            
+            "data": JSON.stringify(data)
+        }
+        $.ajax(settings).done(function (response) {
+        })
+        .then(response => {
+            if(this._isMounted){
+                this.setState({ordersData: response.value,  filterDataFlag: false});
+                this.setState({loading:false});
+            }
+        });
+    }
+
     changeFilter = () => {
         if(this.state.filterFlag){
             this.setState({filterFlag: false})
@@ -398,10 +418,10 @@ class Ordermanage extends Component {
     render(){   
         const {filterColunm, ordersData, pageLodingFlag} = this.state;
         let filterData = [
-            {"label": trls('Order'), "value": "DocNum", "type": 'text', "show": true},
-            {"label": trls('Order_Date'), "value": "DocDate", "type": 'date', "show": true},
-            {"label": trls('Status'), "value": "LineStatus", "type": 'text', "show": true},
-            {"label": trls('ItemCode'), "value": "ItemCode", "type": 'text', "show": true}
+            {"label": trls('Order'), "value": "docNum", "type": 'text'},
+            {"label": trls('Order_Date'), "value": "docDate", "type": 'date'},
+            {"label": trls('Status'), "value": "lineStatus", "type": 'text'},
+            {"label": trls('ItemCode'), "value": "itemCode", "type": 'text'}
         ]
         return (
             <div className="order_div">
